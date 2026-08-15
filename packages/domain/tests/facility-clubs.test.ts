@@ -8,6 +8,7 @@ import {
   canApproveMembership,
   isFullyApprovedWithUnresolvedRoom,
   isSoftHoldActive,
+  minutesOfDayInZone,
   occupiedInterval,
   softHoldBlocksHardLock,
   tryUpdateApprovedAmount,
@@ -17,9 +18,17 @@ import {
 } from "../src/index";
 
 const hours = { startMinutes: 7 * 60, endMinutes: 20 * 60 };
+const SCHOOL_TZ = "Asia/Ho_Chi_Minh";
 
+/**
+ * An instant that reads as Monday `h:m` on the *school's* clock.
+ *
+ * Ho Chi Minh City is UTC+7, so the stored instant is seven hours earlier. The
+ * helper used to build these in UTC, which silently made every "14:00" fixture
+ * a 21:00 booking once operational hours became timezone-aware.
+ */
 function monday(h: number, m = 0): Date {
-  return new Date(Date.UTC(2026, 7, 17, h, m, 0));
+  return new Date(Date.UTC(2026, 7, 17, h - 7, m, 0));
 }
 
 function input(over: Partial<RoomApprovalInput> = {}): RoomApprovalInput {
@@ -32,6 +41,7 @@ function input(over: Partial<RoomApprovalInput> = {}): RoomApprovalInput {
     cleanupMinutes: 15,
     occupancy: [],
     operationalHours: hours,
+    timeZone: SCHOOL_TZ,
     now: monday(8),
     ...over,
   };
@@ -56,10 +66,9 @@ describe("soft hold vs hard lock", () => {
 describe("room approval re-check", () => {
   it("uses occupied interval including setup/cleanup", () => {
     const occ = occupiedInterval(monday(14), monday(16), 15, 15);
-    expect(occ.startAt.getUTCHours()).toBe(13);
-    expect(occ.startAt.getUTCMinutes()).toBe(45);
-    expect(occ.endAt.getUTCHours()).toBe(16);
-    expect(occ.endAt.getUTCMinutes()).toBe(15);
+    // Read back on the school clock: 13:45 to 16:15.
+    expect(minutesOfDayInZone(occ.startAt, SCHOOL_TZ)).toBe(13 * 60 + 45);
+    expect(minutesOfDayInZone(occ.endAt, SCHOOL_TZ)).toBe(16 * 60 + 15);
   });
 
   it("fails when timetable occupies the slot", () => {

@@ -361,3 +361,134 @@ the seed under this Prisma config, so the script chains `db:seed`.) E2E runs wit
 - Dashboard timetable is scoped by class/teacher but not yet filtered to
   "today": that needs weekday + period → datetime in the school timezone
   (Slice 2), and is labelled honestly in the UI until then.
+
+---
+
+## 7. Slice 1 — completed
+
+Migration `20260816120000_mentor_truth_and_school_timezone`. `npm run verify`
+passes end to end.
+
+### Schema
+
+| Change                                                                                   | Closes §2.7 gap                  |
+| ---------------------------------------------------------------------------------------- | -------------------------------- |
+| `User.dateOfBirth DATE?`, `User.gender Gender?`                                          | no real source for `birthYear`   |
+| `MentorProfile.user` relation (`userId` now `@unique` with an FK)                        | `MentorProfile.userId` unrelated |
+| Mentor credential/rating/experience/style/language columns + `credentialsCheckedDomains` | no mentor engine columns         |
+| `Tenant.timezone` (default `Asia/Ho_Chi_Minh`)                                           | no tenant timezone               |
+| `MentorProfile.skills` dropped                                                           | duplicate of `expertise`         |
+
+`dateOfBirth` is a `DATE`, not a timestamp: a civil date cannot be shifted by a
+timezone. `gender` distinguishes NULL (never recorded) from `UNDISCLOSED`
+(asked, declined) — the same shape as the credential contract, and the adapter
+keeps them apart.
+
+### Credential semantics in storage
+
+`credentialsCheckedDomains` is what carries the engine's three-valued contract
+into the database:
+
+| State                              | Storage                                | Adapter emits |
+| ---------------------------------- | -------------------------------------- | ------------- |
+| UNKNOWN — nobody checked           | domain absent from the array           | key omitted   |
+| KNOWN ABSENT — checked, holds none | domain listed, score columns `NULL`    | `null`        |
+| KNOWN PRESENT                      | domain listed, score columns populated | credential    |
+
+Column nullability alone cannot express this: a `NULL` band in a domain nobody
+checked is unknown, and emitting it as `null` would assert an absence we never
+observed. All three states appear in the seed on purpose.
+
+### Adapter
+
+`apps/web/src/lib/mentor/adapter.ts` is the single DB→canonical boundary. It
+returns `CanonicalMentorCandidate`, deliberately **not** `Mentor`: claiming that
+type would need a cast, and a cast is how an unvalidated skill string reaches the
+ranker. `validateMentors` remains the judge. `ratingCount`, `headline`,
+`graduationYear`, `tenantId` and `userId` stay behind the boundary.
+
+A row that cannot supply a required field is returned as an explicit
+`MentorAdaptationFailure` with reasons, and the UI lists it. Nothing is
+completed with a guess — the fabricated `birthYear: 2000`, the invented IELTS
+8.0 across all four sections, `teachingExperienceMonths: 18` and `rating: 4.6`
+are gone, and the silent `matchScore: 50` fallback with them.
+
+### Timezone
+
+`packages/domain/src/academic/timezone.ts` converts instants to school-local
+civil time through `Intl.DateTimeFormat`, which carries the IANA rules.
+`withinOperationalHours` and `weekdayOf` now take a **required** `timeZone`; a
+default would let the seven-hour error return unnoticed. The domain test asserts
+the exact defect: a 20:00–21:00 school-local booking passes under the old UTC
+reading and is correctly rejected now. `approveRoomRequestTx` reads
+`Tenant.timezone`.
+
+`periodOccurrence(weekday, period, date, tz)` — the civil→instant direction —
+remains Slice 2.
+
+### Seed
+
+24 mentors (`HS990002`–`HS990025`) written out longhand: three domains, 12+
+distinct expertise sets, 12+ distinct availability sets, prices 120k–650k, both
+verification states, ratings and experience both known and unknown, and all
+three credential knowledge states. Rooms carry type-appropriate feature sets
+instead of one universal `PROJECTOR=true`. Every demo identity has a
+deterministic, plausible date of birth and gender.
+
+The acceptance criterion is behavioural, not "no two rows identical" — that was
+already true of the prototype via ids and prices. `tests/integration/seed-truthfulness.test.ts`
+asserts against the real database that IELTS, SAT and HSK requests each rank a
+**different** mentor first, that tightening the budget shrinks the eligible set
+rather than reordering it, that different hard constraints reject different
+mentors for different reasons, and that an unservable request returns
+`noFeasibleMatch` instead of a relaxed answer.
+
+### Defects found and fixed beyond the plan
+
+1. **`db:demo:reset` was broken.** `prisma migrate reset --skip-seed` is not a
+   valid Prisma 7 flag, so the command failed and the `&&`-chained seed never
+   ran. It is now `prisma migrate reset --force && npm run db:seed` (reset alone
+   does not run the seed under this config).
+2. **Match Space had a hydration mismatch.** `Math.cos`/`Math.sin` differ in the
+   last ULP between Node and the browser, so the SSR and client SVG transforms
+   disagreed in the 16th digit and React refused to patch the tree. Coordinates
+   are now rounded to six decimals in `layoutMatchSpace` — far below a device
+   pixel, and it makes "deterministic for the same run" true across engines.
+3. **`prisma migrate dev` cannot run non-interactively** when a change carries a
+   data-loss or unique-constraint warning. The migration was generated with
+   `prisma migrate diff --from-config-datasource --to-schema` and applied with
+   `migrate deploy`.
+4. **Next 16 refuses a second `next dev` in the same directory**, whatever the
+   port. A stray manual dev server makes the Playwright `webServer` fail to
+   start; kill it before running `verify`.
+
+### Verified in a real browser
+
+Logged in as `HS000001` at 1440px and 390px. `/mentor` lists real names, real
+headlines and real prices, with rating omitted where none exists. `/mentor/[id]`
+shows "IELTS: 6.5 · SAT: đã kiểm tra, không có chứng chỉ · HSK: đã kiểm tra,
+không có chứng chỉ" for the mentor with all three states, and "Chưa kiểm tra
+chứng chỉ nào" for the one nobody has checked. `/mentor/match-space` runs the
+engine: 6 eligible mentors scoring 71.8 down to 29.88, the rest carrying the
+engine's own rejection reasons (`UNVERIFIED`, `AVAILABILITY`, `PRICE`,
+`DOMAIN`). Console clean apart from the known `/favicon.ico` 404.
+
+### Tests added
+
+- `packages/domain/tests/timezone.test.ts` — 13 assertions on civil-time
+  conversion, DST, and the operational-hours defect.
+- `apps/web/tests/mentor-adapter.test.ts` — 14 assertions on identity, the three
+  credential states, and the engine boundary.
+- `apps/web/tests/integration/seed-truthfulness.test.ts` — 11 assertions against
+  real PostgreSQL, including the behavioural diversity criteria above.
+- `apps/web/e2e/mentor-data-truth.spec.ts` — 3 browser tests: no UUID-as-name,
+  distinct real scores, engine rejection reasons.
+
+### Still deliberately open
+
+- `/mentor` has no request input; the Match Space request is a fixed demo
+  request, labelled as such in the UI (Slice 4).
+- No `MentorMatchRequest` / `MentorRecommendationRun` is persisted yet (Slice 4).
+- Match Space is still the inherited visual; Slice 5 rebuilds it.
+- Teacher routing/responsibility, blocked-time and `ClubAdvisor` models, and
+  `tenantId` on `Report`/`ModerationCase`, remain Slice 7.

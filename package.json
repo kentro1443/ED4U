@@ -31,7 +31,7 @@
     "benchmark:facility": "npm run benchmark -w @ed4u/facility-engine",
     "benchmark:mentor:smoke": "npm run benchmark:smoke -w @ed4u/mentor-engine && node scripts/copy-mentor-benchmark.mjs",
     "benchmark:facility:smoke": "npm run benchmark:smoke -w @ed4u/facility-engine",
-    "db:demo:reset": "prisma migrate reset --force --skip-seed && npm run db:seed"
+    "db:demo:reset": "prisma migrate reset --force && npm run db:seed"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.9.0",

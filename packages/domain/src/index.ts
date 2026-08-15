@@ -5,6 +5,7 @@ export * from "./permissions";
 export * from "./academic/timetable";
 export * from "./academic/calendar";
 export * from "./academic/occupancy";
+export * from "./academic/timezone";
 export * from "./applications";
 export * from "./appointments";
 export * from "./files";

@@ -12,8 +12,9 @@ import { applyConcurrentApprovals, type RoomApprovalInput } from "@ed4u/domain";
  * covered in Slice 3 alongside the locking implementation it depends on.
  */
 
+/** Monday `h:m` on the school's clock (Asia/Ho_Chi_Minh is UTC+7). */
 function monday(h: number, m = 0): Date {
-  return new Date(Date.UTC(2026, 7, 17, h, m, 0));
+  return new Date(Date.UTC(2026, 7, 17, h - 7, m, 0));
 }
 
 describe("room booking service contract", () => {
@@ -27,6 +28,7 @@ describe("room booking service contract", () => {
       cleanupMinutes: 0,
       occupancy: [],
       operationalHours: { startMinutes: 420, endMinutes: 1200 },
+      timeZone: "Asia/Ho_Chi_Minh",
       now: monday(8),
     };
     const { winner, loser } = applyConcurrentApprovals(base, { ...base, requestId: "B" });

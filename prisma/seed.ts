@@ -13,14 +13,42 @@ function uuid(seed: string): string {
   return `${h.slice(0, 8)}-${h.slice(8, 12)}-4${h.slice(13, 16)}-a${h.slice(17, 20)}-${h.slice(20, 32)}`;
 }
 
+/** Deterministic pseudo-random integer in `[min, max]`, derived from a seed string. */
+function pick(seed: string, min: number, max: number): number {
+  const h = createHash("sha256").update(seed).digest();
+  return min + (h.readUInt32BE(0) % (max - min + 1));
+}
+
+/**
+ * A plausible date of birth for a demo identity, derived deterministically so
+ * re-seeding never changes anyone's age.
+ *
+ * Stored as a UTC midnight so the DATE column holds exactly this calendar day
+ * regardless of where the seed runs.
+ */
+function demoDateOfBirth(seed: string, minYear: number, maxYear: number): Date {
+  const year = pick(`${seed}:y`, minYear, maxYear);
+  const month = pick(`${seed}:m`, 1, 12);
+  // 28 keeps every month valid without special-casing February.
+  const day = pick(`${seed}:d`, 1, 28);
+  return new Date(Date.UTC(year, month - 1, day));
+}
+
+type DemoGender = "FEMALE" | "MALE" | "OTHER" | "UNDISCLOSED";
+
 async function main() {
   const hash = await argon2.hash(DEMO_PASSWORD, { type: argon2.argon2id });
   const tenantId = uuid("tenant:ed4u-demo");
 
   await prisma.tenant.upsert({
     where: { id: tenantId },
-    update: {},
-    create: { id: tenantId, slug: "ed4u-demo", name: "ED4U Demo High School" },
+    update: { timezone: "Asia/Ho_Chi_Minh" },
+    create: {
+      id: tenantId,
+      slug: "ed4u-demo",
+      name: "ED4U Demo High School",
+      timezone: "Asia/Ho_Chi_Minh",
+    },
   });
 
   await prisma.operationalHours.upsert({
@@ -144,6 +172,23 @@ async function main() {
     });
   }
 
+  /**
+   * Features a room actually has, by room type.
+   *
+   * The prototype gave every one of the 24 rooms a single `PROJECTOR=true` row,
+   * so a required-feature constraint either matched everything or nothing and
+   * the Facility Engine had no discriminating signal at all. These sets are
+   * what a school of this kind would really have.
+   */
+  const FEATURES_BY_ROOM_TYPE: Record<string, string[]> = {
+    CLASSROOM: ["PROJECTOR", "WHITEBOARD"],
+    MUSIC_ROOM: ["PIANO", "SOUND_SYSTEM", "AIR_CONDITIONING"],
+    COMPUTER_LAB: ["COMPUTERS", "PROJECTOR", "AIR_CONDITIONING", "WHITEBOARD"],
+    SCIENCE_LAB: ["CHEMISTRY_EQUIPMENT", "WHITEBOARD", "PROJECTOR"],
+    AUDITORIUM: ["SOUND_SYSTEM", "PROJECTOR", "AIR_CONDITIONING"],
+    MEETING_ROOM: ["PROJECTOR", "AIR_CONDITIONING", "WHITEBOARD"],
+  };
+
   for (let i = 1; i <= 24; i++) {
     const type = typeCodes[i % typeCodes.length]![0];
     const id = uuid(`room:${i}`);
@@ -162,16 +207,26 @@ async function main() {
         status: "ACTIVE",
       },
     });
-    await prisma.roomFeatureValue.upsert({
-      where: { roomId_featureId: { roomId: id, featureId: uuid("feat:PROJECTOR") } },
-      update: {},
-      create: {
-        id: uuid(`rf:${i}:proj`),
-        roomId: id,
-        featureId: uuid("feat:PROJECTOR"),
-        value: "true",
-      },
-    });
+
+    const features = [...FEATURES_BY_ROOM_TYPE[type]!];
+    // A handful of rooms carry the school's scarce equipment. Scarcity is the
+    // point: a request that needs a 3D printer must have somewhere to land and
+    // somewhere to be rejected from.
+    if (type === "SCIENCE_LAB" && i % 8 === 3) features.push("3D_PRINTER");
+    if (type === "CLASSROOM" && i % 12 === 0) features.push("AIR_CONDITIONING");
+
+    for (const code of features) {
+      await prisma.roomFeatureValue.upsert({
+        where: { roomId_featureId: { roomId: id, featureId: uuid(`feat:${code}`) } },
+        update: { value: "true" },
+        create: {
+          id: uuid(`rf:${i}:${code}`),
+          roomId: id,
+          featureId: uuid(`feat:${code}`),
+          value: "true",
+        },
+      });
+    }
   }
 
   async function upsertPerson(opts: {
@@ -181,17 +236,27 @@ async function main() {
     status: "ACTIVE" | "GRADUATED";
     roles: Array<"STUDENT" | "TEACHER" | "MENTOR" | "SCHOOL_ADMIN" | "ADMIN_IT">;
     classId?: string;
+    /** Omit to leave the column NULL, which means "never recorded". */
+    dateOfBirth?: Date;
+    gender?: DemoGender;
   }) {
     const userId = uuid(`user:${opts.code}`);
+    const identity = {
+      fullName: opts.name,
+      dateOfBirth: opts.dateOfBirth ?? null,
+      gender: opts.gender ?? null,
+    };
     await prisma.user.upsert({
       where: { id: userId },
-      update: { passwordHash: hash, mustChangePassword: true },
+      // Identity is re-applied on update so `db:demo:reset` is idempotent even
+      // against a database seeded by an older revision of this file.
+      update: { passwordHash: hash, mustChangePassword: true, ...identity },
       create: {
         id: userId,
         tenantId,
-        fullName: opts.name,
         passwordHash: hash,
         mustChangePassword: true,
+        ...identity,
       },
     });
     await prisma.schoolMembership.upsert({
@@ -224,6 +289,8 @@ async function main() {
     memberType: "STAFF",
     status: "ACTIVE",
     roles: ["ADMIN_IT"],
+    dateOfBirth: demoDateOfBirth("IT000001", 1982, 1992),
+    gender: "MALE",
   });
   await upsertPerson({
     code: "AD000001",
@@ -231,6 +298,8 @@ async function main() {
     memberType: "STAFF",
     status: "ACTIVE",
     roles: ["SCHOOL_ADMIN"],
+    dateOfBirth: demoDateOfBirth("AD000001", 1970, 1980),
+    gender: "MALE",
   });
   const teacherId = await upsertPerson({
     code: "GV000001",
@@ -238,6 +307,8 @@ async function main() {
     memberType: "TEACHER",
     status: "ACTIVE",
     roles: ["TEACHER"],
+    dateOfBirth: demoDateOfBirth("GV000001", 1980, 1990),
+    gender: "FEMALE",
   });
   const studentId = await upsertPerson({
     code: "HS000001",
@@ -246,6 +317,8 @@ async function main() {
     status: "ACTIVE",
     roles: ["STUDENT"],
     classId: classIds[0],
+    dateOfBirth: demoDateOfBirth("HS000001", 2009, 2011),
+    gender: "MALE",
   });
   await upsertPerson({
     code: "HS990001",
@@ -253,13 +326,8 @@ async function main() {
     memberType: "STUDENT",
     status: "GRADUATED",
     roles: ["STUDENT"],
-  });
-  const mentorUser = await upsertPerson({
-    code: "HS990002",
-    name: "Lê Mentor",
-    memberType: "STUDENT",
-    status: "GRADUATED",
-    roles: ["MENTOR"],
+    dateOfBirth: demoDateOfBirth("HS990001", 2005, 2007),
+    gender: "MALE",
   });
   const president = await upsertPerson({
     code: "HS000010",
@@ -268,72 +336,676 @@ async function main() {
     status: "ACTIVE",
     roles: ["STUDENT"],
     classId: classIds[0],
+    dateOfBirth: demoDateOfBirth("HS000010", 2009, 2011),
+    gender: "FEMALE",
   });
 
+  const BULK_GENDERS: DemoGender[] = ["FEMALE", "MALE", "OTHER", "UNDISCLOSED"];
+  /** Deterministic gender for a bulk demo identity. */
+  function bulkGender(code: string): DemoGender {
+    // 0–1 dominate so OTHER/UNDISCLOSED stay a realistic minority, and every
+    // value still appears in the dataset.
+    const roll = pick(`gender:${code}`, 0, 19);
+    if (roll < 9) return BULK_GENDERS[0]!;
+    if (roll < 18) return BULK_GENDERS[1]!;
+    return BULK_GENDERS[roll === 18 ? 2 : 3]!;
+  }
+
   for (let i = 2; i <= 24; i++) {
+    const code = `GV${String(i).padStart(6, "0")}`;
     await upsertPerson({
-      code: `GV${String(i).padStart(6, "0")}`,
+      code,
       name: `Giáo viên ${i}`,
       memberType: "TEACHER",
       status: "ACTIVE",
       roles: ["TEACHER"],
+      dateOfBirth: demoDateOfBirth(code, 1975, 1995),
+      gender: bulkGender(code),
     });
   }
   for (let i = 2; i <= 120; i++) {
     if (i === 10) continue;
+    const code = `HS${String(i).padStart(6, "0")}`;
     await upsertPerson({
-      code: `HS${String(i).padStart(6, "0")}`,
+      code,
       name: `Học sinh ${i}`,
       memberType: "STUDENT",
       status: "ACTIVE",
       roles: ["STUDENT"],
       classId: classIds[i % classIds.length],
+      dateOfBirth: demoDateOfBirth(code, 2008, 2011),
+      gender: bulkGender(code),
     });
   }
-  for (let i = 3; i <= 36; i++) {
+
+  /* ------------------------------------------------------------------ */
+  /* Mentors                                                            */
+  /* ------------------------------------------------------------------ */
+
+  /**
+   * The demo mentor roster.
+   *
+   * This is written out longhand rather than generated because the Mentor
+   * Intelligence Engine is only interesting against data that actually differs:
+   * the prototype's 24 identical rows made every ranking a tie and every
+   * explanation vacuous. The spread here is deliberate along the axes the
+   * engine reasons about — domain, expertise, availability, price, verification,
+   * experience, rating and, most importantly, credential *knowledge state*.
+   *
+   * `credentialsCheckedDomains` carries the three-valued contract into storage:
+   *   domain listed + scores  -> KNOWN PRESENT
+   *   domain listed, no score -> KNOWN ABSENT (mentor holds no such certificate)
+   *   domain not listed       -> UNKNOWN (nobody ever checked)
+   * All three appear below on purpose, so the adapter and the engine's
+   * missing-data handling are exercised by the demo itself.
+   */
+  interface MentorSpec {
+    code: string;
+    name: string;
+    gender: DemoGender;
+    birthYear: number;
+    headline: string;
+    school: string;
+    bio: string;
+    expertise: string[];
+    availability: string[];
+    pricePerHour: number;
+    verified: boolean;
+    credentialsCheckedDomains: string[];
+    ielts?: {
+      overall: number;
+      listening?: number;
+      reading?: number;
+      writing?: number;
+      speaking?: number;
+    };
+    sat?: { total: number; math?: number; readingWriting?: number };
+    hsk?: { level: number };
+    teachingExperienceMonths?: number;
+    sessionsCompleted?: number;
+    rating?: number;
+    ratingCount?: number;
+    teachingStyles: string[];
+    languages: string[];
+    achievements?: string[];
+  }
+
+  const MENTORS: MentorSpec[] = [
+    // ---- IELTS -------------------------------------------------------
+    {
+      code: "HS990002",
+      name: "Nguyễn Thu Hà",
+      gender: "FEMALE",
+      birthYear: 2003,
+      headline: "IELTS 8.5 · Writing & Speaking",
+      school: "ĐH Ngoại thương",
+      bio: "Luyện Writing Task 2 theo khung lập luận, chữa bài chi tiết từng câu.",
+      expertise: ["IELTS.WRITING", "IELTS.SPEAKING"],
+      availability: ["TUE_19_00", "THU_19_00", "SAT_09_00"],
+      pricePerHour: 420_000,
+      verified: true,
+      credentialsCheckedDomains: ["IELTS"],
+      // Sections imply the overall exactly: (8.5+9+7.5+8)/4 = 8.25 -> 8.5.
+      ielts: { overall: 8.5, listening: 8.5, reading: 9, writing: 7.5, speaking: 8 },
+      teachingExperienceMonths: 30,
+      sessionsCompleted: 260,
+      rating: 4.8,
+      ratingCount: 96,
+      teachingStyles: ["STRUCTURED", "EXAM_FOCUSED"],
+      languages: ["VI", "EN"],
+      achievements: ["Thủ khoa khối D1 năm 2021"],
+    },
+    {
+      code: "HS990003",
+      name: "Trần Minh Khôi",
+      gender: "MALE",
+      birthYear: 2002,
+      headline: "IELTS 7.5 · Reading & Listening",
+      school: "ĐH Bách khoa Hà Nội",
+      bio: "Tập trung kỹ thuật scan/skim và bẫy paraphrase.",
+      expertise: ["IELTS.READING", "IELTS.LISTENING"],
+      availability: ["MON_18_00", "WED_18_00"],
+      pricePerHour: 260_000,
+      verified: true,
+      credentialsCheckedDomains: ["IELTS"],
+      // Overall only: this profile never published section bands.
+      ielts: { overall: 7.5 },
+      teachingExperienceMonths: 18,
+      sessionsCompleted: 120,
+      rating: 4.5,
+      ratingCount: 40,
+      teachingStyles: ["PATIENT", "ANALYTICAL"],
+      languages: ["VI", "EN"],
+    },
+    {
+      code: "HS990004",
+      name: "Lê Bảo Ngọc",
+      gender: "FEMALE",
+      birthYear: 2004,
+      headline: "IELTS 7.0 · Writing cơ bản",
+      school: "ĐH Hà Nội",
+      bio: "Đồng hành với bạn mới bắt đầu, sửa lỗi ngữ pháp nền tảng.",
+      expertise: ["IELTS.WRITING"],
+      availability: ["SAT_14_00", "SUN_14_00"],
+      pricePerHour: 180_000,
+      verified: false,
+      credentialsCheckedDomains: ["IELTS"],
+      ielts: { overall: 7, listening: 7, reading: 7.5, writing: 6.5, speaking: 7 },
+      teachingExperienceMonths: 6,
+      sessionsCompleted: 22,
+      // No rating: too few sessions to have one. Absent, not zero.
+      teachingStyles: ["CONVERSATIONAL", "MOTIVATING"],
+      languages: ["VI", "EN"],
+    },
+    {
+      code: "HS990005",
+      name: "Phạm Quốc Anh",
+      gender: "MALE",
+      birthYear: 2001,
+      headline: "IELTS 8.0 · Luyện thi cấp tốc",
+      school: "ĐH Kinh tế Quốc dân",
+      bio: "Lộ trình 8 tuần, ép tiến độ, phù hợp bạn đã có nền 6.0+.",
+      expertise: ["IELTS.SPEAKING", "IELTS.WRITING", "IELTS.READING"],
+      availability: ["TUE_20_00", "THU_20_00", "FRI_19_00"],
+      pricePerHour: 520_000,
+      verified: true,
+      credentialsCheckedDomains: ["IELTS"],
+      ielts: { overall: 8, listening: 8, reading: 8.5, writing: 7, speaking: 7.5 },
+      teachingExperienceMonths: 48,
+      sessionsCompleted: 410,
+      rating: 4.9,
+      ratingCount: 151,
+      teachingStyles: ["INTENSIVE", "EXAM_FOCUSED"],
+      languages: ["VI", "EN"],
+    },
+    {
+      code: "HS990006",
+      name: "Hoàng Diệu Linh",
+      gender: "FEMALE",
+      birthYear: 2005,
+      headline: "IELTS 6.5 · Listening",
+      school: "ĐH Sư phạm Hà Nội",
+      bio: "Nghe chép chính tả theo chủ đề, tốc độ tăng dần.",
+      expertise: ["IELTS.LISTENING"],
+      availability: ["MON_19_30", "WED_19_30"],
+      pricePerHour: 150_000,
+      verified: false,
+      credentialsCheckedDomains: ["IELTS"],
+      ielts: { overall: 6.5, listening: 6.5, reading: 6, writing: 6, speaking: 6.5 },
+      teachingExperienceMonths: 4,
+      sessionsCompleted: 9,
+      teachingStyles: ["PATIENT", "FLEXIBLE"],
+      languages: ["VI"],
+    },
+    {
+      code: "HS990007",
+      name: "Vũ Đình Nam",
+      gender: "MALE",
+      birthYear: 2000,
+      headline: "IELTS 7.5 · Writing & Reading",
+      school: "ĐH Ngoại ngữ – ĐHQGHN",
+      bio: "Phân tích đề theo dạng, xây dàn ý trước khi viết.",
+      expertise: ["IELTS.WRITING", "IELTS.READING"],
+      availability: ["WED_17_00", "FRI_17_00"],
+      pricePerHour: 300_000,
+      verified: true,
+      credentialsCheckedDomains: ["IELTS"],
+      ielts: { overall: 7.5 },
+      teachingExperienceMonths: 24,
+      sessionsCompleted: 180,
+      rating: 4.6,
+      ratingCount: 61,
+      teachingStyles: ["ANALYTICAL", "STRUCTURED"],
+      languages: ["VI", "EN"],
+    },
+    {
+      code: "HS990008",
+      name: "Đặng Khánh Vy",
+      gender: "FEMALE",
+      birthYear: 2003,
+      headline: "IELTS 8.0 · Speaking",
+      school: "Học viện Ngoại giao",
+      bio: "Luyện phản xạ theo chủ đề Part 2–3, sửa phát âm từng buổi.",
+      expertise: ["IELTS.SPEAKING"],
+      availability: ["TUE_18_30", "THU_18_30", "SUN_10_00"],
+      pricePerHour: 380_000,
+      verified: true,
+      credentialsCheckedDomains: ["IELTS"],
+      ielts: { overall: 8 },
+      teachingExperienceMonths: 22,
+      sessionsCompleted: 205,
+      rating: 4.7,
+      ratingCount: 88,
+      teachingStyles: ["CONVERSATIONAL", "MOTIVATING"],
+      languages: ["VI", "EN"],
+    },
+    {
+      code: "HS990009",
+      name: "Bùi Tuấn Kiệt",
+      gender: "MALE",
+      birthYear: 2002,
+      headline: "Gia sư IELTS Writing",
+      school: "ĐH Công nghệ – ĐHQGHN",
+      bio: "Hồ sơ mới, chưa gửi chứng chỉ để trường xác minh.",
+      expertise: ["IELTS.WRITING"],
+      availability: ["MON_20_00"],
+      pricePerHour: 200_000,
+      verified: false,
+      // UNKNOWN: nobody has checked any credential for this mentor. The adapter
+      // must omit the keys entirely — absence of a check is not absence of a
+      // certificate.
+      credentialsCheckedDomains: [],
+      teachingStyles: ["FLEXIBLE"],
+      languages: ["VI"],
+    },
+    {
+      code: "HS990010",
+      name: "Đỗ Phương Thảo",
+      gender: "FEMALE",
+      birthYear: 2004,
+      headline: "Kèm nền tảng IELTS · chưa có chứng chỉ",
+      school: "ĐH Thương mại",
+      bio: "Hỗ trợ bạn mất gốc lấy lại nền, không nhận lớp luyện thi gấp.",
+      expertise: ["IELTS.LISTENING", "IELTS.READING"],
+      availability: ["SAT_08_00", "SAT_10_00"],
+      pricePerHour: 130_000,
+      verified: false,
+      // KNOWN ABSENT: the school checked and this mentor holds no IELTS
+      // certificate. A `minCredentialScore` constraint must reject her
+      // deterministically — which is different from being unrankable.
+      credentialsCheckedDomains: ["IELTS"],
+      teachingExperienceMonths: 8,
+      sessionsCompleted: 30,
+      rating: 4.2,
+      ratingCount: 11,
+      teachingStyles: ["PATIENT"],
+      languages: ["VI"],
+    },
+    {
+      code: "HS990011",
+      name: "Ngô Gia Bảo",
+      gender: "MALE",
+      birthYear: 1999,
+      headline: "IELTS 9.0 · Toàn kỹ năng",
+      school: "ĐH Ngoại thương",
+      bio: "Nhận lớp 1-1 cho mục tiêu 8.0+, lịch kín, ưu tiên cam kết dài hạn.",
+      expertise: ["IELTS.WRITING", "IELTS.SPEAKING", "IELTS.READING", "IELTS.LISTENING"],
+      availability: ["MON_19_00", "TUE_19_00", "WED_19_00", "THU_19_00"],
+      pricePerHour: 650_000,
+      verified: true,
+      credentialsCheckedDomains: ["IELTS"],
+      ielts: { overall: 9 },
+      teachingExperienceMonths: 72,
+      sessionsCompleted: 800,
+      rating: 4.9,
+      ratingCount: 300,
+      teachingStyles: ["EXAM_FOCUSED", "INTENSIVE", "ANALYTICAL"],
+      languages: ["VI", "EN"],
+      achievements: ["Giải Nhất HSG Quốc gia môn Tiếng Anh", "IELTS 9.0 overall"],
+    },
+
+    // ---- SAT ---------------------------------------------------------
+    {
+      code: "HS990012",
+      name: "Dương Hải Yến",
+      gender: "FEMALE",
+      birthYear: 2002,
+      headline: "SAT 1520 · Math & RW",
+      school: "VinUniversity",
+      bio: "Dạy full-test theo timing thật, phân tích lỗi sau mỗi lần thi thử.",
+      expertise: ["SAT.MATH", "SAT.READING_WRITING"],
+      availability: ["TUE_19_00", "THU_19_00"],
+      pricePerHour: 480_000,
+      verified: true,
+      credentialsCheckedDomains: ["SAT"],
+      sat: { total: 1520, math: 780, readingWriting: 740 },
+      teachingExperienceMonths: 30,
+      sessionsCompleted: 210,
+      rating: 4.8,
+      ratingCount: 77,
+      teachingStyles: ["STRUCTURED", "EXAM_FOCUSED"],
+      languages: ["VI", "EN"],
+    },
+    {
+      code: "HS990013",
+      name: "Lý Trọng Nhân",
+      gender: "MALE",
+      birthYear: 2003,
+      headline: "SAT 1420 · Math",
+      school: "ĐH Bách khoa TP.HCM",
+      bio: "Chuyên phần Math, luyện bẫy đề và kỹ thuật loại đáp án.",
+      expertise: ["SAT.MATH"],
+      availability: ["MON_18_00", "WED_18_00", "FRI_18_00"],
+      pricePerHour: 320_000,
+      verified: true,
+      credentialsCheckedDomains: ["SAT"],
+      sat: { total: 1420, math: 750, readingWriting: 670 },
+      teachingExperienceMonths: 16,
+      sessionsCompleted: 95,
+      rating: 4.5,
+      ratingCount: 33,
+      teachingStyles: ["ANALYTICAL"],
+      languages: ["VI", "EN"],
+    },
+    {
+      code: "HS990014",
+      name: "Mai Thanh Trúc",
+      gender: "FEMALE",
+      birthYear: 2004,
+      headline: "SAT 1480 · Reading & Writing",
+      school: "ĐH Fulbright Việt Nam",
+      bio: "Đọc hiểu theo cấu trúc lập luận, mở rộng vốn từ học thuật.",
+      expertise: ["SAT.READING_WRITING"],
+      availability: ["SAT_09_00", "SUN_09_00"],
+      pricePerHour: 350_000,
+      verified: true,
+      credentialsCheckedDomains: ["SAT"],
+      // Total only: sections were never published.
+      sat: { total: 1480 },
+      teachingExperienceMonths: 12,
+      sessionsCompleted: 60,
+      rating: 4.4,
+      ratingCount: 25,
+      teachingStyles: ["PATIENT", "MOTIVATING"],
+      languages: ["VI", "EN"],
+    },
+    {
+      code: "HS990015",
+      name: "Trịnh Đức Duy",
+      gender: "MALE",
+      birthYear: 2001,
+      headline: "SAT 1350 · Math & RW",
+      school: "ĐH Kinh tế TP.HCM",
+      bio: "Lịch linh hoạt, nhận kèm nhóm nhỏ 2–3 bạn.",
+      expertise: ["SAT.MATH", "SAT.READING_WRITING"],
+      availability: ["WED_20_00", "FRI_20_00"],
+      pricePerHour: 240_000,
+      verified: false,
+      credentialsCheckedDomains: ["SAT"],
+      sat: { total: 1350, math: 700, readingWriting: 650 },
+      teachingExperienceMonths: 20,
+      sessionsCompleted: 110,
+      rating: 4.3,
+      ratingCount: 40,
+      teachingStyles: ["FLEXIBLE", "CONVERSATIONAL"],
+      languages: ["VI"],
+    },
+    {
+      code: "HS990016",
+      name: "Cao Nhật Minh",
+      gender: "MALE",
+      birthYear: 2000,
+      headline: "SAT 1290 · Math nền tảng",
+      school: "ĐH Cần Thơ",
+      bio: "Ôn lại đại số và hình học trước khi vào đề thật.",
+      expertise: ["SAT.MATH"],
+      availability: ["TUE_17_00", "THU_17_00"],
+      pricePerHour: 180_000,
+      verified: false,
+      credentialsCheckedDomains: ["SAT"],
+      sat: { total: 1290 },
+      teachingExperienceMonths: 10,
+      sessionsCompleted: 44,
+      rating: 4,
+      ratingCount: 18,
+      teachingStyles: ["PATIENT"],
+      languages: ["VI"],
+    },
+    {
+      code: "HS990017",
+      name: "Hồ Lan Chi",
+      gender: "FEMALE",
+      birthYear: 2003,
+      headline: "Kèm SAT RW · chưa có điểm chính thức",
+      school: "ĐH Sư phạm TP.HCM",
+      bio: "Hỗ trợ đọc hiểu và ngữ pháp, chưa dự thi SAT chính thức.",
+      expertise: ["SAT.READING_WRITING"],
+      availability: ["SUN_15_00"],
+      pricePerHour: 160_000,
+      verified: false,
+      // KNOWN ABSENT for SAT.
+      credentialsCheckedDomains: ["SAT"],
+      teachingExperienceMonths: 5,
+      sessionsCompleted: 12,
+      teachingStyles: ["MOTIVATING"],
+      languages: ["VI"],
+    },
+    {
+      code: "HS990018",
+      name: "Phan Việt Hùng",
+      gender: "MALE",
+      birthYear: 1998,
+      headline: "SAT 1560 · Luyện thi học bổng",
+      school: "ĐH Quốc gia Singapore",
+      bio: "Đồng hành hồ sơ du học, đặt mục tiêu 1500+.",
+      expertise: ["SAT.MATH", "SAT.READING_WRITING"],
+      availability: ["MON_20_30", "WED_20_30", "SAT_16_00"],
+      pricePerHour: 600_000,
+      verified: true,
+      credentialsCheckedDomains: ["SAT"],
+      sat: { total: 1560, math: 800, readingWriting: 760 },
+      teachingExperienceMonths: 60,
+      sessionsCompleted: 520,
+      rating: 4.9,
+      ratingCount: 190,
+      teachingStyles: ["INTENSIVE", "EXAM_FOCUSED"],
+      languages: ["VI", "EN"],
+      achievements: ["Học bổng toàn phần NUS"],
+    },
+
+    // ---- HSK ---------------------------------------------------------
+    {
+      code: "HS990019",
+      name: "Tạ Bích Ngọc",
+      gender: "FEMALE",
+      birthYear: 2002,
+      headline: "HSK 6 · Đọc, Viết, Nghe",
+      school: "ĐH Ngoại ngữ – ĐHQGHN",
+      bio: "Luyện đề HSK 5–6, chú trọng từ vựng học thuật.",
+      expertise: ["HSK.READING", "HSK.WRITING", "HSK.LISTENING"],
+      availability: ["TUE_18_00", "THU_18_00"],
+      pricePerHour: 300_000,
+      verified: true,
+      credentialsCheckedDomains: ["HSK"],
+      hsk: { level: 6 },
+      teachingExperienceMonths: 28,
+      sessionsCompleted: 175,
+      rating: 4.7,
+      ratingCount: 64,
+      teachingStyles: ["STRUCTURED"],
+      languages: ["VI", "ZH"],
+    },
+    {
+      code: "HS990020",
+      name: "Chu Hoàng Long",
+      gender: "MALE",
+      birthYear: 2003,
+      headline: "HSK 5 · Nghe hiểu",
+      school: "ĐH Hà Nội",
+      bio: "Nghe hội thoại đời sống, luyện phản xạ nghe – nói.",
+      expertise: ["HSK.LISTENING"],
+      availability: ["MON_19_00", "WED_19_00"],
+      pricePerHour: 220_000,
+      verified: true,
+      credentialsCheckedDomains: ["HSK"],
+      hsk: { level: 5 },
+      teachingExperienceMonths: 14,
+      sessionsCompleted: 80,
+      rating: 4.5,
+      ratingCount: 29,
+      teachingStyles: ["PATIENT", "CONVERSATIONAL"],
+      languages: ["VI", "ZH"],
+    },
+    {
+      code: "HS990021",
+      name: "Đinh Mỹ Duyên",
+      gender: "FEMALE",
+      birthYear: 2005,
+      headline: "HSK 4 · Viết chữ Hán",
+      school: "ĐH Thăng Long",
+      bio: "Kèm viết chữ và ngữ pháp cơ bản cho người mới.",
+      expertise: ["HSK.WRITING"],
+      availability: ["SAT_13_00", "SUN_13_00"],
+      pricePerHour: 140_000,
+      verified: false,
+      credentialsCheckedDomains: ["HSK"],
+      hsk: { level: 4 },
+      teachingExperienceMonths: 6,
+      sessionsCompleted: 18,
+      rating: 4.1,
+      ratingCount: 7,
+      teachingStyles: ["FLEXIBLE"],
+      languages: ["VI", "ZH"],
+    },
+    {
+      code: "HS990022",
+      name: "Lâm Chí Kiên",
+      gender: "MALE",
+      birthYear: 2001,
+      headline: "Kèm HSK đọc hiểu · chưa thi chứng chỉ",
+      school: "ĐH Mở TP.HCM",
+      bio: "Sống ở Đài Loan 3 năm, chưa dự kỳ thi HSK chính thức.",
+      expertise: ["HSK.READING"],
+      availability: ["FRI_19_30"],
+      pricePerHour: 120_000,
+      verified: false,
+      // KNOWN ABSENT for HSK.
+      credentialsCheckedDomains: ["HSK"],
+      teachingStyles: ["MOTIVATING"],
+      languages: ["VI", "ZH"],
+    },
+    {
+      code: "HS990023",
+      name: "Nguyễn Hồng Nhung",
+      gender: "FEMALE",
+      birthYear: 2000,
+      headline: "HSK 6 + IELTS 7.0 · Song ngữ",
+      school: "ĐH Ngoại thương",
+      bio: "Nhận cả lớp HSK và IELTS Reading, ưu tiên bạn học song song.",
+      expertise: ["HSK.READING", "HSK.WRITING", "IELTS.READING"],
+      availability: ["TUE_20_00", "THU_20_00", "SUN_16_00"],
+      pricePerHour: 400_000,
+      verified: true,
+      credentialsCheckedDomains: ["HSK", "IELTS"],
+      hsk: { level: 6 },
+      ielts: { overall: 7 },
+      teachingExperienceMonths: 36,
+      sessionsCompleted: 240,
+      rating: 4.8,
+      ratingCount: 102,
+      teachingStyles: ["ANALYTICAL", "STRUCTURED"],
+      languages: ["VI", "EN", "ZH"],
+    },
+
+    // ---- Cross-domain ------------------------------------------------
+    {
+      code: "HS990024",
+      name: "Trương Anh Tuấn",
+      gender: "MALE",
+      birthYear: 1999,
+      headline: "IELTS 7.5 + SAT 1440 · Hồ sơ du học",
+      school: "ĐH Ngoại thương",
+      bio: "Kết hợp luyện Writing và SAT RW cho bộ hồ sơ du học Mỹ.",
+      expertise: ["IELTS.WRITING", "SAT.READING_WRITING"],
+      availability: ["MON_17_30", "WED_17_30"],
+      pricePerHour: 450_000,
+      verified: true,
+      credentialsCheckedDomains: ["IELTS", "SAT"],
+      ielts: { overall: 7.5 },
+      sat: { total: 1440, math: 740, readingWriting: 700 },
+      teachingExperienceMonths: 40,
+      sessionsCompleted: 300,
+      rating: 4.7,
+      ratingCount: 120,
+      teachingStyles: ["EXAM_FOCUSED", "ANALYTICAL"],
+      languages: ["VI", "EN"],
+    },
+    {
+      code: "HS990025",
+      name: "Vương Kim Ngân",
+      gender: "UNDISCLOSED",
+      birthYear: 2004,
+      headline: "IELTS 6.5 · Speaking cho người mới",
+      school: "ĐH Văn Lang",
+      bio: "Trường đã xác minh: có IELTS, không có SAT và HSK.",
+      expertise: ["IELTS.SPEAKING"],
+      availability: ["SUN_19_00"],
+      pricePerHour: 170_000,
+      verified: false,
+      // All three domains checked. IELTS is PRESENT; SAT and HSK are KNOWN
+      // ABSENT. One row that exercises every credential state at once.
+      credentialsCheckedDomains: ["IELTS", "SAT", "HSK"],
+      ielts: { overall: 6.5 },
+      teachingExperienceMonths: 7,
+      sessionsCompleted: 25,
+      rating: 4,
+      ratingCount: 9,
+      teachingStyles: ["CONVERSATIONAL"],
+      languages: ["VI"],
+    },
+  ];
+
+  for (const spec of MENTORS) {
+    const userId = await upsertPerson({
+      code: spec.code,
+      name: spec.name,
+      memberType: "STUDENT",
+      status: "GRADUATED",
+      roles: ["MENTOR"],
+      dateOfBirth: demoDateOfBirth(spec.code, spec.birthYear, spec.birthYear),
+      gender: spec.gender,
+    });
+    const data = {
+      tenantId,
+      userId,
+      verified: spec.verified,
+      headline: spec.headline,
+      school: spec.school,
+      bio: spec.bio,
+      expertise: spec.expertise,
+      availability: spec.availability,
+      pricePerHour: spec.pricePerHour,
+      // Vietnamese students finish upper secondary at 18.
+      graduationYear: spec.birthYear + 18,
+      credentialsCheckedDomains: spec.credentialsCheckedDomains,
+      ieltsOverall: spec.ielts?.overall ?? null,
+      ieltsListening: spec.ielts?.listening ?? null,
+      ieltsReading: spec.ielts?.reading ?? null,
+      ieltsWriting: spec.ielts?.writing ?? null,
+      ieltsSpeaking: spec.ielts?.speaking ?? null,
+      satTotal: spec.sat?.total ?? null,
+      satMath: spec.sat?.math ?? null,
+      satReadingWriting: spec.sat?.readingWriting ?? null,
+      hskLevel: spec.hsk?.level ?? null,
+      teachingExperienceMonths: spec.teachingExperienceMonths ?? null,
+      sessionsCompleted: spec.sessionsCompleted ?? null,
+      rating: spec.rating ?? null,
+      ratingCount: spec.ratingCount ?? null,
+      teachingStyles: spec.teachingStyles,
+      languages: spec.languages,
+      achievements: spec.achievements ?? [],
+    };
+    await prisma.mentorProfile.upsert({
+      where: { id: uuid(`mp:${spec.code}`) },
+      update: data,
+      create: { id: uuid(`mp:${spec.code}`), ...data },
+    });
+  }
+
+  // Graduated alumni who are not mentors, so "graduated" and "mentor" stay
+  // visibly distinct in the demo.
+  for (let i = 26; i <= 36; i++) {
     const code = `HS99${String(i).padStart(4, "0")}`;
-    const uid = await upsertPerson({
+    await upsertPerson({
       code,
       name: `Cựu học sinh ${i}`,
       memberType: "STUDENT",
       status: "GRADUATED",
-      roles: i <= 26 ? ["MENTOR"] : ["STUDENT"],
+      roles: ["STUDENT"],
+      dateOfBirth: demoDateOfBirth(code, 2003, 2006),
+      gender: bulkGender(code),
     });
-    if (i <= 26) {
-      await prisma.mentorProfile.upsert({
-        where: { id: uuid(`mp:${code}`) },
-        update: {},
-        create: {
-          id: uuid(`mp:${code}`),
-          tenantId,
-          userId: uid,
-          verified: true,
-          headline: "IELTS 8.0 · Writing coach",
-          expertise: ["IELTS.WRITING"],
-          availability: ["TUE_19_00", "THU_19_00"],
-          pricePerHour: 180_000 + i * 1000,
-          graduationYear: 2024,
-          skills: ["IELTS.WRITING", "IELTS.SPEAKING"],
-        },
-      });
-    }
   }
-  await prisma.mentorProfile.upsert({
-    where: { id: uuid("mp:HS990002") },
-    update: {},
-    create: {
-      id: uuid("mp:HS990002"),
-      tenantId,
-      userId: mentorUser,
-      verified: true,
-      headline: "IELTS 8.5 · Writing",
-      expertise: ["IELTS.WRITING"],
-      availability: ["TUE_19_00", "THU_19_00"],
-      pricePerHour: 200_000,
-      graduationYear: 2023,
-      skills: ["IELTS.WRITING"],
-    },
-  });
 
   const weekdays = ["MON", "TUE", "WED", "THU", "FRI"] as const;
   let entryN = 0;

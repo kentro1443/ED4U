@@ -139,7 +139,9 @@ export function MatchSpaceView({
       >
         {selectedNode ? (
           <div>
-            <h2 className="text-lg font-medium">{selectedNode.mentorId}</h2>
+            <h2 className="text-lg font-medium">
+              {selectedNode.displayName ?? selectedNode.mentorId}
+            </h2>
             <p>Tốt nghiệp · điểm {selectedNode.matchScore}</p>
             <p className="mt-2 text-sm font-semibold">Top reasons</p>
             <ul className="list-disc pl-5 text-sm">
@@ -188,7 +190,7 @@ export function MatchSpaceView({
                     className="underline"
                     onClick={() => setSelected(n.mentorId)}
                   >
-                    {n.mentorId}
+                    {n.displayName ?? n.mentorId}
                   </button>
                 </td>
                 <td>{n.matchScore}</td>

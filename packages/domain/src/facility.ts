@@ -12,6 +12,7 @@ import {
   type OccupiedSlot,
   type TimeInterval,
 } from "./academic/occupancy";
+import { isWeekendInZone, minutesOfDayInZone, weekdayInZone } from "./academic/timezone";
 
 export const ROOM_REQUEST_STATUSES = [
   "DRAFT",
@@ -74,19 +75,36 @@ export function softHoldBlocksHardLock(_holds: readonly SoftHold[]): false {
   return false;
 }
 
-export function weekdayOf(date: Date): number {
-  return date.getUTCDay();
+/**
+ * School-local weekday of an instant, 0 = Sunday … 6 = Saturday.
+ *
+ * `timeZone` is required on purpose: the previous UTC version evaluated a
+ * `Asia/Ho_Chi_Minh` school day seven hours out, and a default would let that
+ * class of bug return unnoticed.
+ */
+export function weekdayOf(date: Date, timeZone: string): number {
+  return weekdayInZone(date, timeZone);
 }
 
+/**
+ * Whether an interval falls inside the school's operating window on a weekday,
+ * measured in the school's own civil time.
+ *
+ * `hours` is minutes since school-local midnight, matching `OperationalHours`.
+ */
 export function withinOperationalHours(
   interval: TimeInterval,
   hours: { startMinutes: number; endMinutes: number },
+  timeZone: string,
 ): boolean {
-  const startDay = weekdayOf(interval.startAt);
-  const endDay = weekdayOf(interval.endAt);
-  if (startDay === 0 || startDay === 6 || endDay === 0 || endDay === 6) return false;
-  const startM = interval.startAt.getUTCHours() * 60 + interval.startAt.getUTCMinutes();
-  const endM = interval.endAt.getUTCHours() * 60 + interval.endAt.getUTCMinutes();
+  if (isWeekendInZone(interval.startAt, timeZone) || isWeekendInZone(interval.endAt, timeZone)) {
+    return false;
+  }
+  const startM = minutesOfDayInZone(interval.startAt, timeZone);
+  const endM = minutesOfDayInZone(interval.endAt, timeZone);
+  // An interval that crosses school-local midnight leaves the operating window
+  // by definition; comparing minute-of-day alone would wrongly accept it.
+  if (endM < startM) return false;
   return startM >= hours.startMinutes && endM <= hours.endMinutes;
 }
 
@@ -99,6 +117,8 @@ export interface RoomApprovalInput {
   cleanupMinutes: number;
   occupancy: readonly OccupiedSlot[];
   operationalHours: { startMinutes: number; endMinutes: number };
+  /** IANA timezone of the school the room belongs to (`Tenant.timezone`). */
+  timeZone: string;
   now: Date;
 }
 
@@ -121,7 +141,7 @@ export function approveRoomRequest(
     input.setupMinutes,
     input.cleanupMinutes,
   );
-  if (!withinOperationalHours(occupied, input.operationalHours)) {
+  if (!withinOperationalHours(occupied, input.operationalHours, input.timeZone)) {
     return err(
       new ValidationError("Khung giờ nằm ngoài giờ hoạt động hoặc rơi vào cuối tuần.", {
         code: "OUTSIDE_HOURS",

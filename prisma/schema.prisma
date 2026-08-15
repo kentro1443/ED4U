@@ -129,10 +129,28 @@ enum Weekday {
   FRI
 }
 
+/// Self-declared gender.
+///
+/// The column is nullable, and the two states are NOT the same thing:
+///   NULL          = never asked / never recorded (UNKNOWN)
+///   UNDISCLOSED   = the person was asked and declined to say
+/// The mentor adapter omits the engine's optional `gender` key for NULL and
+/// emits `"undisclosed"` for UNDISCLOSED. Collapsing the two would invent data.
+enum Gender {
+  FEMALE
+  MALE
+  OTHER
+  UNDISCLOSED
+}
+
 model Tenant {
   id        String   @id @default(uuid())
   slug      String   @unique
   name      String
+  /// IANA timezone of the school. Every conversion between a stored instant and
+  /// an academic/operational civil time goes through this value. Server-local
+  /// time is never used.
+  timezone  String   @default("Asia/Ho_Chi_Minh")
   createdAt DateTime @default(now())
 
   users                User[]
@@ -170,12 +188,19 @@ model User {
   fullName           String
   passwordHash       String
   mustChangePassword Boolean  @default(true)
+  /// Civil calendar date, not an instant: stored as a DATE so it cannot shift
+  /// across a timezone boundary. Nullable because many roles legitimately have
+  /// no recorded date of birth. The mentor adapter derives `birthYear` from
+  /// this and refuses the record when it is absent — it never fabricates one.
+  dateOfBirth        DateTime? @db.Date
+  gender             Gender?
   createdAt          DateTime @default(now())
 
   memberships      SchoolMembership[]
   roles            UserRoleAssignment[]
   sessions         Session[]
   credentialExport CredentialExport?
+  mentorProfile    MentorProfile?
 
   @@index([tenantId])
 }
@@ -486,18 +511,65 @@ model Approval {
   reason      String?
 }
 
+/// Storage for a mentor. This is NOT the engine's canonical `Mentor`: the
+/// adapter in `apps/web/src/lib/mentor/adapter.ts` translates rows into that
+/// contract explicitly, and columns that exist only for the UI (`headline`,
+/// `ratingCount`, `graduationYear`) must never reach it.
 model MentorProfile {
-  id          String   @id @default(uuid())
-  tenantId    String
-  tenant      Tenant   @relation(fields: [tenantId], references: [id])
-  userId      String
-  verified    Boolean  @default(false)
-  headline    String
-  expertise   String[]
-  availability String[]
-  pricePerHour Int
+  id       String @id @default(uuid())
+  tenantId String
+  tenant   Tenant @relation(fields: [tenantId], references: [id])
+  /// One profile per user. Identity (`fullName`, `dateOfBirth`, `gender`) lives
+  /// on User and is read through this relation — never duplicated here, and
+  /// never replaced by the UUID in the UI.
+  userId   String @unique
+  user     User   @relation(fields: [userId], references: [id])
+
+  /// Identity/credential verification performed by the school.
+  verified       Boolean @default(false)
+  /// UI-only summary line. Not engine input.
+  headline       String
+  /// Canonical `DOMAIN.SKILL` values (see mentor-engine `SKILLS`).
+  expertise      String[]
+  /// Canonical `WEEKDAY_HH_MM` slots (see mentor-engine `AvailabilitySlotSchema`).
+  availability   String[]
+  pricePerHour   Int
+  /// UI-only. Not engine input.
   graduationYear Int
-  skills      String[]
+
+  /// Which credential domains have actually been checked. This is what keeps
+  /// the engine's three-valued semantics intact:
+  ///   domain absent from this list        -> UNKNOWN (adapter omits the key)
+  ///   domain listed, score columns NULL   -> KNOWN ABSENT (adapter emits null)
+  ///   domain listed, score columns filled -> KNOWN PRESENT
+  /// Never add a domain here as a side effect of anything but a real check.
+  credentialsCheckedDomains String[] @default([])
+
+  ieltsOverall      Float?
+  ieltsListening    Float?
+  ieltsReading      Float?
+  ieltsWriting      Float?
+  ieltsSpeaking     Float?
+  satTotal          Int?
+  satMath           Int?
+  satReadingWriting Int?
+  hskLevel          Int?
+
+  /// Optional engine inputs. NULL means unknown, never zero.
+  school                   String?
+  bio                      String?
+  teachingExperienceMonths Int?
+  sessionsCompleted        Int?
+  rating                   Float?
+  /// UI-only context for `rating`. Deliberately NOT part of the engine schema —
+  /// passing it would be rejected by the strict canonical `MentorSchema`.
+  ratingCount              Int?
+  /// Empty array means "none declared" and is treated as unknown by the adapter.
+  teachingStyles           String[] @default([])
+  languages                String[] @default([])
+  achievements             String[] @default([])
+
+  @@index([tenantId])
 }
 
 model MentorMatchRequest {

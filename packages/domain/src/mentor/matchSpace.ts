@@ -13,6 +13,13 @@ export type ConstraintLens = "All" | "Eligible" | "Filtered out";
 
 export interface MentorNodeInput {
   mentorId: string;
+  /**
+   * The mentor's real name, read from `User.fullName`.
+   *
+   * Optional only so a caller that genuinely has no identity to show is forced
+   * to be explicit about it; rendering the UUID is a fallback, never a label.
+   */
+  displayName?: string;
   matchScore: number;
   eligible: boolean;
   rejectionReasons: readonly string[];
@@ -21,6 +28,7 @@ export interface MentorNodeInput {
 
 export interface MentorNodeLayout {
   mentorId: string;
+  displayName?: string;
   matchScore: number;
   eligible: boolean;
   rejectionReasons: readonly string[];
@@ -69,6 +77,11 @@ function stableAngle(seed: string, clusterKey: string | undefined, index: number
   return clusterOffset + n * Math.PI * 2;
 }
 
+/** Rounds to six decimals so the same run lays out identically on every engine. */
+function round6(value: number): number {
+  return Math.round(value * 1e6) / 1e6;
+}
+
 export function layoutMatchSpace(input: {
   requestId: string;
   engineVersion: string;
@@ -88,13 +101,20 @@ export function layoutMatchSpace(input: {
     const angle = stableAngle(seed, m.clusterKey, index);
     return {
       mentorId: m.mentorId,
+      ...(m.displayName !== undefined ? { displayName: m.displayName } : {}),
       matchScore: m.matchScore,
       eligible: m.eligible,
       rejectionReasons: [...m.rejectionReasons],
       radius,
       angle,
-      x: Math.cos(angle) * radius,
-      y: Math.sin(angle) * radius,
+      // Rounded to a fixed precision because `Math.cos`/`Math.sin` are
+      // implementation-defined in the last ULP: Node and the browser disagreed
+      // on the 16th digit, which React reported as a hydration mismatch on the
+      // SVG transform. Six decimals is far below one device pixel at any zoom
+      // this view offers, and it makes the layout byte-identical everywhere —
+      // which is what "deterministic for the same run" has to mean.
+      x: round6(Math.cos(angle) * radius),
+      y: round6(Math.sin(angle) * radius),
       band: bandForScore(m.matchScore),
     };
   });

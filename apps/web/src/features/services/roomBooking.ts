@@ -40,7 +40,13 @@ export async function approveRoomRequestTx(
         label: e.id,
       })),
     ];
-    const hours = await tx.operationalHours.findUnique({ where: { tenantId: input.tenantId } });
+    const [hours, tenant] = await Promise.all([
+      tx.operationalHours.findUnique({ where: { tenantId: input.tenantId } }),
+      tx.tenant.findUniqueOrThrow({
+        where: { id: input.tenantId },
+        select: { timezone: true },
+      }),
+    ]);
     const decision = approveRoomRequest({
       requestId: req.id,
       roomId: req.roomId,
@@ -53,6 +59,9 @@ export async function approveRoomRequestTx(
         startMinutes: hours?.startMinutes ?? 420,
         endMinutes: hours?.endMinutes ?? 1200,
       },
+      // Operational hours are school-local civil time; the tenant's zone is the
+      // only thing that connects them to the stored instants above.
+      timeZone: tenant.timezone,
       now: new Date(),
     });
     if (!decision.ok) {
