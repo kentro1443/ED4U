@@ -180,65 +180,106 @@ controls; (12) add automated coverage where appropriate. Only then is the UI com
 
 ## Current repository progress
 
-- `33d7332` inherited prototype checkpoint
-- `9a228b9` audit
-- `39ed217` security Slice 0
-- `0af0a39` benchmark report regeneration / green verify
-- `e396f3e` truthful data foundation, Slice 1
-- `fabb9f9` Slice 1 facility fixture closure (confirmed booking, maintenance block, soft hold)
+Major checkpoints now on `main`:
 
-**Slice 0 is complete:** permission-specific route guards, actor-scoped reads, appointment
-assignee enforcement, a real-Postgres authz integration harness, a dedicated E2E port,
-deterministic demo reset, and a green `verify`.
+- `39ed217` — permission-specific server authorization and actor-scoped reads (Slice 0)
+- `e396f3e` / `fabb9f9` — truthful mentor/facility data, timezone, realistic operational seed (Slice 1)
+- `439fa71` / `e8e688d` — ED4U design-system foundation, responsive shell, closure fixes (Slice 2)
+- `a49a60f` — persisted natural-language Mentor matching, Match Space 2.0, live booking
+- `5fe79df` / `8389109` — real school-local Day/Week/Month Calendar and semester boundaries
+- `04150a2` / `dc1e309` — Facility Engine over live occupancy, approval transactions, request lifecycle, room schedule
+- `4144b50` — teacher routing, versioned PDF applications, appointment negotiation/chat
+- `80a7932` — governed club membership, finance, documents, room-backed events
+- `93edb42` — Discussion threads, replies, reactions, reporting and human moderation
+- `919ab30` — School Event management and calendar projection
+- `1532408` / `8e3630d` — login throttling, security headers, health/readiness, operational E2E and production-readiness contract
 
-**Slice 1 is complete:** migration `20260816120000_mentor_truth_and_school_timezone`
-(`User.dateOfBirth`/`gender`, `MentorProfile.user` relation, mentor engine columns,
-`Tenant.timezone`); the DB→canonical adapter at `apps/web/src/lib/mentor/adapter.ts`;
-school-local civil time in `packages/domain/src/academic/timezone.ts` with a required
-`timeZone` on `withinOperationalHours`; a 24-mentor seed with behavioural diversity; all
-fabricated mentor values and the `matchScore: 50` fallback removed. The facility demo seed
-also carries real operational state: an APPROVED R04 request + confirmed booking, an R09
-maintenance block, and an active PENDING_APPROVAL soft hold on R16. Their identities and
-relationships are deterministic; their operational timestamps intentionally move relative
-to seed time so the demo never rots. Two consecutive `db:demo:reset` runs were manually
-compared and produced identical structural counts/IDs/links.
+### Completed product verticals
 
-Known deliberate trade-offs:
+**Mentor Intelligence:** `/mentor` has deterministic natural-language parsing, human constraint
+confirmation, URL-based manual discovery, persisted immutable `MentorMatchRequest` /
+`MentorRecommendationRun` snapshots, owner-only Match Space, real engine reasons/trade-offs /
+score breakdown/data coverage, recent-run history and concrete-session booking. Booking re-fetches
+live mentor state and serializes contested sessions. Match Score is a ranking score, never a
+probability.
 
-- Next 16's `forbidden()` returns a correct 403 but its `authInterrupts` boundary never
-  paints (verified in dev and in a production build), so denials `redirect("/403")`.
-- `prisma migrate dev` cannot run non-interactively when a change carries a data-loss or
-  unique-constraint warning. Generate the SQL with
-  `prisma migrate diff --from-config-datasource --to-schema prisma/schema.prisma --script`
-  into a new `prisma/migrations/<timestamp>_<name>/migration.sql`, then `migrate deploy`.
-- `layoutMatchSpace` rounds coordinates to six decimals: `Math.cos`/`Math.sin` differ in
-  the last ULP between Node and the browser, which React reported as a hydration mismatch.
+**Calendar:** real school-local Day / Week / Month views project timetable occurrences, school and
+club events, accepted appointments, Mentor bookings and confirmed room bookings without copying
+timetable rows into static CalendarEvent records. Teacher/student scoping and semester boundaries
+are enforced. Mobile uses an agenda rather than squeezing the desktop grid.
 
-Approximate maturity: hackathon product ~40%, foundations ~70%, enterprise production
-readiness ~20%.
+**Facility:** the planner parses a natural-language request but confirms explicit constraints before
+calling the deterministic engine. The DB adapter includes timetable occupancy, confirmed bookings,
+maintenance blocks and active soft holds. A recommendation does not reserve a room. Students create
+soft-hold requests; School Admin approval locks/rechecks live room state transactionally. Admin can
+request changes/reject; students can cancel; confirmed cancellation releases the booking. `/rooms/schedule`
+shows hard occupancy versus soft-hold risk.
 
-## Known remaining priority
+**Student support:** Applications use versioned PDF submissions; teacher review and transfer rules are
+server-authorized. Appointments support student request, teacher accept/reschedule/decline and private
+conversation only after acceptance.
 
-1. ~~Data truth/schema + realistic diverse seed + timezone.~~ (Slice 1, done)
-2. Early UI design-system foundation / mobile shell.
-3. Correct time model + Calendar — next up: `periodOccurrence(weekday, period, date, tz)`,
-   the civil→instant direction the timezone module does not yet cover.
-4. Mentor end-to-end — request input, deterministic parser, human confirmation, persisted
-   `MentorMatchRequest` + `MentorRecommendationRun`, booking.
-5. Match Space rebuild over the persisted run.
-6. Facility end-to-end.
-7. Remaining workflows, plus the still-open schema gaps: teacher routing/responsibility,
-   teacher blocked time, `ClubAdvisor`, `tenantId` on `Report`/`ModerationCase`.
-8. Hardening / benchmarks / demo.
+**Clubs:** proposal/admin approval, membership governance, PRESIDENT > VP > CORE > MEMBER hierarchy,
+advisor context, immutable-approved finance correction semantics, documents and room-backed events are
+wired. Club events consume the Facility flow rather than inventing another engine.
 
-## Enterprise backlog — do not derail the hackathon build yet
+**Discussion:** real-name forums, threads, replies, LIKE/HELPFUL, reporting and reactive human moderation
+are implemented. Mentor-only alumni cannot access the general forum. Reporting has explicit success
+feedback so navigation cannot race the server mutation.
 
-Track but do not prematurely implement: rate limiting; session management/rotation
-maturity; CSP/security headers review; health/readiness endpoints; structured logging;
-metrics/tracing/error monitoring; object storage + malware scanning; background
-queue/outbox; backup/PITR/restore testing; load testing; true multi-school active tenant
-switching; data retention/privacy governance; security/pentest review; staged production
-deployment and SLOs.
+**School events:** SCHOOL_ADMIN can create/delete SCHOOL/GRADE/CLASS events with explicit school-timezone
+conversion; viewers only receive events within their visibility scope and Calendar projects them.
+
+### Current quality / operations baseline
+
+- `npm run verify` covers formatting, lint, TypeScript, Prisma validation, unit tests, real PostgreSQL
+  integration tests, full Mentor/Facility benchmarks, production build and Playwright E2E.
+- Mentor benchmark remains 1000 requests × 500 mentors with zero hard-constraint violations and 100%
+  determinism. Human-quality metrics remain `NOT_MEASURED` until independent labels exist.
+- Critical flows are browser-tested across STUDENT / TEACHER / SCHOOL_ADMIN / ADMIN_IT / MENTOR roles.
+- `/api/health/live` and `/api/health/ready` exist; readiness checks PostgreSQL and both are no-store.
+- Login throttling is database-backed (IP+member-code and IP buckets). Cookie sessions are HTTP-only,
+  SameSite=Lax and Secure in production. Baseline security headers/CSP are configured.
+- `docs/PRODUCTION_READINESS.md` is the source of truth for what is implemented versus what still belongs
+  to the deployment environment. Do not claim a laptop/demo deployment is enterprise production-ready.
+
+Known deliberate trade-offs / traps:
+
+- Next 16's `forbidden()` returns a correct 403 but its `authInterrupts` boundary never paints in this app,
+  so denials currently redirect to `/403`.
+- `prisma migrate dev` may refuse non-interactive warning-bearing changes; generate reviewed SQL with
+  `prisma migrate diff` and apply with `migrate deploy`.
+- `layoutMatchSpace` rounds coordinates to six decimals to keep SSR/browser floating point deterministic.
+- Full benchmarks rewrite report timestamps/latencies/commit metadata; restore purely volatile report
+  changes before committing unrelated source work.
+- On this Mac, Finder/other tooling can occasionally recreate `.DS_Store` beneath `.next` while Next is
+  replacing the build directory. An `ENOTEMPTY` during cleanup is environmental; remove the stale
+  `.DS_Store` and rerun. Do not weaken the build gate.
+- pg currently emits a deprecation warning when concurrent test flows reuse an executing underlying query;
+  tests still pass, but move contested-flow tests to explicit independent clients before pg@9.
+
+## Remaining work toward a real enterprise deployment
+
+The hackathon product is now functionally broad; remaining work is mostly production infrastructure,
+operational proof and selected UX polish rather than missing core demo routes. Keep these categories
+separate from product-completeness claims:
+
+1. Managed PostgreSQL with TLS, pooling, automated backups/PITR and a tested restore drill.
+2. Replace the local private-file provider with private object storage plus malware quarantine/scanning and
+   short-lived authorized downloads.
+3. Central structured log shipping, error monitoring, metrics, distributed traces, SLOs and alerts.
+4. Deployment secret management/KMS, TLS-only edge, trusted proxy/IP configuration, WAF/DDoS controls and
+   CSP reporting.
+5. Transactional outbox/background worker when notification delivery guarantees become contractual.
+6. Minor/student privacy governance: retention, export/delete process, incident response, vendor register
+   and jurisdiction-specific legal review.
+7. Explicit active-tenant session context before allowing one account to belong to multiple schools; never
+   ship the current one-school `memberships[0]` assumption as true multi-tenancy.
+8. Staging/prod release discipline: migration rehearsal, rollback/roll-forward, dependency scanning, load
+   tests, penetration testing and restore exercises.
+9. SSO/SAML/OIDC only when a school/customer requires it; member-code auth remains the V1 decision.
+10. Continue visual/user-journey polish from real browser sessions; do not reintroduce dead controls,
+    fabricated data or "AI" decoration.
 
 ---
 
