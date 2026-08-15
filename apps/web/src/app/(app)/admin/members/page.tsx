@@ -1,10 +1,9 @@
-import { currentActor } from "@/lib/auth";
 import { db } from "@/lib/db";
+import { requireRoute } from "@/lib/authz";
 import { PageHeader } from "@/components/PageHeader";
 
 export default async function MembersPage() {
-  const actor = await currentActor();
-  if (!actor) return null;
+  const actor = await requireRoute("/admin/members");
   const members = await db.schoolMembership.findMany({
     where: { tenantId: actor.tenantId },
     include: { user: { include: { roles: true } } },

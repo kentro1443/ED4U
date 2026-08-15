@@ -1,6 +1,8 @@
+import { requireRoute } from "@/lib/authz";
 import { PageHeader } from "@/components/PageHeader";
 
-export default function SettingsPage() {
+export default async function SettingsPage() {
+  await requireRoute("/admin/settings");
   return (
     <div>
       <PageHeader

@@ -1,10 +1,9 @@
-import { currentActor } from "@/lib/auth";
 import { db } from "@/lib/db";
+import { requireRoute } from "@/lib/authz";
 import { PageHeader, EmptyState } from "@/components/PageHeader";
 
 export default async function ApprovalsPage() {
-  const actor = await currentActor();
-  if (!actor) return null;
+  const actor = await requireRoute("/admin/approvals");
   const items = await db.approval.findMany({ where: { tenantId: actor.tenantId } });
   const rooms = await db.roomRequest.findMany({
     where: { tenantId: actor.tenantId, status: "PENDING_APPROVAL" },

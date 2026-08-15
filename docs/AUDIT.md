@@ -116,6 +116,23 @@ Live counts confirm nothing has ever executed: `RoomRequest` 0, `RoomBooking`
 | Demo credentials       | **stale**             | README says `TempPass1!` for all accounts; `HS000001` already has `mustChangePassword=false` and a changed password from prior testing.                                      |
 | Docs / ADRs            | complete and accurate | Provenance records real HEADs; ADRs match the domain layer's intent.                                                                                                         |
 
+### 2.7 Schema completeness gaps (tracked)
+
+The Prisma schema is a sound foundation but not complete. These gaps block
+requirements that are otherwise specified, and each one is a place where a
+future slice would be tempted to fabricate data rather than store it.
+
+| Gap                                       | Blocks                                                                                                                                                                          | Slice |
+| ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----- |
+| `User` has no `dateOfBirth`/`gender`      | `MentorSchema.birthYear` and `gender` have no real source. The prototype hard-coded `birthYear: 2000`. Store DOB on `User`, derive `birthYear` in the adapter, never invent it. | 1     |
+| `MentorProfile.userId` has no relation    | Mentor identity is unreachable, so the UI shows UUIDs.                                                                                                                          | 1     |
+| No mentor credential/rating columns       | IELTS/SAT/HSK, rating, ratingCount, experience, teaching styles, languages were all fabricated at render time.                                                                  | 1     |
+| No teacher responsibility/routing data    | §10.4 assisted teacher suggestion: no category→responsible-group mapping, no workload signal.                                                                                   | 7     |
+| No teacher blocked-time model             | §11.1 availability context lists "blocked times"; only timetable and appointments exist.                                                                                        | 7     |
+| No `ClubAdvisor` model                    | §18.2 optional per-club advisors cannot be assigned.                                                                                                                            | 7     |
+| `Report`/`ModerationCase` lack `tenantId` | Moderation must scope through the forum hierarchy; a direct tenant filter is impossible.                                                                                        | 7     |
+| No tenant timezone column                 | Operational hours and calendar projection have no school-local reference. Store an IANA zone (`Asia/Ho_Chi_Minh` for the demo).                                                 | 1     |
+
 ---
 
 ## 3. Root causes worth naming
@@ -253,3 +270,94 @@ benchmark regeneration, demo walkthrough, docs.
 - **Prisma schema** is a sound 60-model foundation. Slice 1's changes are
   additive.
 - **Docs and ADRs** are accurate and worth keeping current.
+
+---
+
+## 6. Slice 0 — completed
+
+Commit follows the baseline `33d7332`. `npm run verify` passes end to end.
+
+### Authorization
+
+`requireRoute()` / `requirePermission()` in `apps/web/src/lib/authz.ts` replace
+the previous "resolve the actor and render anyway" pattern. There is
+deliberately **no** `requireAdmin()`: each page names the permission it needs,
+and `ROUTE_PERMISSIONS` is the single map that both the sidebar and the guard
+read, so visibility and enforcement cannot drift.
+
+Verified live against all four roles (each with a real session, requesting every
+guarded URL directly):
+
+| Role                    | members | timetable | rooms | approvals | moderation | audit | settings |
+| ----------------------- | ------- | --------- | ----- | --------- | ---------- | ----- | -------- |
+| STUDENT `HS000001`      | 403     | 403       | 403   | 403       | 403        | 403   | 403      |
+| TEACHER `GV000001`      | 403     | 403       | 403   | 403       | 403        | 403   | 403      |
+| SCHOOL_ADMIN `AD000001` | **403** | OK        | OK    | OK        | OK         | OK    | **403**  |
+| ADMIN_IT `IT000001`     | OK      | **403**   | 403   | **403**   | 403        | OK    | OK       |
+
+ADMIN_IT and SCHOOL_ADMIN are not interchangeable; only `audit.read` is shared.
+
+Actions carry three independent checks. `acceptAppointmentAction` now requires
+`appointment.accept` (TEACHER only), then `assertTenant`, then
+`assertRelated(actor, [apt.teacherId])` — so a teacher cannot accept another
+teacher's appointment even though they hold the permission.
+
+Reads are actor-scoped: appointments to the two participants, applications to
+student / current teacher / pending-transfer teacher (SCHOOL_ADMIN keeps
+tenant-wide oversight), dashboard timetable to the actor's own class or teaching
+load. `/admin/moderation` previously read **every** report in the database with
+no tenant filter at all; it now scopes through the forum hierarchy.
+
+### Denial mechanism — a deliberate trade-off
+
+Next 16's `forbidden()` returns a true 403 but its `authInterrupts` boundary
+does not paint: verified in both dev and a production build, the denial UI is
+emitted into the RSC flight payload and never committed to the DOM, leaving a
+blank page. Enforcement was correct (status 403, protected content absent) but
+the user saw nothing. Denial therefore redirects to `/403`, which is ordinary
+supported behaviour. The security property is unchanged — the guarded page never
+runs — and that is what the tests assert.
+
+### Quality gate
+
+`npm run verify` failed at step 1 before any of this work. Two causes, both fixed:
+
+1. Prettier flagged `apps/web/tsconfig.json`, which Next rewrites on every boot.
+   It is now prettier-ignored as machine-owned.
+2. **`verify` was not idempotent.** Steps 7–8 ran the _smoke_ benchmarks, which
+   overwrite the committed mentor report with a 20-request run; a test asserting
+   the report records the full 1000-request workload then failed on the next
+   run. The full benchmarks take under a second each, so `verify` now runs those.
+
+`e2e` was pointed at port 3000, which on this machine is the **legacy EduSync
+app** — Playwright was silently testing a different product. E2E now runs on a
+dedicated port 3020 with `reuseExistingServer: false`.
+
+### Tests added
+
+- `tests/integration/authorization-scope.test.ts` — 8 assertions against real
+  PostgreSQL, with a per-run throwaway tenant. Replaces the previous
+  "integration" test that opened no connection.
+- `tests/route-authorization.test.ts` — 10 assertions that every guarded page
+  calls `requireRoute` with its own key, that nav and enforcement share one map,
+  and that the ADMIN_IT / SCHOOL_ADMIN split holds.
+- `e2e/authorization.spec.ts` — 8 browser tests: the full role × route matrix,
+  content-leak check on a denied page, unauthenticated redirect, and appointment
+  scoping.
+- `tests/room-approval-domain.test.ts` — the old simulation, moved out of
+  `tests/integration` and documented for what it actually proves.
+
+### Demo credentials
+
+`npm run db:demo:reset` drops, re-migrates and re-seeds, restoring `TempPass1!`
+for every account deterministically. (`prisma migrate reset` alone does not run
+the seed under this Prisma config, so the script chains `db:seed`.) E2E runs with
+`DEMO_SKIP_PASSWORD_CHANGE=true` so a test run never mutates a demo password.
+
+### Known, deliberately deferred
+
+- `/favicon.ico` 404 is the only console error on authenticated pages — brand
+  assets land in Slice 6.
+- Dashboard timetable is scoped by class/teacher but not yet filtered to
+  "today": that needs weekday + period → datetime in the school timezone
+  (Slice 2), and is labelled honestly in the UI until then.

@@ -1,11 +1,10 @@
 import { planRooms, parseFacilityRequest } from "@ed4u/facility-engine";
-import { currentActor } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { PageHeader, EmptyState } from "@/components/PageHeader";
+import { requireActor } from "@/lib/authz";
 
 export default async function RoomsPage() {
-  const actor = await currentActor();
-  if (!actor) return null;
+  const actor = await requireActor();
   const rooms = await db.room.findMany({
     where: { tenantId: actor.tenantId },
     include: { roomType: true, features: { include: { feature: true } } },

@@ -2,8 +2,8 @@
 
 - status: PASS
 - engine: facility-engine-v1.0.0
-- commit: null
-- dataset sha256: a600afbdfa750cde51490138dbd900bf98335ff0bf41409bd9d53bb5416ef847
+- commit: 9a228b91880db7c0c5431de2e616124ca8f21515
+- dataset sha256: 7650d67f8ffd39e78d58b4716f089f390075b37e62565caf4b669cf7c5ed7c57
 - hard-constraint violations: 0
 - feasible rate: 1
 - human NDCG/Precision: NOT_MEASURED

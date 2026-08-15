@@ -4,12 +4,12 @@
   "versions": {
     "engine": "facility-engine-v1.0.0",
     "package": "@ed4u/facility-engine@1.0.0",
-    "gitCommit": null,
+    "gitCommit": "9a228b91880db7c0c5431de2e616124ca8f21515",
     "config": "facility-default-v1"
   },
   "dataset": {
-    "sha256": "a600afbdfa750cde51490138dbd900bf98335ff0bf41409bd9d53bb5416ef847",
-    "requests": 40,
+    "sha256": "7650d67f8ffd39e78d58b4716f089f390075b37e62565caf4b669cf7c5ed7c57",
+    "requests": 200,
     "rooms": 24
   },
   "metrics": {
@@ -17,9 +17,9 @@
     "hardConstraintViolationRate": 0,
     "feasibleSolutionRate": 1,
     "latencyMs": {
-      "p50": 0.019083000000009065,
-      "p95": 0.04025000000000034,
-      "max": 5.369875
+      "p50": 0.011915999999999372,
+      "p95": 0.030957999999998265,
+      "max": 5.9792910000000035
     }
   },
   "humanQuality": {

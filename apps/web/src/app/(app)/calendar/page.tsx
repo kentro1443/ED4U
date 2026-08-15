@@ -1,15 +1,14 @@
 import { filterVisible, projectCalendar, type RawCalendarSource } from "@ed4u/domain";
-import { currentActor } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { PageHeader } from "@/components/PageHeader";
+import { requireActor } from "@/lib/authz";
 
 export default async function CalendarPage({
   searchParams,
 }: {
   searchParams: Promise<{ view?: string }>;
 }) {
-  const actor = await currentActor();
-  if (!actor) return null;
+  const actor = await requireActor();
   const view = ((await searchParams).view ?? "week").toUpperCase();
   const [entries, events, appointments, bookings] = await Promise.all([
     db.timetableEntry.findMany({

@@ -1,9 +1,8 @@
-import { currentActor } from "@/lib/auth";
 import { PageHeader } from "@/components/PageHeader";
+import { requireActor } from "@/lib/authz";
 
 export default async function ProfilePage() {
-  const actor = await currentActor();
-  if (!actor) return null;
+  const actor = await requireActor();
   return (
     <div>
       <PageHeader title="Hồ sơ" />

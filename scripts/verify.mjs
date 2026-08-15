@@ -7,8 +7,11 @@ const steps = [
   ["Prisma validate", "npm", ["run", "db:validate"]],
   ["Unit tests", "npm", ["run", "test:unit"]],
   ["Integration tests", "npm", ["run", "test:integration"]],
-  ["Mentor benchmark smoke", "npm", ["run", "benchmark:mentor:smoke"]],
-  ["Facility benchmark smoke", "npm", ["run", "benchmark:facility:smoke"]],
+  // The full benchmarks run in under a second each, and the smoke variants
+  // overwrite the committed report with a truncated workload — which made
+  // `verify` fail the second time it was run. Always run the full sets.
+  ["Mentor benchmark", "npm", ["run", "benchmark:mentor"]],
+  ["Facility benchmark", "npm", ["run", "benchmark:facility"]],
   ["Production build", "npm", ["run", "build"]],
   ["Playwright E2E", "npm", ["run", "test:e2e", "-w", "@ed4u/web"]],
 ];

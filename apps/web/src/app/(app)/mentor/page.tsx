@@ -1,11 +1,10 @@
 import Link from "next/link";
-import { currentActor } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { PageHeader } from "@/components/PageHeader";
+import { requireActor } from "@/lib/authz";
 
 export default async function MentorPage() {
-  const actor = await currentActor();
-  if (!actor) return null;
+  const actor = await requireActor();
   const mentors = await db.mentorProfile.findMany({
     where: { tenantId: actor.tenantId, verified: true },
     take: 12,

@@ -1,10 +1,9 @@
-import { currentActor } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { PageHeader, EmptyState } from "@/components/PageHeader";
+import { requireActor } from "@/lib/authz";
 
 export default async function NotificationsPage() {
-  const actor = await currentActor();
-  if (!actor) return null;
+  const actor = await requireActor();
   const items = await db.notification.findMany({
     where: { userId: actor.userId },
     orderBy: { createdAt: "desc" },

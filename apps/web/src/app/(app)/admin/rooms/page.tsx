@@ -1,10 +1,9 @@
-import { currentActor } from "@/lib/auth";
 import { db } from "@/lib/db";
+import { requireRoute } from "@/lib/authz";
 import { PageHeader } from "@/components/PageHeader";
 
 export default async function AdminRoomsPage() {
-  const actor = await currentActor();
-  if (!actor) return null;
+  const actor = await requireRoute("/admin/rooms");
   const [types, features, rooms] = await Promise.all([
     db.roomType.findMany({ where: { tenantId: actor.tenantId } }),
     db.roomFeatureDefinition.findMany({ where: { tenantId: actor.tenantId } }),

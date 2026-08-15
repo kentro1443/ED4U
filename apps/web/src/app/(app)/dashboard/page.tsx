@@ -1,41 +1,57 @@
 import Link from "next/link";
-import { currentActor } from "@/lib/auth";
+import { can } from "@ed4u/domain";
 import { db } from "@/lib/db";
+import { requireActor } from "@/lib/authz";
 import { PageHeader } from "@/components/PageHeader";
 
 export default async function DashboardPage() {
-  const actor = await currentActor();
-  if (!actor) return null;
+  const actor = await requireActor();
+
+  const isStudent = actor.roles.includes("STUDENT") && actor.membershipStatus === "ACTIVE";
+  const isTeacher = actor.roles.includes("TEACHER");
+  const isAdmin = can(actor, "approvals.resolve");
+  const isIt = can(actor, "members.manage");
+
+  // A student sees their own class's timetable; a teacher sees the periods they
+  // teach. Neither sees the rest of the school.
+  // TODO(slice-2): narrow to "today" once weekday + AcademicPeriod are resolved
+  // into real datetimes in the school timezone.
+  const timetableScope = isTeacher
+    ? { tenantId: actor.tenantId, teacherId: actor.userId }
+    : actor.classId
+      ? { tenantId: actor.tenantId, classId: actor.classId }
+      : null;
 
   const [periods, entries, approvals, appointments, events, notifications] = await Promise.all([
     db.academicPeriod.findMany({
       where: { tenantId: actor.tenantId },
       orderBy: { sortOrder: "asc" },
     }),
-    db.timetableEntry.findMany({
-      where: { tenantId: actor.tenantId },
-      include: { subject: true, period: true, class: true },
-      take: 8,
-    }),
-    db.approval.findMany({ where: { tenantId: actor.tenantId, status: "PENDING" }, take: 6 }),
+    timetableScope
+      ? db.timetableEntry.findMany({
+          where: timetableScope,
+          include: { subject: true, period: true, class: true },
+          orderBy: [{ weekday: "asc" }, { period: { sortOrder: "asc" } }],
+        })
+      : Promise.resolve([]),
+    isAdmin
+      ? db.approval.findMany({ where: { tenantId: actor.tenantId, status: "PENDING" }, take: 6 })
+      : Promise.resolve([]),
     db.appointment.findMany({
       where: {
         tenantId: actor.tenantId,
         OR: [{ studentId: actor.userId }, { teacherId: actor.userId }],
       },
+      orderBy: { startAt: "asc" },
       take: 5,
     }),
     db.schoolEvent.findMany({ where: { tenantId: actor.tenantId }, take: 5 }),
     db.notification.findMany({
       where: { tenantId: actor.tenantId, userId: actor.userId },
+      orderBy: { createdAt: "desc" },
       take: 5,
     }),
   ]);
-
-  const isStudent = actor.roles.includes("STUDENT") && actor.membershipStatus === "ACTIVE";
-  const isTeacher = actor.roles.includes("TEACHER");
-  const isAdmin = actor.roles.includes("SCHOOL_ADMIN");
-  const isIt = actor.roles.includes("ADMIN_IT");
 
   return (
     <div>
@@ -49,12 +65,14 @@ export default async function DashboardPage() {
             className="rounded-xl border border-[var(--line)] bg-[var(--card)] p-5"
             data-widget="timetable"
           >
-            <h2 className="text-sm font-semibold">Thời khóa biểu hôm nay</h2>
+            <h2 className="text-sm font-semibold">
+              {isTeacher ? "Lịch dạy của bạn" : "Thời khóa biểu lớp"}
+            </h2>
             <ul className="mt-3 space-y-2 text-sm">
               {entries.length === 0 ? <li>Chưa có tiết.</li> : null}
-              {entries.map((e) => (
+              {entries.slice(0, 6).map((e) => (
                 <li key={e.id}>
-                  {e.period.code} · {e.subject.name} · {e.class.code}
+                  {e.weekday} · {e.period.code} · {e.subject.name} · {e.class.code}
                 </li>
               ))}
             </ul>

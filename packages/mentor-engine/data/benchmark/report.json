@@ -8,8 +8,8 @@
     "aliases": "aliases.v1",
     "weights": "weights.v1",
     "package": "@ed4u/mentor-engine@1.0.0",
-    "gitCommit": null,
-    "gitWorkingTreeDirty": null
+    "gitCommit": "9a228b91880db7c0c5431de2e616124ca8f21515",
+    "gitWorkingTreeDirty": true
   },
   "dataset": {
     "mentors": {
@@ -24,8 +24,8 @@
     }
   },
   "run": {
-    "timestampUtc": "2026-08-15T16:24:40.478Z",
-    "durationMs": 393,
+    "timestampUtc": "2026-08-15T18:36:00.223Z",
+    "durationMs": 413,
     "node": "v24.19.0",
     "platform": "darwin",
     "arch": "arm64",
@@ -49,10 +49,10 @@
     "feasibleRequests": 768,
     "infeasibleRequests": 232,
     "latencyMs": {
-      "p50": 0.278,
-      "p95": 0.365,
-      "max": 2.816,
-      "mean": 0.283
+      "p50": 0.287,
+      "p95": 0.395,
+      "max": 3.522,
+      "mean": 0.299
     }
   },
   "comparison": {

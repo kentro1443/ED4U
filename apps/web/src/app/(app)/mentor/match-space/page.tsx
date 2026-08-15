@@ -1,13 +1,12 @@
 import { matchMentors, validateMentors, validateStudentRequest } from "@ed4u/mentor-engine";
 import { toEngineCandidates } from "@ed4u/domain";
-import { currentActor } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { PageHeader } from "@/components/PageHeader";
 import { MatchSpaceView } from "@/features/mentor/MatchSpaceView";
+import { requireActor } from "@/lib/authz";
 
 export default async function MatchSpacePage() {
-  const actor = await currentActor();
-  if (!actor) return null;
+  const actor = await requireActor();
   const profiles = await db.mentorProfile.findMany({ where: { tenantId: actor.tenantId } });
   const scoped = toEngineCandidates(
     profiles.map((p) => ({

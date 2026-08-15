@@ -1,5 +1,6 @@
 import type { Actor, Permission } from "@ed4u/domain";
 import { can } from "@ed4u/domain";
+import { ROUTE_PERMISSIONS } from "@/lib/routePermissions";
 
 export interface NavItem {
   href: string;
@@ -63,14 +64,37 @@ export const NAV_GROUPS: NavGroup[] = [
   {
     id: "admin",
     label: "QUẢN TRỊ",
+    // Permissions come from ROUTE_PERMISSIONS — the same map the server-side
+    // guard uses — so a link can never be shown to a role the page would reject,
+    // nor hidden from a role the page would admit.
     items: [
-      { href: "/admin/members", label: "Members", permission: "members.manage" },
-      { href: "/admin/timetable", label: "Timetable", permission: "timetable.edit" },
-      { href: "/admin/rooms", label: "Rooms & Features", permission: "rooms.manage" },
-      { href: "/admin/approvals", label: "Approvals", permission: "approvals.resolve" },
-      { href: "/admin/moderation", label: "Forum Moderation", permission: "forum.moderate" },
-      { href: "/admin/audit", label: "Audit", permission: "audit.read" },
-      { href: "/admin/settings", label: "System Settings", permission: "system.settings" },
+      { href: "/admin/members", label: "Members", permission: ROUTE_PERMISSIONS["/admin/members"] },
+      {
+        href: "/admin/timetable",
+        label: "Timetable",
+        permission: ROUTE_PERMISSIONS["/admin/timetable"],
+      },
+      {
+        href: "/admin/rooms",
+        label: "Rooms & Features",
+        permission: ROUTE_PERMISSIONS["/admin/rooms"],
+      },
+      {
+        href: "/admin/approvals",
+        label: "Approvals",
+        permission: ROUTE_PERMISSIONS["/admin/approvals"],
+      },
+      {
+        href: "/admin/moderation",
+        label: "Forum Moderation",
+        permission: ROUTE_PERMISSIONS["/admin/moderation"],
+      },
+      { href: "/admin/audit", label: "Audit", permission: ROUTE_PERMISSIONS["/admin/audit"] },
+      {
+        href: "/admin/settings",
+        label: "System Settings",
+        permission: ROUTE_PERMISSIONS["/admin/settings"],
+      },
     ],
   },
 ];

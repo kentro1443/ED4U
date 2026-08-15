@@ -1,10 +1,9 @@
-import { currentActor } from "@/lib/auth";
 import { db } from "@/lib/db";
+import { requireRoute } from "@/lib/authz";
 import { PageHeader } from "@/components/PageHeader";
 
 export default async function TimetableAdminPage() {
-  const actor = await currentActor();
-  if (!actor) return null;
+  const actor = await requireRoute("/admin/timetable");
   const periods = await db.academicPeriod.findMany({
     where: { tenantId: actor.tenantId },
     orderBy: { sortOrder: "asc" },

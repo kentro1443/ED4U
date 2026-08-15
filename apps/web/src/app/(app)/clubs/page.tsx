@@ -1,10 +1,9 @@
-import { currentActor } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { PageHeader } from "@/components/PageHeader";
+import { requireActor } from "@/lib/authz";
 
 export default async function ClubsPage() {
-  const actor = await currentActor();
-  if (!actor) return null;
+  const actor = await requireActor();
   const clubs = await db.club.findMany({
     where: { tenantId: actor.tenantId },
     include: { members: true, finance: true },

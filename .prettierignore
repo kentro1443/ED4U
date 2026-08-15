@@ -13,3 +13,10 @@ playwright-report
 test-results
 storage
 PLAN.md
+
+# Rewritten by `next dev`/`next build` on every boot; formatting it is a
+# permanent race with the framework, so it is machine-owned.
+apps/web/tsconfig.json
+
+# Local browser-automation artifacts.
+.playwright-mcp

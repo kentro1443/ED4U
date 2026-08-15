@@ -1,11 +1,17 @@
-import { currentActor } from "@/lib/auth";
 import { db } from "@/lib/db";
+import { requireRoute } from "@/lib/authz";
 import { PageHeader, EmptyState } from "@/components/PageHeader";
 
 export default async function ModerationPage() {
-  const actor = await currentActor();
-  if (!actor) return null;
-  const reports = await db.report.findMany({ take: 20 });
+  const actor = await requireRoute("/admin/moderation");
+  // Report carries no tenantId of its own, so scope through the forum hierarchy
+  // rather than reading every report in the database.
+  const reports = await db.report.findMany({
+    where: {
+      post: { thread: { forum: { category: { tenantId: actor.tenantId } } } },
+    },
+    take: 20,
+  });
   return (
     <div>
       <PageHeader

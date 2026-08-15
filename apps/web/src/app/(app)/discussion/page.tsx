@@ -1,11 +1,10 @@
 import { canReadDiscussion, canWriteDiscussion } from "@ed4u/domain";
-import { currentActor } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { PageHeader } from "@/components/PageHeader";
+import { requireActor } from "@/lib/authz";
 
 export default async function DiscussionPage() {
-  const actor = await currentActor();
-  if (!actor) return null;
+  const actor = await requireActor();
   const readable = canReadDiscussion(actor);
   const writable = canWriteDiscussion(actor);
   const categories = await db.discussionCategory.findMany({
