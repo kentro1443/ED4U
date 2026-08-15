@@ -10,6 +10,7 @@ export type Permission =
   | "timetable.edit"
   | "timetable.import"
   | "rooms.manage"
+  | "events.manage"
   | "approvals.resolve"
   | "forum.moderate"
   | "audit.read"
@@ -44,6 +45,7 @@ const ROLE_PERMS: Record<string, readonly Permission[]> = {
     "approvals.resolve",
     "room.approve",
     "rooms.manage",
+    "events.manage",
     "timetable.edit",
     "forum.moderate",
     "audit.read",

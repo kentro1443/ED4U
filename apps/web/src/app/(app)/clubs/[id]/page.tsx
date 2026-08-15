@@ -106,6 +106,9 @@ export default async function ClubDetailPage({ params }: { params: Promise<{ id:
   const myMembership = club.members.find(
     (member) => member.userId === actor.userId && member.status === "ACTIVE",
   );
+  const myPendingMembership = club.members.find(
+    (member) => member.userId === actor.userId && member.status === "PENDING",
+  );
   const myRole = myMembership?.role as ClubRole | undefined;
   const isAdmin = actor.roles.includes("SCHOOL_ADMIN") && can(actor, "club.manage");
   const isAdvisor = club.advisors.some((advisor) => advisor.teacherId === actor.userId);
@@ -144,7 +147,13 @@ export default async function ClubDetailPage({ params }: { params: Promise<{ id:
         description={club.description ?? "Không gian vận hành câu lạc bộ ED4U."}
         breadcrumbs={[{ label: "Câu lạc bộ", href: "/clubs" }, { label: club.name }]}
         badge={<StatusBadge status={club.status} />}
-        actions={canJoin ? <JoinClubButton clubId={club.id} /> : undefined}
+        actions={
+          canJoin ? (
+            <JoinClubButton clubId={club.id} />
+          ) : myPendingMembership ? (
+            <Badge tone="warning">Yêu cầu tham gia đang chờ duyệt</Badge>
+          ) : undefined
+        }
       />
 
       {club.decisionReason ? (
