@@ -137,4 +137,25 @@ describe("facility hard filter", () => {
       readFileSync(join(HERE, "../src/index.ts"), "utf8");
     expect(src).not.toMatch(/prisma/i);
   });
+  it("searches nearby time alternatives only when flexible is explicitly enabled", () => {
+    const s = state();
+    const labOnly: SchoolState = { ...s, rooms: [s.rooms[0]!] };
+    const exact: PlanningRequest = {
+      ...workshop,
+      timeWindow: { start: "08:00", end: "08:45", flexible: false },
+    };
+    const exactResult = planRooms(labOnly, exact);
+    expect(exactResult.kind).toBe("NO_SOLUTION");
+
+    const flexible: PlanningRequest = {
+      ...exact,
+      timeWindow: { ...exact.timeWindow, flexible: true },
+    };
+    const flexibleResult = planRooms(labOnly, flexible);
+    expect(flexibleResult.kind).toBe("PLANS");
+    if (flexibleResult.kind !== "PLANS") return;
+    expect(flexibleResult.plans[0]?.startAt).not.toContain("T08:00:");
+    expect(flexibleResult.plans[0]?.tradeoffs.join(" ")).toContain("Khác khung giờ ưu tiên");
+    expect(flexibleResult.plans[0]?.hardPassed).toBe(true);
+  });
 });

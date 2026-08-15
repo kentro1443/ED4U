@@ -624,6 +624,10 @@ model RoomRequest {
   setupMinutes  Int               @default(15)
   cleanupMinutes Int              @default(15)
   holdCreatedAt DateTime          @default(now())
+  purpose       String?
+  decisionReason String?
+  resolvedBy    String?
+  resolvedAt    DateTime?
   recommendation Json?
   booking       RoomBooking?
 }

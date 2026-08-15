@@ -5,6 +5,7 @@ export function scoreRoom(
   room: RoomSnapshot,
   request: PlanningRequest,
   holds: readonly PendingHold[],
+  preferredStartMinutes?: number,
 ): {
   score: number;
   soft: SoftBreakdown;
@@ -35,7 +36,10 @@ export function scoreRoom(
     return start < hEnd && hStart < end;
   });
   const holdRisk = overlappingHolds.length === 0 ? 0 : Math.min(1, overlappingHolds.length * 0.35);
-  const timeFit = 1;
+  const timeFit =
+    preferredStartMinutes === undefined
+      ? 1
+      : Math.max(0, 1 - Math.abs(start - preferredStartMinutes) / 120);
 
   const soft: SoftBreakdown = { roomTypeFit, buildingFit, capacityEfficiency, holdRisk, timeFit };
   const score =

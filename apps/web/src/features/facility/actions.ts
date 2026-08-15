@@ -1,0 +1,255 @@
+"use server";
+
+import { randomUUID } from "node:crypto";
+import { z } from "zod";
+import { can } from "@ed4u/domain";
+import { planRooms, type PlanningRequest } from "@ed4u/facility-engine";
+import { db } from "@/lib/db";
+import { requireActor } from "@/lib/authz";
+import { buildFacilitySchoolState, facilityCivilIsoToInstant } from "@/lib/facility/state";
+import { nextFacilityDateForDay, parseFacilityPrompt } from "@/lib/facility/parser";
+
+const FacilityPlanInputSchema = z.object({
+  rawText: z.string().trim().min(3).max(1000),
+  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  attendees: z.number().int().min(1).max(5000),
+  start: z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/),
+  end: z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/),
+  requiredFeatures: z.array(z.string()).max(20),
+  preferredRoomType: z.string().nullable().optional(),
+  preferredBuilding: z.string().nullable().optional(),
+  flexible: z.boolean(),
+});
+export type FacilityPlanInput = z.infer<typeof FacilityPlanInputSchema>;
+
+function clockMinutes(clock: string): number {
+  const [hour, minute] = clock.split(":").map(Number);
+  return (hour ?? 0) * 60 + (minute ?? 0);
+}
+
+export async function parseFacilityPromptAction(rawText: string) {
+  const actor = await requireActor();
+  if (!can(actor, "room.request") && !can(actor, "rooms.manage")) {
+    return { ok: false as const, error: "Bạn không có quyền sử dụng bộ lập kế hoạch phòng." };
+  }
+  const parsed = parseFacilityPrompt(rawText);
+  const tenant = await db.tenant.findUniqueOrThrow({
+    where: { id: actor.tenantId },
+    select: { timezone: true },
+  });
+  return {
+    ok: true as const,
+    data: {
+      ...parsed,
+      suggestedDate: parsed.day ? nextFacilityDateForDay(parsed.day, tenant.timezone) : null,
+    },
+  };
+}
+
+export async function planFacilityAction(rawInput: FacilityPlanInput) {
+  const actor = await requireActor();
+  if (!can(actor, "room.request") && !can(actor, "rooms.manage")) {
+    return { ok: false as const, error: "Bạn không có quyền lập kế hoạch phòng." };
+  }
+  const parsed = FacilityPlanInputSchema.safeParse(rawInput);
+  if (!parsed.success) return { ok: false as const, error: "Tiêu chí phòng chưa hợp lệ." };
+  if (clockMinutes(parsed.data.end) <= clockMinutes(parsed.data.start)) {
+    return { ok: false as const, error: "Giờ kết thúc phải sau giờ bắt đầu." };
+  }
+
+  try {
+    const context = await buildFacilitySchoolState(db, {
+      tenantId: actor.tenantId,
+      date: parsed.data.date,
+    });
+    const request: PlanningRequest = {
+      requestId: randomUUID(),
+      attendees: parsed.data.attendees,
+      requiredFeatures: parsed.data.requiredFeatures,
+      ...(parsed.data.preferredRoomType
+        ? { preferredRoomType: parsed.data.preferredRoomType }
+        : {}),
+      ...(parsed.data.preferredBuilding
+        ? { preferredBuilding: parsed.data.preferredBuilding }
+        : {}),
+      day: context.day,
+      timeWindow: {
+        start: parsed.data.start,
+        end: parsed.data.end,
+        flexible: parsed.data.flexible,
+      },
+      setupMinutes: 15,
+      cleanupMinutes: 15,
+    };
+    const result = planRooms(context.state, request);
+    return {
+      ok: true as const,
+      result,
+      request,
+      stateSummary: {
+        rooms: context.state.rooms.length,
+        hardOccupancy: context.state.occupancy.length,
+        activeSoftHolds: context.state.pendingHolds.filter((hold) => hold.active).length,
+        timeZone: context.timeZone,
+      },
+    };
+  } catch (error) {
+    return {
+      ok: false as const,
+      error: error instanceof Error ? error.message : "Không thể lập kế hoạch phòng.",
+    };
+  }
+}
+
+export async function createRoomRequestFromPlanAction(input: {
+  criteria: FacilityPlanInput;
+  roomId: string;
+}) {
+  const actor = await requireActor();
+  if (
+    !can(actor, "room.request") ||
+    actor.memberType !== "STUDENT" ||
+    actor.membershipStatus !== "ACTIVE"
+  ) {
+    return { ok: false as const, error: "Chỉ học sinh đang theo học mới được gửi yêu cầu phòng." };
+  }
+  const parsed = FacilityPlanInputSchema.safeParse(input.criteria);
+  if (!parsed.success) return { ok: false as const, error: "Tiêu chí phòng không hợp lệ." };
+
+  try {
+    const context = await buildFacilitySchoolState(db, {
+      tenantId: actor.tenantId,
+      date: parsed.data.date,
+    });
+    const request: PlanningRequest = {
+      requestId: randomUUID(),
+      attendees: parsed.data.attendees,
+      requiredFeatures: parsed.data.requiredFeatures,
+      ...(parsed.data.preferredRoomType
+        ? { preferredRoomType: parsed.data.preferredRoomType }
+        : {}),
+      ...(parsed.data.preferredBuilding
+        ? { preferredBuilding: parsed.data.preferredBuilding }
+        : {}),
+      day: context.day,
+      timeWindow: {
+        start: parsed.data.start,
+        end: parsed.data.end,
+        flexible: parsed.data.flexible,
+      },
+      setupMinutes: 15,
+      cleanupMinutes: 15,
+    };
+    const result = planRooms(context.state, request);
+    if (result.kind !== "PLANS") {
+      return {
+        ok: false as const,
+        error: "Trạng thái phòng đã thay đổi; hiện không còn phương án khả thi.",
+      };
+    }
+    const selectedPlan = result.plans.find((plan) => plan.roomId === input.roomId);
+    if (!selectedPlan) {
+      return {
+        ok: false as const,
+        error: "Phòng đã chọn không còn nằm trong phương án khả thi hiện tại.",
+      };
+    }
+    const eventStart = facilityCivilIsoToInstant(selectedPlan.startAt, context.timeZone);
+    const eventEnd = facilityCivilIsoToInstant(selectedPlan.endAt, context.timeZone);
+
+    const existing = await db.roomRequest.findFirst({
+      where: {
+        tenantId: actor.tenantId,
+        requestedBy: actor.userId,
+        roomId: input.roomId,
+        status: "PENDING_APPROVAL",
+        eventStart,
+        eventEnd,
+      },
+      select: { id: true },
+    });
+    if (existing) return { ok: true as const, requestId: existing.id, duplicate: true };
+
+    const roomRequest = await db.$transaction(async (tx) => {
+      const created = await tx.roomRequest.create({
+        data: {
+          tenantId: actor.tenantId,
+          roomId: input.roomId,
+          requestedBy: actor.userId,
+          status: "PENDING_APPROVAL",
+          eventStart,
+          eventEnd,
+          setupMinutes: request.setupMinutes ?? 15,
+          cleanupMinutes: request.cleanupMinutes ?? 15,
+          holdCreatedAt: new Date(),
+          purpose: parsed.data.rawText,
+          recommendation: {
+            schemaVersion: "facility-recommendation.v1",
+            engineVersion: result.engineVersion,
+            request: {
+              requestId: request.requestId,
+              attendees: request.attendees,
+              requiredFeatures: [...request.requiredFeatures],
+              preferredRoomType: request.preferredRoomType ?? null,
+              preferredBuilding: request.preferredBuilding ?? null,
+              day: request.day,
+              timeWindow: { ...request.timeWindow },
+              setupMinutes: request.setupMinutes ?? 15,
+              cleanupMinutes: request.cleanupMinutes ?? 15,
+            },
+            selectedPlan: {
+              ...selectedPlan,
+              soft: { ...selectedPlan.soft },
+              reasons: [...selectedPlan.reasons],
+              tradeoffs: [...selectedPlan.tradeoffs],
+            },
+            stateSummary: {
+              occupancyCount: context.state.occupancy.length,
+              activeSoftHolds: context.state.pendingHolds.filter((hold) => hold.active).length,
+            },
+          },
+        },
+      });
+
+      const admins = await tx.userRoleAssignment.findMany({
+        where: { role: "SCHOOL_ADMIN", user: { tenantId: actor.tenantId } },
+        select: { userId: true },
+      });
+      if (admins.length) {
+        await tx.notification.createMany({
+          data: admins.map((admin) => ({
+            tenantId: actor.tenantId,
+            userId: admin.userId,
+            type: "ROOM_REQUEST_PENDING",
+            title: "Có yêu cầu phòng mới",
+            body: `${actor.schoolMemberCode} gửi yêu cầu cho một phòng đã được Facility Engine đề xuất.`,
+            entityType: "RoomRequest",
+            entityId: created.id,
+          })),
+        });
+      }
+      await tx.auditEvent.create({
+        data: {
+          tenantId: actor.tenantId,
+          actorId: actor.userId,
+          action: "ROOM_REQUEST_CREATE",
+          entityType: "RoomRequest",
+          entityId: created.id,
+          requestId: randomUUID(),
+          afterJson: {
+            roomId: input.roomId,
+            eventStart: eventStart.toISOString(),
+            eventEnd: eventEnd.toISOString(),
+          },
+        },
+      });
+      return created;
+    });
+    return { ok: true as const, requestId: roomRequest.id, duplicate: false };
+  } catch (error) {
+    return {
+      ok: false as const,
+      error: error instanceof Error ? error.message : "Không thể gửi yêu cầu phòng.",
+    };
+  }
+}
