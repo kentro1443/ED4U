@@ -97,36 +97,34 @@ export async function createMentorBookingTx(db: PrismaClient, input: CreateMento
       },
     });
 
-    await Promise.all([
-      tx.notification.create({
-        data: {
-          tenantId: input.tenantId,
-          userId: mentor.userId,
-          type: "MENTOR_BOOKING_CREATED",
-          title: "Có lịch mentoring mới",
-          body: "Một học sinh đã đặt một khung giờ mentoring với bạn.",
-          entityType: "MentorBooking",
-          entityId: booking.id,
+    await tx.notification.create({
+      data: {
+        tenantId: input.tenantId,
+        userId: mentor.userId,
+        type: "MENTOR_BOOKING_CREATED",
+        title: "Có lịch mentoring mới",
+        body: "Một học sinh đã đặt một khung giờ mentoring với bạn.",
+        entityType: "MentorBooking",
+        entityId: booking.id,
+      },
+    });
+    await tx.auditEvent.create({
+      data: {
+        tenantId: input.tenantId,
+        actorId: input.studentId,
+        action: "MENTOR_BOOKING_CREATE",
+        entityType: "MentorBooking",
+        entityId: booking.id,
+        afterJson: {
+          mentorId: input.mentorId,
+          slotPattern: input.slotPattern,
+          startAt: input.startAt.toISOString(),
+          endAt: input.endAt.toISOString(),
+          recommendationRunId: input.recommendationRunId ?? null,
         },
-      }),
-      tx.auditEvent.create({
-        data: {
-          tenantId: input.tenantId,
-          actorId: input.studentId,
-          action: "MENTOR_BOOKING_CREATE",
-          entityType: "MentorBooking",
-          entityId: booking.id,
-          afterJson: {
-            mentorId: input.mentorId,
-            slotPattern: input.slotPattern,
-            startAt: input.startAt.toISOString(),
-            endAt: input.endAt.toISOString(),
-            recommendationRunId: input.recommendationRunId ?? null,
-          },
-          requestId: randomUUID(),
-        },
-      }),
-    ]);
+        requestId: randomUUID(),
+      },
+    });
 
     return { booking, mentorName: mentor.user.fullName };
   });
