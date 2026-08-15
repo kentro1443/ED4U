@@ -185,7 +185,7 @@ controls; (12) add automated coverage where appropriate. Only then is the UI com
 - `39ed217` security Slice 0
 - `0af0a39` benchmark report regeneration / green verify
 - `e396f3e` truthful data foundation, Slice 1
-- `71a8818` Slice 1 facility fixture closure (confirmed booking, maintenance block, soft hold)
+- `fabb9f9` Slice 1 facility fixture closure (confirmed booking, maintenance block, soft hold)
 
 **Slice 0 is complete:** permission-specific route guards, actor-scoped reads, appointment
 assignee enforcement, a real-Postgres authz integration harness, a dedicated E2E port,
