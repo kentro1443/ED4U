@@ -1,6 +1,11 @@
 import { planRooms, parseFacilityRequest } from "@ed4u/facility-engine";
 import { db } from "@/lib/db";
-import { PageHeader, EmptyState } from "@/components/PageHeader";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
+import { Badge } from "@/components/ui/Badge";
+import { Field, Select, Input } from "@/components/ui/Field";
+import { Button } from "@/components/ui/Button";
+import { EmptyState } from "@/components/ui/Feedback";
 import { requireActor } from "@/lib/authz";
 
 export default async function RoomsPage() {
@@ -8,7 +13,9 @@ export default async function RoomsPage() {
   const rooms = await db.room.findMany({
     where: { tenantId: actor.tenantId },
     include: { roomType: true, features: { include: { feature: true } } },
+    orderBy: { code: "asc" },
   });
+
   const parsed = parseFacilityRequest(
     "Tìm phòng cho CLB Robotics, 80 người, chiều thứ Sáu, cần máy chiếu, ưu tiên phòng máy.",
   );
@@ -34,63 +41,88 @@ export default async function RoomsPage() {
   );
 
   return (
-    <div>
+    <div className="space-y-6">
       <PageHeader
-        title="Phòng"
-        description="Đặt thủ công luôn hoạt động. Engine chỉ đề xuất — người duyệt mới khóa phòng."
+        title="Phòng & Cơ sở vật chất"
+        description="Đề xuất thông minh từ Facility Intelligence Engine. Quy trình duyệt phòng và khóa chỗ thuộc thẩm quyền School Admin."
       />
-      {result.kind === "PLANS" ? (
-        <ol className="space-y-3">
-          {result.plans.map((p) => (
-            <li
-              key={p.roomId}
-              className="rounded-xl border border-[var(--line)] bg-[var(--card)] p-4"
-            >
-              <p className="font-medium">
-                {p.roomCode} · {p.score}
-              </p>
-              <p className="text-sm text-[var(--muted)]">{p.reasons.join(" ")}</p>
-            </li>
-          ))}
-        </ol>
-      ) : (
-        <EmptyState
-          title="Không có phương án khả thi"
-          action={result.alternatives[0]?.description ?? "Chọn phòng thủ công."}
-        />
-      )}
-      <form className="mt-8 grid max-w-md gap-3">
-        <h2 className="font-medium">Đặt thủ công</h2>
-        <label className="text-sm">
-          Phòng
-          <select name="room" className="mt-1 w-full rounded border border-[var(--line)] px-2 py-2">
-            {rooms.map((r) => (
-              <option key={r.id} value={r.id}>
-                {r.code} · {r.name}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label className="text-sm">
-          Ngày
-          <input
-            type="date"
-            name="date"
-            className="mt-1 w-full rounded border border-[var(--line)] px-2 py-2"
-          />
-        </label>
-        <label className="text-sm">
-          Giờ
-          <input
-            type="time"
-            name="time"
-            className="mt-1 w-full rounded border border-[var(--line)] px-2 py-2"
-          />
-        </label>
-        <button type="submit" className="rounded-full bg-[var(--pine)] px-4 py-2 text-white">
-          Gửi yêu cầu
-        </button>
-      </form>
+
+      <div className="rounded-lg border border-[var(--hairline)] bg-[var(--surface-soft)] p-3.5 text-xs text-[var(--muted)] leading-relaxed">
+        <span className="font-semibold text-[var(--ink)]">Yêu cầu demo mẫu:</span> &ldquo;Tìm phòng
+        cho CLB Robotics, 80 người, chiều thứ Sáu, cần máy chiếu, ưu tiên phòng máy.&rdquo; — Luồng
+        nhập câu lệnh tự nhiên, kiểm tra xung đột TKB/bảo trì thực tế và quy trình duyệt phòng sẽ
+        được hoàn thiện ở phân đoạn Facility E2E.
+      </div>
+
+      <div className="grid gap-6 lg:grid-cols-[1fr_380px]">
+        {/* Facility Engine Proposals */}
+        <div className="space-y-4">
+          <h2 className="text-sm font-semibold uppercase tracking-wider text-[var(--muted)]">
+            Đề xuất từ Facility Engine
+          </h2>
+
+          {result.kind === "PLANS" ? (
+            <div className="space-y-3">
+              {result.plans.map((p, idx) => (
+                <Card key={p.roomId} className="p-4 flex flex-col justify-between gap-2">
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-sm text-[var(--ink)]">
+                      Phương án {idx + 1} · {p.roomCode}
+                    </span>
+                    <Badge tone="brand" size="sm">
+                      Điểm: {p.score}
+                    </Badge>
+                  </div>
+                  <p className="text-xs text-[var(--muted)] leading-relaxed">
+                    {p.reasons.join(" ")}
+                  </p>
+                </Card>
+              ))}
+            </div>
+          ) : (
+            <EmptyState
+              title="Không có phương án khả thi"
+              description={
+                result.alternatives[0]?.description ?? "Vui lòng chọn phòng thủ công bên cạnh."
+              }
+            />
+          )}
+        </div>
+
+        {/* Manual Request Form */}
+        <div>
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle>Đặt phòng thủ công</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <form className="space-y-4">
+                <Field id="room" label="Chọn phòng" required>
+                  <Select name="room">
+                    {rooms.map((r) => (
+                      <option key={r.id} value={r.id}>
+                        {r.code} · {r.name} ({r.roomType.name}, sức chứa {r.capacity})
+                      </option>
+                    ))}
+                  </Select>
+                </Field>
+
+                <Field id="date" label="Ngày sử dụng" required>
+                  <Input type="date" name="date" required />
+                </Field>
+
+                <Field id="time" label="Khung giờ" required>
+                  <Input type="time" name="time" required />
+                </Field>
+
+                <Button type="submit" variant="primary" size="md" className="w-full mt-2">
+                  Gửi yêu cầu đặt phòng
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
     </div>
   );
 }

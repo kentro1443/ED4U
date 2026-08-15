@@ -2,7 +2,11 @@ import Link from "next/link";
 import { can } from "@ed4u/domain";
 import { db } from "@/lib/db";
 import { requireActor } from "@/lib/authz";
-import { PageHeader } from "@/components/PageHeader";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
+import { Badge, StatusBadge } from "@/components/ui/Badge";
+import { LinkButton } from "@/components/ui/Button";
+import { Icons } from "@/components/ui/icons";
 
 export default async function DashboardPage() {
   const actor = await requireActor();
@@ -12,10 +16,7 @@ export default async function DashboardPage() {
   const isAdmin = can(actor, "approvals.resolve");
   const isIt = can(actor, "members.manage");
 
-  // A student sees their own class's timetable; a teacher sees the periods they
-  // teach. Neither sees the rest of the school.
-  // TODO(slice-2): narrow to "today" once weekday + AcademicPeriod are resolved
-  // into real datetimes in the school timezone.
+  // A student sees their own class's timetable; a teacher sees the periods they teach.
   const timetableScope = isTeacher
     ? { tenantId: actor.tenantId, teacherId: actor.userId }
     : actor.classId
@@ -54,130 +55,210 @@ export default async function DashboardPage() {
   ]);
 
   return (
-    <div>
+    <div className="space-y-6">
       <PageHeader
         title="Tổng quan"
-        description="Bảng điều khiển theo vai trò — ED4U Demo High School"
+        description="Bảng điều khiển hoạt động theo vai trò · ED4U Demo High School"
+        badge={<Badge tone="dark">{actor.roles.join(" · ")}</Badge>}
       />
-      <div className="grid gap-4 md:grid-cols-2">
+
+      <div className="grid gap-5 md:grid-cols-2">
+        {/* Timetable Widget */}
         {(isStudent || isTeacher) && (
-          <section
-            className="rounded-xl border border-[var(--line)] bg-[var(--card)] p-5"
-            data-widget="timetable"
-          >
-            <h2 className="text-sm font-semibold">
-              {isTeacher ? "Lịch dạy của bạn" : "Thời khóa biểu lớp"}
-            </h2>
-            <ul className="mt-3 space-y-2 text-sm">
-              {entries.length === 0 ? <li>Chưa có tiết.</li> : null}
-              {entries.slice(0, 6).map((e) => (
-                <li key={e.id}>
-                  {e.weekday} · {e.period.code} · {e.subject.name} · {e.class.code}
-                </li>
-              ))}
-            </ul>
-            <p className="mt-3 text-xs text-[var(--muted)]">
-              {periods.length} tiết cấu hình theo trường, không hard-code.
-            </p>
-          </section>
+          <Card data-widget="timetable">
+            <CardHeader className="flex flex-row items-center justify-between pb-3">
+              <div className="flex items-center gap-2">
+                <Icons.calendar className="h-4 w-4 text-[var(--muted)]" />
+                <CardTitle>{isTeacher ? "Lịch dạy của bạn" : "Thời khóa biểu lớp"}</CardTitle>
+              </div>
+              <Badge size="sm">{periods.length} tiết / tuần</Badge>
+            </CardHeader>
+            <CardContent>
+              {entries.length === 0 ? (
+                <p className="text-xs text-[var(--muted)]">Chưa có tiết học nào được xếp.</p>
+              ) : (
+                <ul className="divide-y divide-[var(--hairline-soft)] text-xs md:text-sm">
+                  {entries.slice(0, 6).map((e) => (
+                    <li key={e.id} className="py-2 flex items-center justify-between">
+                      <span className="font-medium text-[var(--ink)]">
+                        {e.weekday} · {e.period.code} · {e.subject.name}
+                      </span>
+                      <span className="text-[var(--muted)] text-xs font-mono">{e.class.code}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </CardContent>
+          </Card>
         )}
+
+        {/* Mentor CTA Widget */}
         {isStudent && (
-          <section
-            className="rounded-xl border border-[var(--line)] bg-[var(--card)] p-5"
-            data-widget="mentor-cta"
-          >
-            <h2 className="text-sm font-semibold">Mentor</h2>
-            <p className="mt-2 text-sm text-[var(--muted)]">
-              IELTS 6.0 → 7.0, yếu Writing, tối thứ 3/5.
-            </p>
-            <div className="mt-4 flex flex-wrap gap-2">
-              <Link
-                className="rounded-full bg-[var(--pine)] px-4 py-2 text-sm text-white"
-                href="/mentor"
-              >
-                Find mentor
-              </Link>
-              <Link
-                className="rounded-full border border-[var(--line)] px-4 py-2 text-sm"
-                href="/mentor/match-space"
-              >
-                Open Match Space
-              </Link>
-            </div>
-          </section>
+          <Card data-widget="mentor-cta">
+            <CardHeader className="flex flex-row items-center justify-between pb-3">
+              <div className="flex items-center gap-2">
+                <Icons.mentor className="h-4 w-4 text-[var(--muted)]" />
+                <CardTitle>Mentor Intelligence</CardTitle>
+              </div>
+              <Badge tone="brand" size="sm">
+                AI Matching
+              </Badge>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <p className="text-xs md:text-sm text-[var(--muted)] leading-relaxed">
+                Đề xuất ghép nối mentor cá nhân hóa dựa trên mục tiêu, kỹ năng trọng tâm và khung
+                giờ rảnh.
+              </p>
+              <div className="flex flex-wrap gap-2.5 pt-1">
+                <LinkButton href="/mentor" variant="primary" size="sm">
+                  Tìm Mentor
+                </LinkButton>
+                <LinkButton href="/mentor/match-space" variant="secondary" size="sm">
+                  Mở Match Space
+                </LinkButton>
+              </div>
+            </CardContent>
+          </Card>
         )}
+
+        {/* Teacher Pending Appointments Widget */}
         {isTeacher && (
-          <section
-            className="rounded-xl border border-[var(--line)] bg-[var(--card)] p-5"
-            data-widget="pending-appointments"
-          >
-            <h2 className="text-sm font-semibold">Lịch hẹn chờ duyệt</h2>
-            <ul className="mt-3 space-y-2 text-sm">
-              {appointments.map((a) => (
-                <li key={a.id}>
-                  {a.title} · {a.status}
-                </li>
-              ))}
-              {appointments.length === 0 ? <li>Không có yêu cầu.</li> : null}
-            </ul>
-          </section>
+          <Card data-widget="pending-appointments">
+            <CardHeader className="flex flex-row items-center justify-between pb-3">
+              <div className="flex items-center gap-2">
+                <Icons.appointments className="h-4 w-4 text-[var(--muted)]" />
+                <CardTitle>Lịch hẹn chờ phản hồi</CardTitle>
+              </div>
+              <Badge size="sm">{appointments.length}</Badge>
+            </CardHeader>
+            <CardContent>
+              {appointments.length === 0 ? (
+                <p className="text-xs text-[var(--muted)]">Không có yêu cầu hẹn nào đang chờ.</p>
+              ) : (
+                <ul className="divide-y divide-[var(--hairline-soft)] text-xs md:text-sm">
+                  {appointments.map((a) => (
+                    <li key={a.id} className="py-2 flex items-center justify-between">
+                      <span className="font-medium">{a.title}</span>
+                      <StatusBadge status={a.status} />
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </CardContent>
+          </Card>
         )}
+
+        {/* Admin Approvals Widget */}
         {isAdmin && (
-          <section
-            className="rounded-xl border border-[var(--line)] bg-[var(--card)] p-5"
-            data-widget="pending-approvals"
-          >
-            <h2 className="text-sm font-semibold">Phê duyệt đang chờ</h2>
-            <ul className="mt-3 space-y-2 text-sm">
-              {approvals.map((a) => (
-                <li key={a.id}>
-                  {a.subjectType} · {a.status}
-                </li>
-              ))}
+          <Card data-widget="pending-approvals">
+            <CardHeader className="flex flex-row items-center justify-between pb-3">
+              <div className="flex items-center gap-2">
+                <Icons.adminApprovals className="h-4 w-4 text-[var(--muted)]" />
+                <CardTitle>Phê duyệt đang chờ</CardTitle>
+              </div>
+              <Badge tone={approvals.length > 0 ? "warning" : "neutral"} size="sm">
+                {approvals.length} phiếu
+              </Badge>
+            </CardHeader>
+            <CardContent className="space-y-3">
               {approvals.length === 0 ? (
-                <li>Hàng đợi trống — kiểm tra yêu cầu phòng/CLB.</li>
-              ) : null}
-            </ul>
-            <Link href="/admin/approvals" className="mt-3 inline-block text-sm underline">
-              Mở Approvals
-            </Link>
-          </section>
+                <p className="text-xs text-[var(--muted)]">
+                  Hàng đợi trống — không có yêu cầu phòng/CLB chờ duyệt.
+                </p>
+              ) : (
+                <ul className="divide-y divide-[var(--hairline-soft)] text-xs md:text-sm">
+                  {approvals.map((a) => (
+                    <li key={a.id} className="py-2 flex items-center justify-between">
+                      <span className="font-medium">{a.subjectType}</span>
+                      <StatusBadge status={a.status} />
+                    </li>
+                  ))}
+                </ul>
+              )}
+              <Link
+                href="/admin/approvals"
+                className="inline-flex items-center gap-1.5 text-xs font-semibold text-[var(--ink)] hover:underline pt-1"
+              >
+                Mở trung tâm phê duyệt <Icons.arrowRight className="h-3 w-3" />
+              </Link>
+            </CardContent>
+          </Card>
         )}
+
+        {/* IT Admin Provisioning Widget */}
         {isIt && (
-          <section
-            className="rounded-xl border border-[var(--line)] bg-[var(--card)] p-5"
-            data-widget="provisioning"
-          >
-            <h2 className="text-sm font-semibold">Cấp tài khoản</h2>
-            <p className="mt-2 text-sm">Import Excel, đặt lại mật khẩu, gán vai trò.</p>
-            <Link href="/admin/members" className="mt-3 inline-block text-sm underline">
-              Members
-            </Link>
-          </section>
+          <Card data-widget="provisioning">
+            <CardHeader className="flex flex-row items-center justify-between pb-3">
+              <div className="flex items-center gap-2">
+                <Icons.adminMembers className="h-4 w-4 text-[var(--muted)]" />
+                <CardTitle>Quản trị tài khoản & Thành viên</CardTitle>
+              </div>
+              <Badge tone="dark" size="sm">
+                ADMIN_IT
+              </Badge>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <p className="text-xs md:text-sm text-[var(--muted)]">
+                Nhập danh sách học sinh/giáo viên từ Excel, cấp tài khoản, đặt lại mật khẩu tạm và
+                phân quyền.
+              </p>
+              <Link
+                href="/admin/members"
+                className="inline-flex items-center gap-1.5 text-xs font-semibold text-[var(--ink)] hover:underline pt-1"
+              >
+                Quản lý thành viên <Icons.arrowRight className="h-3 w-3" />
+              </Link>
+            </CardContent>
+          </Card>
         )}
-        <section
-          className="rounded-xl border border-[var(--line)] bg-[var(--card)] p-5"
-          data-widget="events"
-        >
-          <h2 className="text-sm font-semibold">Sự kiện trường</h2>
-          <ul className="mt-3 space-y-2 text-sm">
-            {events.map((e) => (
-              <li key={e.id}>{e.title}</li>
-            ))}
-          </ul>
-        </section>
-        <section
-          className="rounded-xl border border-[var(--line)] bg-[var(--card)] p-5"
-          data-widget="notifications"
-        >
-          <h2 className="text-sm font-semibold">Thông báo gần đây</h2>
-          <ul className="mt-3 space-y-2 text-sm">
-            {notifications.map((n) => (
-              <li key={n.id}>{n.title}</li>
-            ))}
-            {notifications.length === 0 ? <li>Không có thông báo mới.</li> : null}
-          </ul>
-        </section>
+
+        {/* School Events Widget */}
+        <Card data-widget="events">
+          <CardHeader className="flex flex-row items-center justify-between pb-3">
+            <div className="flex items-center gap-2">
+              <Icons.events className="h-4 w-4 text-[var(--muted)]" />
+              <CardTitle>Sự kiện trường</CardTitle>
+            </div>
+            <Badge size="sm">{events.length}</Badge>
+          </CardHeader>
+          <CardContent>
+            {events.length === 0 ? (
+              <p className="text-xs text-[var(--muted)]">Chưa có sự kiện trường sắp tới.</p>
+            ) : (
+              <ul className="divide-y divide-[var(--hairline-soft)] text-xs md:text-sm">
+                {events.map((e) => (
+                  <li key={e.id} className="py-2 font-medium text-[var(--ink)]">
+                    {e.title}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Notifications Widget */}
+        <Card data-widget="notifications">
+          <CardHeader className="flex flex-row items-center justify-between pb-3">
+            <div className="flex items-center gap-2">
+              <Icons.notifications className="h-4 w-4 text-[var(--muted)]" />
+              <CardTitle>Thông báo mới</CardTitle>
+            </div>
+            <Badge size="sm">{notifications.length}</Badge>
+          </CardHeader>
+          <CardContent>
+            {notifications.length === 0 ? (
+              <p className="text-xs text-[var(--muted)]">Không có thông báo mới.</p>
+            ) : (
+              <ul className="divide-y divide-[var(--hairline-soft)] text-xs md:text-sm">
+                {notifications.map((n) => (
+                  <li key={n.id} className="py-2 text-[var(--body)]">
+                    {n.title}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

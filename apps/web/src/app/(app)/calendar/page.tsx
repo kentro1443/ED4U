@@ -1,6 +1,10 @@
 import { filterVisible, projectCalendar, type RawCalendarSource } from "@ed4u/domain";
 import { db } from "@/lib/db";
-import { PageHeader } from "@/components/PageHeader";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { NavPillTabs } from "@/components/ui/Tabs";
+import { Card } from "@/components/ui/Card";
+import { Badge } from "@/components/ui/Badge";
+import { EmptyState } from "@/components/ui/Feedback";
 import { requireActor } from "@/lib/authz";
 
 export default async function CalendarPage({
@@ -9,7 +13,9 @@ export default async function CalendarPage({
   searchParams: Promise<{ view?: string }>;
 }) {
   const actor = await requireActor();
-  const view = ((await searchParams).view ?? "week").toUpperCase();
+  const rawView = (await searchParams).view ?? "week";
+  const view = rawView.toLowerCase();
+
   const [entries, events, appointments, bookings] = await Promise.all([
     db.timetableEntry.findMany({
       where: { tenantId: actor.tenantId },
@@ -78,33 +84,60 @@ export default async function CalendarPage({
   });
   const projected = projectCalendar(items);
 
+  const viewTabs = [
+    { label: "Ngày (Day)", href: "/calendar?view=day", active: view === "day" },
+    { label: "Tuần (Week)", href: "/calendar?view=week", active: view === "week" },
+    { label: "Tháng (Month)", href: "/calendar?view=month", active: view === "month" },
+  ];
+
+  const sourceTones: Record<string, "brand" | "neutral" | "success" | "warning"> = {
+    TIMETABLE: "neutral",
+    SCHOOL_EVENT: "brand",
+    APPOINTMENT: "warning",
+    ROOM_BOOKING: "success",
+  };
+
   return (
-    <div>
+    <div className="space-y-6">
       <PageHeader
         title="Lịch"
-        description="Chiếu từ TKB + hẹn + mentor + sự kiện + phòng. TKB không nhân bản thành event."
+        description="Chiếu trực tiếp từ Thời khóa biểu, Lịch hẹn, Mentor, Sự kiện trường và Đặt phòng. Thời khóa biểu không bị nhân bản thành dòng sự kiện tĩnh."
+        actions={<NavPillTabs items={viewTabs} />}
       />
-      <div className="flex gap-2">
-        {["day", "week", "month"].map((v) => (
-          <a
-            key={v}
-            href={`/calendar?view=${v}`}
-            className={`rounded-full px-3 py-1 text-sm ${view.toLowerCase() === v ? "bg-[var(--pine)] text-white" : "border border-[var(--line)]"}`}
-          >
-            {v}
-          </a>
-        ))}
+
+      <div className="rounded-lg border border-[var(--hairline)] bg-[var(--surface-soft)] p-3 text-xs text-[var(--muted)]">
+        <span className="font-semibold text-[var(--ink)]">Khung nhìn hiện tại:</span>{" "}
+        {view.toUpperCase()} · Hiển thị nguồn dữ liệu hợp lệ theo quyền người dùng. Mô hình lưới
+        thời gian chi tiết theo khung giờ học sẽ được triển khai ở phân đoạn Lịch.
       </div>
-      <ul className="mt-6 space-y-2">
-        {projected.map((i) => (
-          <li
-            key={`${i.source}-${i.id}`}
-            className="rounded-lg border border-[var(--line)] bg-[var(--card)] px-3 py-2 text-sm"
-          >
-            <span className="text-xs uppercase text-[var(--muted)]">{i.source}</span> · {i.title}
-          </li>
-        ))}
-      </ul>
+
+      {projected.length === 0 ? (
+        <EmptyState
+          title="Không có sự kiện"
+          description="Chưa có mục lịch nào được chiếu cho tài khoản của bạn trong khoảng thời gian này."
+        />
+      ) : (
+        <Card className="p-0 overflow-hidden">
+          <ul className="divide-y divide-[var(--hairline-soft)] text-sm">
+            {projected.map((item) => (
+              <li
+                key={`${item.source}-${item.id}`}
+                className="p-4 flex items-center justify-between gap-3 hover:bg-[var(--surface-soft)]/50 transition-colors"
+              >
+                <div className="flex items-center gap-3">
+                  <Badge tone={sourceTones[item.source] ?? "neutral"} size="sm">
+                    {item.source}
+                  </Badge>
+                  <span className="font-medium text-[var(--ink)]">{item.title}</span>
+                </div>
+                <span className="text-xs text-[var(--muted)] font-mono">
+                  {item.source === "TIMETABLE" ? "Tiết học TKB" : "Sự kiện / Lịch hẹn"}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </Card>
+      )}
     </div>
   );
 }

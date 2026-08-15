@@ -1,27 +1,37 @@
-import type { Metadata } from "next";
-import { Fraunces, IBM_Plex_Sans } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { Inter } from "next/font/google";
 import "./globals.css";
 
-const sans = IBM_Plex_Sans({
+const inter = Inter({
   subsets: ["latin", "vietnamese"],
-  weight: ["400", "500", "600"],
   variable: "--font-sans",
-});
-
-const display = Fraunces({
-  subsets: ["latin"],
-  variable: "--font-display",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "ED4U",
+  title: {
+    template: "%s · ED4U",
+    default: "ED4U · Nền tảng vận hành trường học",
+  },
   description: "Nền tảng vận hành trường học ED4U",
+  icons: {
+    icon: "/icon.svg",
+    shortcut: "/favicon.ico",
+  },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: "#ffffff",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="vi" className={`${sans.variable} ${display.variable}`}>
-      <body className="min-h-dvh antialiased">{children}</body>
+    <html lang="vi" data-scroll-behavior="smooth" className={inter.variable}>
+      <body className="min-h-dvh bg-[var(--canvas)] text-[var(--ink)] antialiased font-sans">
+        {children}
+      </body>
     </html>
   );
 }
