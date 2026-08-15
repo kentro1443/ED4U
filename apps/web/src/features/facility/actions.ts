@@ -104,6 +104,7 @@ export async function planFacilityAction(rawInput: FacilityPlanInput) {
 export async function createRoomRequestFromPlanAction(input: {
   criteria: FacilityPlanInput;
   roomId: string;
+  clubEventId?: string | null;
 }) {
   const actor = await requireActor();
   if (
@@ -117,6 +118,25 @@ export async function createRoomRequestFromPlanAction(input: {
   if (!parsed.success) return { ok: false as const, error: "Tiêu chí phòng không hợp lệ." };
 
   try {
+    let clubEventId: string | null = null;
+    if (input.clubEventId) {
+      const event = await db.clubEvent.findFirst({
+        where: { id: input.clubEventId, club: { tenantId: actor.tenantId } },
+        include: {
+          club: { include: { members: { where: { userId: actor.userId, status: "ACTIVE" } } } },
+        },
+      });
+      if (!event || !event.roomRequired)
+        throw new Error("Sự kiện CLB không hợp lệ hoặc không cần phòng.");
+      const member = event.club.members[0];
+      if (
+        !actor.roles.includes("SCHOOL_ADMIN") &&
+        (!member || !["PRESIDENT", "VICE_PRESIDENT", "CORE"].includes(member.role))
+      ) {
+        throw new Error("Bạn không có quyền tìm phòng cho sự kiện này.");
+      }
+      clubEventId = event.id;
+    }
     const context = await buildFacilitySchoolState(db, {
       tenantId: actor.tenantId,
       date: parsed.data.date,
@@ -226,6 +246,12 @@ export async function createRoomRequestFromPlanAction(input: {
             entityType: "RoomRequest",
             entityId: created.id,
           })),
+        });
+      }
+      if (clubEventId) {
+        await tx.clubEvent.update({
+          where: { id: clubEventId },
+          data: { roomRequestId: created.id, roomResolved: false, status: "PENDING" },
         });
       }
       await tx.auditEvent.create({

@@ -662,6 +662,7 @@ model RoomRequest {
   resolvedAt    DateTime?
   recommendation Json?
   booking       RoomBooking?
+  clubEvent     ClubEvent?
 }
 
 model RoomBooking {
@@ -688,6 +689,12 @@ model Club {
   documents   ClubDocument[]
   finance     FinanceEntry[]
   events      ClubEvent[]
+  advisors    ClubAdvisor[]
+  description    String?
+  proposedBy     String?
+  decisionReason String?
+  approvedBy     String?
+  approvedAt     DateTime?
 }
 
 model ClubMembership {
@@ -697,6 +704,20 @@ model ClubMembership {
   userId String
   role   ClubRole
   status ClubMemberStatus
+
+  @@unique([clubId, userId])
+}
+
+model ClubAdvisor {
+  id        String   @id @default(uuid())
+  clubId    String
+  club      Club     @relation(fields: [clubId], references: [id], onDelete: Cascade)
+  teacherId String
+  isPrimary Boolean  @default(false)
+  addedBy   String
+  createdAt DateTime @default(now())
+
+  @@unique([clubId, teacherId])
 }
 
 model ClubDocument {
@@ -728,6 +749,9 @@ model FinanceEntry {
   status      FinanceStatus
   createdBy   String
   approvedBy  String?
+  voidedBy    String?
+  voidReason  String?
+  createdAt   DateTime @default(now())
 }
 
 model ClubEvent {
@@ -738,9 +762,11 @@ model ClubEvent {
   startAt     DateTime
   endAt       DateTime
   visibility  EventVisibility
-  roomRequired Boolean
-  roomResolved Boolean        @default(false)
-  status      String
+  roomRequired  Boolean         
+  roomResolved  Boolean         @default(false)
+  roomRequestId String?         @unique
+  roomRequest   RoomRequest?    @relation(fields: [roomRequestId], references: [id])
+  status        String
 }
 
 model SchoolEvent {

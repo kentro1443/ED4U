@@ -20,6 +20,8 @@ interface PlannerProps {
   roomTypes: { code: string; name: string }[];
   features: { code: string; name: string }[];
   canRequest: boolean;
+  initialPrompt?: string;
+  clubEventId?: string | null;
 }
 
 const EXAMPLES = [
@@ -28,10 +30,16 @@ const EXAMPLES = [
   "20 người, thứ Năm từ 18:00-20:00, cần máy chiếu",
 ] as const;
 
-export function FacilityPlanner({ roomTypes, features, canRequest }: PlannerProps) {
+export function FacilityPlanner({
+  roomTypes,
+  features,
+  canRequest,
+  initialPrompt = "",
+  clubEventId = null,
+}: PlannerProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
-  const [rawText, setRawText] = useState("");
+  const [rawText, setRawText] = useState(initialPrompt);
   const [date, setDate] = useState("");
   const [attendees, setAttendees] = useState("");
   const [start, setStart] = useState("");
@@ -116,7 +124,11 @@ export function FacilityPlanner({ roomTypes, features, canRequest }: PlannerProp
     const input = criteria();
     if (!input) return;
     startTransition(async () => {
-      const response = await createRoomRequestFromPlanAction({ criteria: input, roomId });
+      const response = await createRoomRequestFromPlanAction({
+        criteria: input,
+        roomId,
+        clubEventId,
+      });
       if (!response.ok) {
         setMessage({ type: "error", text: response.error });
         return;

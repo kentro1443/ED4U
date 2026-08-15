@@ -157,6 +157,10 @@ export async function approveRoomRequestTx(
         decisionReason: null,
       },
     });
+    await tx.clubEvent.updateMany({
+      where: { roomRequestId: req.id },
+      data: { roomResolved: true },
+    });
     await tx.notification.create({
       data: {
         tenantId: input.tenantId,
@@ -205,6 +209,10 @@ export async function rejectRoomRequestTx(
         resolvedBy: input.actorId,
         resolvedAt: new Date(),
       },
+    });
+    await tx.clubEvent.updateMany({
+      where: { roomRequestId: req.id },
+      data: { roomResolved: false, status: "NEEDS_RESOURCE" },
     });
     await tx.notification.create({
       data: {

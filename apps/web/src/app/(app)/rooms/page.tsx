@@ -19,8 +19,13 @@ function formatSchoolTime(date: Date, timeZone: string) {
   }).format(date);
 }
 
-export default async function RoomsPage() {
+export default async function RoomsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ prompt?: string; clubEvent?: string }>;
+}) {
   const actor = await requireActor();
+  const params = await searchParams;
   const [tenant, roomTypes, features, recentRequests] = await Promise.all([
     db.tenant.findUniqueOrThrow({ where: { id: actor.tenantId }, select: { timezone: true } }),
     db.roomType.findMany({
@@ -55,7 +60,13 @@ export default async function RoomsPage() {
         description="Tìm phương án trên trạng thái phòng trực tiếp. Đề xuất không giữ chỗ; chỉ School Admin có thể xác nhận booking sau khi tái kiểm tra ràng buộc cứng."
       />
 
-      <FacilityPlanner roomTypes={roomTypes} features={features} canRequest={canRequest} />
+      <FacilityPlanner
+        roomTypes={roomTypes}
+        features={features}
+        canRequest={canRequest}
+        initialPrompt={params.prompt ?? ""}
+        clubEventId={params.clubEvent ?? null}
+      />
 
       <section className="space-y-3 border-t border-[var(--hairline)] pt-6">
         <div>

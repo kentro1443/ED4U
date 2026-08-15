@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { can } from "@ed4u/domain";
+import { can, canViewDocument, type ClubRole, type DocVisibility } from "@ed4u/domain";
 import { db } from "@/lib/db";
 import { requireActor } from "@/lib/authz";
 import { readPrivateFile } from "@/lib/files/privateStorage";
@@ -16,13 +16,34 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
     where: { fileId: id, application: { tenantId: actor.tenantId } },
     include: { application: true },
   });
-  if (!version) return new NextResponse("Forbidden", { status: 403 });
-  const application = version.application;
-  const allowed =
-    application.studentId === actor.userId ||
-    application.currentTeacherId === actor.userId ||
-    application.pendingTransferTo === actor.userId ||
-    (actor.roles.includes("SCHOOL_ADMIN") && can(actor, "application.review"));
+  let allowed = false;
+  if (version) {
+    const application = version.application;
+    allowed =
+      application.studentId === actor.userId ||
+      application.currentTeacherId === actor.userId ||
+      application.pendingTransferTo === actor.userId ||
+      (actor.roles.includes("SCHOOL_ADMIN") && can(actor, "application.review"));
+  } else {
+    const clubVersion = await db.clubDocumentVersion.findFirst({
+      where: { fileId: id, document: { club: { tenantId: actor.tenantId } } },
+      include: { document: true },
+    });
+    if (clubVersion) {
+      const admin = actor.roles.includes("SCHOOL_ADMIN") && can(actor, "club.manage");
+      const membership = await db.clubMembership.findFirst({
+        where: { clubId: clubVersion.document.clubId, userId: actor.userId, status: "ACTIVE" },
+      });
+      allowed =
+        admin ||
+        (!!membership &&
+          canViewDocument(
+            membership.role as ClubRole,
+            clubVersion.document.visibility as DocVisibility,
+            false,
+          ));
+    }
+  }
   if (!allowed) return new NextResponse("Forbidden", { status: 403 });
 
   try {
