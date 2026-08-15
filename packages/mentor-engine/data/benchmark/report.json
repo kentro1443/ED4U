@@ -1,0 +1,120 @@
+{
+  "reportVersion": "benchmark-report.v1",
+  "status": "PASS",
+  "versions": {
+    "engine": "mentor-engine-v1.0.0",
+    "schema": "mentor-engine-schema-v1.0.0",
+    "ontology": "ontology.v1",
+    "aliases": "aliases.v1",
+    "weights": "weights.v1",
+    "package": "@ed4u/mentor-engine@1.0.0",
+    "gitCommit": null,
+    "gitWorkingTreeDirty": null
+  },
+  "dataset": {
+    "mentors": {
+      "file": "mentors.mock.json",
+      "records": 500,
+      "sha256": "664286aeba9bc5e458a3ce736c14cfb1978e7601b3ab1ff4043417d87cc2ba91"
+    },
+    "requests": {
+      "file": "requests.mock.json",
+      "records": 1000,
+      "sha256": "0aeb591732983558856c64f1a766027044956c98661bd3c952801854233fd986"
+    }
+  },
+  "run": {
+    "timestampUtc": "2026-08-15T16:24:40.478Z",
+    "durationMs": 393,
+    "node": "v24.19.0",
+    "platform": "darwin",
+    "arch": "arm64",
+    "cpu": "Apple M4",
+    "cpuCount": 10,
+    "totalMemoryMb": 16384
+  },
+  "engineering": {
+    "requestsEvaluated": 1000,
+    "mentorsPerRequest": 500,
+    "recommendationsProduced": 3483,
+    "hardConstraintViolations": 0,
+    "hardConstraintViolationRate": 0,
+    "validResults": 1000,
+    "validResultRate": 1,
+    "unhandledCrashes": 0,
+    "duplicateRecommendations": 0,
+    "invalidScores": 0,
+    "deterministicRequests": 1000,
+    "determinismRate": 1,
+    "feasibleRequests": 768,
+    "infeasibleRequests": 232,
+    "latencyMs": {
+      "p50": 0.278,
+      "p95": 0.365,
+      "max": 2.816,
+      "mean": 0.283
+    }
+  },
+  "comparison": {
+    "note": "These measure how differently rankerV1 and each baseline order the same candidates. A low overlap means they disagree; it does not mean either is better. Only human labels can establish that.",
+    "baselineA": {
+      "description": "Eligible mentors sorted by their credential in the goal domain.",
+      "comparedRequests": 768,
+      "sameTopMentorRate": 0.329427,
+      "meanKendallTau": {
+        "mean": 0.2016,
+        "measured": 575,
+        "total": 768
+      },
+      "meanTop3Overlap": {
+        "mean": 0.3902,
+        "measured": 768,
+        "total": 768
+      }
+    },
+    "baselineB": {
+      "description": "Static non-request-aware weighted score; missing data counts as zero instead of being redistributed.",
+      "comparedRequests": 768,
+      "sameTopMentorRate": 0.834635,
+      "meanKendallTau": {
+        "mean": 0.8252,
+        "measured": 724,
+        "total": 768
+      },
+      "meanTop3Overlap": {
+        "mean": 0.8436,
+        "measured": 768,
+        "total": 768
+      }
+    }
+  },
+  "humanQuality": {
+    "status": "NOT_MEASURED",
+    "reason": "No human labels are present in data/gold/labels/. NDCG@3, Precision@3 and pairwise agreement are undefined without independent reviewer judgements and are deliberately not estimated.",
+    "reviewers": [],
+    "scenariosInTemplate": 60,
+    "scenariosMeasured": 0,
+    "coverage": {
+      "scenarioCoverage": 0,
+      "candidateCoverage": 0,
+      "partialScenarios": 0
+    },
+    "metrics": {
+      "ndcgAt3": null,
+      "precisionAt3": null,
+      "pairwiseAgreement": null
+    },
+    "interReviewerAgreement": {
+      "status": "NOT_MEASURED",
+      "reason": "Fewer than two reviewers have labelled any shared scenario.",
+      "comparedScenarios": 0,
+      "reviewerPairs": [],
+      "agreement": null
+    },
+    "perReviewer": [],
+    "measurements": [],
+    "issues": []
+  },
+  "failures": [],
+  "failureCount": 0
+}

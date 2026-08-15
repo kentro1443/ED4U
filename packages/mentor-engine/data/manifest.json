@@ -1,0 +1,109 @@
+{
+  "generatorVersion": "mock-generator-v1.1.0",
+  "engineVersion": "mentor-engine-v1.0.0",
+  "schemaVersion": "mentor-engine-schema-v1.0.0",
+  "ontologyVersion": "ontology.v1",
+  "seed": 42,
+  "seedDerivation": {
+    "mentors": 42,
+    "requests": 43,
+    "adversarial": 44
+  },
+  "note": "Deterministic output. No timestamp is recorded so regeneration is byte-identical.",
+  "files": [
+    {
+      "name": "mentors.mock.json",
+      "records": 500,
+      "bytes": 414628,
+      "sha256": "664286aeba9bc5e458a3ce736c14cfb1978e7601b3ab1ff4043417d87cc2ba91"
+    },
+    {
+      "name": "requests.mock.json",
+      "records": 1000,
+      "bytes": 577926,
+      "sha256": "0aeb591732983558856c64f1a766027044956c98661bd3c952801854233fd986"
+    },
+    {
+      "name": "adversarial.mock.json",
+      "records": 100,
+      "bytes": 144124,
+      "sha256": "64e1077b88f3b674715031894f00c2605857c69cfb21ae8fa57e5a02ac6e18fd"
+    }
+  ],
+  "distribution": {
+    "mentors": {
+      "count": 500,
+      "verified": 407,
+      "unverified": 93,
+      "byDomainCombination": {
+        "HSK": 54,
+        "IELTS+HSK": 34,
+        "IELTS+SAT+HSK": 39,
+        "IELTS+SAT": 54,
+        "IELTS": 232,
+        "SAT+HSK": 14,
+        "SAT": 73
+      },
+      "withIelts": 359,
+      "withSat": 180,
+      "withHsk": 141,
+      "multiDomain": 141,
+      "incompleteProfiles": 55,
+      "withoutRating": 56,
+      "withoutAvailability": 10,
+      "price": {
+        "min": 150000,
+        "median": 300000,
+        "max": 590000
+      },
+      "ieltsOverall": {
+        "5.5": 2,
+        "6.0": 15,
+        "6.5": 46,
+        "7.0": 78,
+        "7.5": 96,
+        "8.0": 73,
+        "8.5": 35,
+        "9.0": 14
+      }
+    },
+    "requests": {
+      "count": 1000,
+      "byDomain": {
+        "HSK": 154,
+        "IELTS": 614,
+        "SAT": 232
+      },
+      "withCurrentScore": 823,
+      "withTargetScore": 890,
+      "withFocusSkills": 867,
+      "verifiedOnly": 414,
+      "withBudget": 713,
+      "withMinCredential": 250,
+      "withRequiredExpertise": 149,
+      "withFreeText": 209,
+      "availabilitySlots": {
+        "min": 1,
+        "max": 4
+      }
+    },
+    "adversarial": {
+      "count": 100,
+      "labels": 10,
+      "byLabel": {
+        "ALL_CANDIDATES_UNVERIFIED": 10,
+        "CORRUPTED_RECORD": 10,
+        "DUPLICATE_MENTOR_IDS": 10,
+        "EMPTY_PREFERENCE_SET": 10,
+        "IMPOSSIBLE_HARD_CONSTRAINTS": 10,
+        "MISSING_CREDENTIAL": 10,
+        "NO_COMPATIBLE_AVAILABILITY": 10,
+        "NO_MENTOR_WITHIN_BUDGET": 10,
+        "RARE_DOMAIN_COMBINATION": 10,
+        "UNKNOWN_SKILL": 10
+      },
+      "deliberatelyInvalid": 30,
+      "validPayloads": 70
+    }
+  }
+}

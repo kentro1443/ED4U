@@ -1,0 +1,42 @@
+{
+  "version": "ontology.v1",
+  "description": "Closed vocabulary the V1 engine can execute. Anything outside this file is UNSUPPORTED by definition, never silently dropped.",
+  "domains": ["IELTS", "SAT", "HSK"],
+  "skills": {
+    "IELTS": ["IELTS.LISTENING", "IELTS.READING", "IELTS.WRITING", "IELTS.SPEAKING"],
+    "SAT": ["SAT.MATH", "SAT.READING_WRITING"],
+    "HSK": ["HSK.LISTENING", "HSK.READING", "HSK.WRITING"]
+  },
+  "teachingStyles": [
+    "PATIENT",
+    "STRUCTURED",
+    "EXAM_FOCUSED",
+    "CONVERSATIONAL",
+    "INTENSIVE",
+    "FLEXIBLE",
+    "ANALYTICAL",
+    "MOTIVATING"
+  ],
+  "languages": ["VI", "EN", "ZH"],
+  "genders": ["female", "male", "other", "undisclosed"],
+  "availability": {
+    "weekdays": ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"],
+    "minutes": ["00", "30"],
+    "format": "WEEKDAY_HH_MM",
+    "note": "Weekly recurring buckets on the hour or half hour, 24-hour clock. Not calendar dates."
+  },
+  "credentialFields": {
+    "IELTS": {
+      "scale": "BAND_0_9_STEP_0_5",
+      "fields": ["overall", "listening", "reading", "writing", "speaking"]
+    },
+    "SAT": {
+      "scale": "TOTAL_400_1600",
+      "fields": ["total", "math", "readingWriting"]
+    },
+    "HSK": {
+      "scale": "LEVEL_1_6",
+      "fields": ["level"]
+    }
+  }
+}

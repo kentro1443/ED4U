@@ -1,0 +1,51 @@
+{
+  "name": "@ed4u/mentor-engine",
+  "version": "1.0.0",
+  "description": "Deterministic, explainable mentor-student matching engine for ED4U.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "config",
+    "README.md",
+    "CHANGELOG.md",
+    "INTEGRATION.md"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "generate": "tsx scripts/generateDataset.ts",
+    "benchmark": "tsx scripts/benchmark.ts",
+    "benchmark:smoke": "tsx scripts/benchmark.ts --requests 20 --topK 3",
+    "verify:external": "npm run build && tsx scripts/externalConsumer.ts",
+    "goldset:template": "tsx scripts/generateGoldSetTemplate.ts",
+    "test": "vitest run",
+    "test:unit": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "zod": "^4.0.5"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.31.0",
+    "@types/node": "^24.0.0",
+    "eslint": "^9.31.0",
+    "tsx": "^4.23.12",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.37.0",
+    "vitest": "^3.2.4"
+  },
+  "license": "UNLICENSED",
+  "private": true
+}

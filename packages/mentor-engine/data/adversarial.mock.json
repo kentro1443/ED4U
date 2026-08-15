@@ -1,0 +1,5830 @@
+[
+  {
+    "id": "ADV-001",
+    "label": "NO_MENTOR_WITHIN_BUDGET",
+    "target": "REQUEST",
+    "expectsSchemaValid": true,
+    "description": "Budget of 1000 VND/hour is far below any real mentor price.",
+    "expectedBehavior": "Every mentor is filtered out on PRICE; the engine returns NO_FEASIBLE_MATCH rather than relaxing the budget.",
+    "request": {
+      "requestId": "ADV-001",
+      "goal": {
+        "domain": "IELTS",
+        "focusSkills": [
+          "IELTS.WRITING"
+        ]
+      },
+      "hardConstraints": {
+        "verifiedOnly": false,
+        "maxPricePerHour": 1000,
+        "requiredExpertise": [],
+        "requireAllAvailability": false
+      },
+      "availability": [
+        "TUE_19_00"
+      ],
+      "softPreferences": {
+        "teachingStyles": [],
+        "languages": []
+      },
+      "additionalPreferences": []
+    }
+  },
+  {
+    "id": "ADV-002",
+    "label": "NO_MENTOR_WITHIN_BUDGET",
+    "target": "REQUEST",
+    "expectsSchemaValid": true,
+    "description": "Budget of 1500 VND/hour is far below any real mentor price.",
+    "expectedBehavior": "Every mentor is filtered out on PRICE; the engine returns NO_FEASIBLE_MATCH rather than relaxing the budget.",
+    "request": {
+      "requestId": "ADV-002",
+      "goal": {
+        "domain": "IELTS",
+        "focusSkills": [
+          "IELTS.WRITING"
+        ]
+      },
+      "hardConstraints": {
+        "verifiedOnly": false,
+        "maxPricePerHour": 1500,
+        "requiredExpertise": [],
+        "requireAllAvailability": false
+      },
+      "availability": [
+        "TUE_19_00"
+      ],
+      "softPreferences": {
+        "teachingStyles": [],
+        "languages": []
+      },
+      "additionalPreferences": []
+    }
+  },
+  {
+    "id": "ADV-003",
+    "label": "NO_MENTOR_WITHIN_BUDGET",
+    "target": "REQUEST",
+    "expectsSchemaValid": true,
+    "description": "Budget of 2000 VND/hour is far below any real mentor price.",
+    "expectedBehavior": "Every mentor is filtered out on PRICE; the engine returns NO_FEASIBLE_MATCH rather than relaxing the budget.",
+    "request": {
+      "requestId": "ADV-003",
+      "goal": {
+        "domain": "IELTS",
+        "focusSkills": [
+          "IELTS.WRITING"
+        ]
+      },
+      "hardConstraints": {
+        "verifiedOnly": false,
+        "maxPricePerHour": 2000,
+        "requiredExpertise": [],
+        "requireAllAvailability": false
+      },
+      "availability": [
+        "TUE_19_00"
+      ],
+      "softPreferences": {
+        "teachingStyles": [],
+        "languages": []
+      },
+      "additionalPreferences": []
+    }
+  },
+  {
+    "id": "ADV-004",
+    "label": "NO_MENTOR_WITHIN_BUDGET",
+    "target": "REQUEST",
+    "expectsSchemaValid": true,
+    "description": "Budget of 2500 VND/hour is far below any real mentor price.",
+    "expectedBehavior": "Every mentor is filtered out on PRICE; the engine returns NO_FEASIBLE_MATCH rather than relaxing the budget.",
+    "request": {
+      "requestId": "ADV-004",
+      "goal": {
+        "domain": "IELTS",
+        "focusSkills": [
+          "IELTS.WRITING"
+        ]
+      },
+      "hardConstraints": {
+        "verifiedOnly": false,
+        "maxPricePerHour": 2500,
+        "requiredExpertise": [],
+        "requireAllAvailability": false
+      },
+      "availability": [
+        "TUE_19_00"
+      ],
+      "softPreferences": {
+        "teachingStyles": [],
+        "languages": []
+      },
+      "additionalPreferences": []
+    }
+  },
+  {
+    "id": "ADV-005",
+    "label": "NO_MENTOR_WITHIN_BUDGET",
+    "target": "REQUEST",
+    "expectsSchemaValid": true,
+    "description": "Budget of 3000 VND/hour is far below any real mentor price.",
+    "expectedBehavior": "Every mentor is filtered out on PRICE; the engine returns NO_FEASIBLE_MATCH rather than relaxing the budget.",
+    "request": {
+      "requestId": "ADV-005",
+      "goal": {
+        "domain": "IELTS",
+        "focusSkills": [
+          "IELTS.WRITING"
+        ]
+      },
+      "hardConstraints": {
+        "verifiedOnly": false,
+        "maxPricePerHour": 3000,
+        "requiredExpertise": [],
+        "requireAllAvailability": false
+      },
+      "availability": [
+        "TUE_19_00"
+      ],
+      "softPreferences": {
+        "teachingStyles": [],
+        "languages": []
+      },
+      "additionalPreferences": []
+    }
+  },
+  {
+    "id": "ADV-006",
+    "label": "NO_MENTOR_WITHIN_BUDGET",
+    "target": "REQUEST",
+    "expectsSchemaValid": true,
+    "description": "Budget of 3500 VND/hour is far below any real mentor price.",
+    "expectedBehavior": "Every mentor is filtered out on PRICE; the engine returns NO_FEASIBLE_MATCH rather than relaxing the budget.",
+    "request": {
+      "requestId": "ADV-006",
+      "goal": {
+        "domain": "IELTS",
+        "focusSkills": [
+          "IELTS.WRITING"
+        ]
+      },
+      "hardConstraints": {
+        "verifiedOnly": false,
+        "maxPricePerHour": 3500,
+        "requiredExpertise": [],
+        "requireAllAvailability": false
+      },
+      "availability": [
+        "TUE_19_00"
+      ],
+      "softPreferences": {
+        "teachingStyles": [],
+        "languages": []
+      },
+      "additionalPreferences": []
+    }
+  },
+  {
+    "id": "ADV-007",
+    "label": "NO_MENTOR_WITHIN_BUDGET",
+    "target": "REQUEST",
+    "expectsSchemaValid": true,
+    "description": "Budget of 4000 VND/hour is far below any real mentor price.",
+    "expectedBehavior": "Every mentor is filtered out on PRICE; the engine returns NO_FEASIBLE_MATCH rather than relaxing the budget.",
+    "request": {
+      "requestId": "ADV-007",
+      "goal": {
+        "domain": "IELTS",
+        "focusSkills": [
+          "IELTS.WRITING"
+        ]
+      },
+      "hardConstraints": {
+        "verifiedOnly": false,
+        "maxPricePerHour": 4000,
+        "requiredExpertise": [],
+        "requireAllAvailability": false
+      },
+      "availability": [
+        "TUE_19_00"
+      ],
+      "softPreferences": {
+        "teachingStyles": [],
+        "languages": []
+      },
+      "additionalPreferences": []
+    }
+  },
+  {
+    "id": "ADV-008",
+    "label": "NO_MENTOR_WITHIN_BUDGET",
+    "target": "REQUEST",
+    "expectsSchemaValid": true,
+    "description": "Budget of 4500 VND/hour is far below any real mentor price.",
+    "expectedBehavior": "Every mentor is filtered out on PRICE; the engine returns NO_FEASIBLE_MATCH rather than relaxing the budget.",
+    "request": {
+      "requestId": "ADV-008",
+      "goal": {
+        "domain": "IELTS",
+        "focusSkills": [
+          "IELTS.WRITING"
+        ]
+      },
+      "hardConstraints": {
+        "verifiedOnly": false,
+        "maxPricePerHour": 4500,
+        "requiredExpertise": [],
+        "requireAllAvailability": false
+      },
+      "availability": [
+        "TUE_19_00"
+      ],
+      "softPreferences": {
+        "teachingStyles": [],
+        "languages": []
+      },
+      "additionalPreferences": []
+    }
+  },
+  {
+    "id": "ADV-009",
+    "label": "NO_MENTOR_WITHIN_BUDGET",
+    "target": "REQUEST",
+    "expectsSchemaValid": true,
+    "description": "Budget of 5000 VND/hour is far below any real mentor price.",
+    "expectedBehavior": "Every mentor is filtered out on PRICE; the engine returns NO_FEASIBLE_MATCH rather than relaxing the budget.",
+    "request": {
+      "requestId": "ADV-009",
+      "goal": {
+        "domain": "IELTS",
+        "focusSkills": [
+          "IELTS.WRITING"
+        ]
+      },
+      "hardConstraints": {
+        "verifiedOnly": false,
+        "maxPricePerHour": 5000,
+        "requiredExpertise": [],
+        "requireAllAvailability": false
+      },
+      "availability": [
+        "TUE_19_00"
+      ],
+      "softPreferences": {
+        "teachingStyles": [],
+        "languages": []
+      },
+      "additionalPreferences": []
+    }
+  },
+  {
+    "id": "ADV-010",
+    "label": "NO_MENTOR_WITHIN_BUDGET",
+    "target": "REQUEST",
+    "expectsSchemaValid": true,
+    "description": "Budget of 5500 VND/hour is far below any real mentor price.",
+    "expectedBehavior": "Every mentor is filtered out on PRICE; the engine returns NO_FEASIBLE_MATCH rather than relaxing the budget.",
+    "request": {
+      "requestId": "ADV-010",
+      "goal": {
+        "domain": "IELTS",
+        "focusSkills": [
+          "IELTS.WRITING"
+        ]
+      },
+      "hardConstraints": {
+        "verifiedOnly": false,
+        "maxPricePerHour": 5500,
+        "requiredExpertise": [],
+        "requireAllAvailability": false
+      },
+      "availability": [
+        "TUE_19_00"
+      ],
+      "softPreferences": {
+        "teachingStyles": [],
+        "languages": []
+      },
+      "additionalPreferences": []
+    }
+  },
+  {
+    "id": "ADV-011",
+    "label": "NO_COMPATIBLE_AVAILABILITY",
+    "target": "REQUEST",
+    "expectsSchemaValid": true,
+    "description": "Student is only free in the small hours, when no mentor teaches.",
+    "expectedBehavior": "Every mentor is filtered out on AVAILABILITY; no mentor is recommended on the strength of other features.",
+    "request": {
+      "requestId": "ADV-011",
+      "goal": {
+        "domain": "IELTS",
+        "focusSkills": [
+          "IELTS.WRITING"
+        ]
+      },
+      "hardConstraints": {
+        "verifiedOnly": false,
+        "requiredExpertise": [],
+        "requireAllAvailability": false
+      },
+      "availability": [
+        "MON_01_00",
+        "TUE_01_30"
+      ],
+      "softPreferences": {
+        "teachingStyles": [],
+        "languages": []
+      },
+      "additionalPreferences": []
+    }
+  },
+  {
+    "id": "ADV-012",
+    "label": "NO_COMPATIBLE_AVAILABILITY",
+    "target": "REQUEST",
+    "expectsSchemaValid": true,
+    "description": "Student is only free in the small hours, when no mentor teaches.",
+    "expectedBehavior": "Every mentor is filtered out on AVAILABILITY; no mentor is recommended on the strength of other features.",
+    "request": {
+      "requestId": "ADV-012",
+      "goal": {
+        "domain": "IELTS",
+        "focusSkills": [
+          "IELTS.WRITING"
+        ]
+      },
+      "hardConstraints": {
+        "verifiedOnly": false,
+        "requiredExpertise": [],
+        "requireAllAvailability": false
+      },
+      "availability": [
+        "MON_02_00",
+        "TUE_02_30"
+      ],
+      "softPreferences": {
+        "teachingStyles": [],
+        "languages": []
+      },
+      "additionalPreferences": []
+    }
+  },
+  {
+    "id": "ADV-013",
+    "label": "NO_COMPATIBLE_AVAILABILITY",
+    "target": "REQUEST",
+    "expectsSchemaValid": true,
+    "description": "Student is only free in the small hours, when no mentor teaches.",
+    "expectedBehavior": "Every mentor is filtered out on AVAILABILITY; no mentor is recommended on the strength of other features.",
+    "request": {
+      "requestId": "ADV-013",
+      "goal": {
+        "domain": "IELTS",
+        "focusSkills": [
+          "IELTS.WRITING"
+        ]
+      },
+      "hardConstraints": {
+        "verifiedOnly": false,
+        "requiredExpertise": [],
+        "requireAllAvailability": false
+      },
+      "availability": [
+        "MON_03_00",
+        "TUE_03_30"
+      ],
+      "softPreferences": {
+        "teachingStyles": [],
+        "languages": []
+      },
+      "additionalPreferences": []
+    }
+  },
+  {
+    "id": "ADV-014",
+    "label": "NO_COMPATIBLE_AVAILABILITY",
+    "target": "REQUEST",
+    "expectsSchemaValid": true,
+    "description": "Student is only free in the small hours, when no mentor teaches.",
+    "expectedBehavior": "Every mentor is filtered out on AVAILABILITY; no mentor is recommended on the strength of other features.",
+    "request": {
+      "requestId": "ADV-014",
+      "goal": {
+        "domain": "IELTS",
+        "focusSkills": [
+          "IELTS.WRITING"
+        ]
+      },
+      "hardConstraints": {
+        "verifiedOnly": false,
+        "requiredExpertise": [],
+        "requireAllAvailability": false
+      },
+      "availability": [
+        "MON_04_00",
+        "TUE_04_30"
+      ],
+      "softPreferences": {
+        "teachingStyles": [],
+        "languages": []
+      },
+      "additionalPreferences": []
+    }
+  },
+  {
+    "id": "ADV-015",
+    "label": "NO_COMPATIBLE_AVAILABILITY",
+    "target": "REQUEST",
+    "expectsSchemaValid": true,
+    "description": "Student is only free in the small hours, when no mentor teaches.",
+    "expectedBehavior": "Every mentor is filtered out on AVAILABILITY; no mentor is recommended on the strength of other features.",
+    "request": {
+      "requestId": "ADV-015",
+      "goal": {
+        "domain": "IELTS",
+        "focusSkills": [
+          "IELTS.WRITING"
+        ]
+      },
+      "hardConstraints": {
+        "verifiedOnly": false,
+        "requiredExpertise": [],
+        "requireAllAvailability": false
+      },
+      "availability": [
+        "MON_05_00",
+        "TUE_01_30"
+      ],
+      "softPreferences": {
+        "teachingStyles": [],
+        "languages": []
+      },
+      "additionalPreferences": []
+    }
+  },
+  {
+    "id": "ADV-016",
+    "label": "NO_COMPATIBLE_AVAILABILITY",
+    "target": "REQUEST",
+    "expectsSchemaValid": true,
+    "description": "Student is only free in the small hours, when no mentor teaches.",
+    "expectedBehavior": "Every mentor is filtered out on AVAILABILITY; no mentor is recommended on the strength of other features.",
+    "request": {
+      "requestId": "ADV-016",
+      "goal": {
+        "domain": "IELTS",
+        "focusSkills": [
+          "IELTS.WRITING"
+        ]
+      },
+      "hardConstraints": {
+        "verifiedOnly": false,
+        "requiredExpertise": [],
+        "requireAllAvailability": false
+      },
+      "availability": [
+        "MON_01_00",
+        "TUE_02_30"
+      ],
+      "softPreferences": {
+        "teachingStyles": [],
+        "languages": []
+      },
+      "additionalPreferences": []
+    }
+  },
+  {
+    "id": "ADV-017",
+    "label": "NO_COMPATIBLE_AVAILABILITY",
+    "target": "REQUEST",
+    "expectsSchemaValid": true,
+    "description": "Student is only free in the small hours, when no mentor teaches.",
+    "expectedBehavior": "Every mentor is filtered out on AVAILABILITY; no mentor is recommended on the strength of other features.",
+    "request": {
+      "requestId": "ADV-017",
+      "goal": {
+        "domain": "IELTS",
+        "focusSkills": [
+          "IELTS.WRITING"
+        ]
+      },
+      "hardConstraints": {
+        "verifiedOnly": false,
+        "requiredExpertise": [],
+        "requireAllAvailability": false
+      },
+      "availability": [
+        "MON_02_00",
+        "TUE_03_30"
+      ],
+      "softPreferences": {
+        "teachingStyles": [],
+        "languages": []
+      },
+      "additionalPreferences": []
+    }
+  },
+  {
+    "id": "ADV-018",
+    "label": "NO_COMPATIBLE_AVAILABILITY",
+    "target": "REQUEST",
+    "expectsSchemaValid": true,
+    "description": "Student is only free in the small hours, when no mentor teaches.",
+    "expectedBehavior": "Every mentor is filtered out on AVAILABILITY; no mentor is recommended on the strength of other features.",
+    "request": {
+      "requestId": "ADV-018",
+      "goal": {
+        "domain": "IELTS",
+        "focusSkills": [
+          "IELTS.WRITING"
+        ]
+      },
+      "hardConstraints": {
+        "verifiedOnly": false,
+        "requiredExpertise": [],
+        "requireAllAvailability": false
+      },
+      "availability": [
+        "MON_03_00",
+        "TUE_04_30"
+      ],
+      "softPreferences": {
+        "teachingStyles": [],
+        "languages": []
+      },
+      "additionalPreferences": []
+    }
+  },
+  {
+    "id": "ADV-019",
+    "label": "NO_COMPATIBLE_AVAILABILITY",
+    "target": "REQUEST",
+    "expectsSchemaValid": true,
+    "description": "Student is only free in the small hours, when no mentor teaches.",
+    "expectedBehavior": "Every mentor is filtered out on AVAILABILITY; no mentor is recommended on the strength of other features.",
+    "request": {
+      "requestId": "ADV-019",
+      "goal": {
+        "domain": "IELTS",
+        "focusSkills": [
+          "IELTS.WRITING"
+        ]
+      },
+      "hardConstraints": {
+        "verifiedOnly": false,
+        "requiredExpertise": [],
+        "requireAllAvailability": false
+      },
+      "availability": [
+        "MON_04_00",
+        "TUE_01_30"
+      ],
+      "softPreferences": {
+        "teachingStyles": [],
+        "languages": []
+      },
+      "additionalPreferences": []
+    }
+  },
+  {
+    "id": "ADV-020",
+    "label": "NO_COMPATIBLE_AVAILABILITY",
+    "target": "REQUEST",
+    "expectsSchemaValid": true,
+    "description": "Student is only free in the small hours, when no mentor teaches.",
+    "expectedBehavior": "Every mentor is filtered out on AVAILABILITY; no mentor is recommended on the strength of other features.",
+    "request": {
+      "requestId": "ADV-020",
+      "goal": {
+        "domain": "IELTS",
+        "focusSkills": [
+          "IELTS.WRITING"
+        ]
+      },
+      "hardConstraints": {
+        "verifiedOnly": false,
+        "requiredExpertise": [],
+        "requireAllAvailability": false
+      },
+      "availability": [
+        "MON_05_00",
+        "TUE_02_30"
+      ],
+      "softPreferences": {
+        "teachingStyles": [],
+        "languages": []
+      },
+      "additionalPreferences": []
+    }
+  },
+  {
+    "id": "ADV-021",
+    "label": "ALL_CANDIDATES_UNVERIFIED",
+    "target": "MENTOR_DATASET",
+    "expectsSchemaValid": true,
+    "description": "Every candidate is unverified while the request demands verifiedOnly.",
+    "expectedBehavior": "All mentors are filtered out on UNVERIFIED; the diagnostics report the count.",
+    "request": {
+      "requestId": "ADV-021",
+      "goal": {
+        "domain": "IELTS",
+        "focusSkills": [
+          "IELTS.WRITING"
+        ]
+      },
+      "hardConstraints": {
+        "verifiedOnly": true,
+        "requiredExpertise": [],
+        "requireAllAvailability": false
+      },
+      "availability": [
+        "TUE_19_00"
+      ],
+      "softPreferences": {
+        "teachingStyles": [],
+        "languages": []
+      },
+      "additionalPreferences": []
+    },
+    "mentors": [
+      {
+        "id": "ADV-021-M1",
+        "name": "Adversarial Mentor ADV-021-M1",
+        "birthYear": 2002,
+        "verified": false,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-021-M2",
+        "name": "Adversarial Mentor ADV-021-M2",
+        "birthYear": 1992,
+        "verified": false,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-021-M3",
+        "name": "Adversarial Mentor ADV-021-M3",
+        "birthYear": 1991,
+        "verified": false,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      }
+    ]
+  },
+  {
+    "id": "ADV-022",
+    "label": "ALL_CANDIDATES_UNVERIFIED",
+    "target": "MENTOR_DATASET",
+    "expectsSchemaValid": true,
+    "description": "Every candidate is unverified while the request demands verifiedOnly.",
+    "expectedBehavior": "All mentors are filtered out on UNVERIFIED; the diagnostics report the count.",
+    "request": {
+      "requestId": "ADV-022",
+      "goal": {
+        "domain": "IELTS",
+        "focusSkills": [
+          "IELTS.WRITING"
+        ]
+      },
+      "hardConstraints": {
+        "verifiedOnly": true,
+        "requiredExpertise": [],
+        "requireAllAvailability": false
+      },
+      "availability": [
+        "TUE_19_00"
+      ],
+      "softPreferences": {
+        "teachingStyles": [],
+        "languages": []
+      },
+      "additionalPreferences": []
+    },
+    "mentors": [
+      {
+        "id": "ADV-022-M1",
+        "name": "Adversarial Mentor ADV-022-M1",
+        "birthYear": 2002,
+        "verified": false,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-022-M2",
+        "name": "Adversarial Mentor ADV-022-M2",
+        "birthYear": 1999,
+        "verified": false,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-022-M3",
+        "name": "Adversarial Mentor ADV-022-M3",
+        "birthYear": 1997,
+        "verified": false,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-022-M4",
+        "name": "Adversarial Mentor ADV-022-M4",
+        "birthYear": 1997,
+        "verified": false,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      }
+    ]
+  },
+  {
+    "id": "ADV-023",
+    "label": "ALL_CANDIDATES_UNVERIFIED",
+    "target": "MENTOR_DATASET",
+    "expectsSchemaValid": true,
+    "description": "Every candidate is unverified while the request demands verifiedOnly.",
+    "expectedBehavior": "All mentors are filtered out on UNVERIFIED; the diagnostics report the count.",
+    "request": {
+      "requestId": "ADV-023",
+      "goal": {
+        "domain": "IELTS",
+        "focusSkills": [
+          "IELTS.WRITING"
+        ]
+      },
+      "hardConstraints": {
+        "verifiedOnly": true,
+        "requiredExpertise": [],
+        "requireAllAvailability": false
+      },
+      "availability": [
+        "TUE_19_00"
+      ],
+      "softPreferences": {
+        "teachingStyles": [],
+        "languages": []
+      },
+      "additionalPreferences": []
+    },
+    "mentors": [
+      {
+        "id": "ADV-023-M1",
+        "name": "Adversarial Mentor ADV-023-M1",
+        "birthYear": 1995,
+        "verified": false,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-023-M2",
+        "name": "Adversarial Mentor ADV-023-M2",
+        "birthYear": 1999,
+        "verified": false,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-023-M3",
+        "name": "Adversarial Mentor ADV-023-M3",
+        "birthYear": 2001,
+        "verified": false,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-023-M4",
+        "name": "Adversarial Mentor ADV-023-M4",
+        "birthYear": 1994,
+        "verified": false,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-023-M5",
+        "name": "Adversarial Mentor ADV-023-M5",
+        "birthYear": 1990,
+        "verified": false,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      }
+    ]
+  },
+  {
+    "id": "ADV-024",
+    "label": "ALL_CANDIDATES_UNVERIFIED",
+    "target": "MENTOR_DATASET",
+    "expectsSchemaValid": true,
+    "description": "Every candidate is unverified while the request demands verifiedOnly.",
+    "expectedBehavior": "All mentors are filtered out on UNVERIFIED; the diagnostics report the count.",
+    "request": {
+      "requestId": "ADV-024",
+      "goal": {
+        "domain": "IELTS",
+        "focusSkills": [
+          "IELTS.WRITING"
+        ]
+      },
+      "hardConstraints": {
+        "verifiedOnly": true,
+        "requiredExpertise": [],
+        "requireAllAvailability": false
+      },
+      "availability": [
+        "TUE_19_00"
+      ],
+      "softPreferences": {
+        "teachingStyles": [],
+        "languages": []
+      },
+      "additionalPreferences": []
+    },
+    "mentors": [
+      {
+        "id": "ADV-024-M1",
+        "name": "Adversarial Mentor ADV-024-M1",
+        "birthYear": 2004,
+        "verified": false,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-024-M2",
+        "name": "Adversarial Mentor ADV-024-M2",
+        "birthYear": 2002,
+        "verified": false,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-024-M3",
+        "name": "Adversarial Mentor ADV-024-M3",
+        "birthYear": 2002,
+        "verified": false,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      }
+    ]
+  },
+  {
+    "id": "ADV-025",
+    "label": "ALL_CANDIDATES_UNVERIFIED",
+    "target": "MENTOR_DATASET",
+    "expectsSchemaValid": true,
+    "description": "Every candidate is unverified while the request demands verifiedOnly.",
+    "expectedBehavior": "All mentors are filtered out on UNVERIFIED; the diagnostics report the count.",
+    "request": {
+      "requestId": "ADV-025",
+      "goal": {
+        "domain": "IELTS",
+        "focusSkills": [
+          "IELTS.WRITING"
+        ]
+      },
+      "hardConstraints": {
+        "verifiedOnly": true,
+        "requiredExpertise": [],
+        "requireAllAvailability": false
+      },
+      "availability": [
+        "TUE_19_00"
+      ],
+      "softPreferences": {
+        "teachingStyles": [],
+        "languages": []
+      },
+      "additionalPreferences": []
+    },
+    "mentors": [
+      {
+        "id": "ADV-025-M1",
+        "name": "Adversarial Mentor ADV-025-M1",
+        "birthYear": 1990,
+        "verified": false,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-025-M2",
+        "name": "Adversarial Mentor ADV-025-M2",
+        "birthYear": 1996,
+        "verified": false,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-025-M3",
+        "name": "Adversarial Mentor ADV-025-M3",
+        "birthYear": 1999,
+        "verified": false,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-025-M4",
+        "name": "Adversarial Mentor ADV-025-M4",
+        "birthYear": 1997,
+        "verified": false,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      }
+    ]
+  },
+  {
+    "id": "ADV-026",
+    "label": "ALL_CANDIDATES_UNVERIFIED",
+    "target": "MENTOR_DATASET",
+    "expectsSchemaValid": true,
+    "description": "Every candidate is unverified while the request demands verifiedOnly.",
+    "expectedBehavior": "All mentors are filtered out on UNVERIFIED; the diagnostics report the count.",
+    "request": {
+      "requestId": "ADV-026",
+      "goal": {
+        "domain": "IELTS",
+        "focusSkills": [
+          "IELTS.WRITING"
+        ]
+      },
+      "hardConstraints": {
+        "verifiedOnly": true,
+        "requiredExpertise": [],
+        "requireAllAvailability": false
+      },
+      "availability": [
+        "TUE_19_00"
+      ],
+      "softPreferences": {
+        "teachingStyles": [],
+        "languages": []
+      },
+      "additionalPreferences": []
+    },
+    "mentors": [
+      {
+        "id": "ADV-026-M1",
+        "name": "Adversarial Mentor ADV-026-M1",
+        "birthYear": 1997,
+        "verified": false,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-026-M2",
+        "name": "Adversarial Mentor ADV-026-M2",
+        "birthYear": 1997,
+        "verified": false,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-026-M3",
+        "name": "Adversarial Mentor ADV-026-M3",
+        "birthYear": 1994,
+        "verified": false,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-026-M4",
+        "name": "Adversarial Mentor ADV-026-M4",
+        "birthYear": 2004,
+        "verified": false,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-026-M5",
+        "name": "Adversarial Mentor ADV-026-M5",
+        "birthYear": 1991,
+        "verified": false,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      }
+    ]
+  },
+  {
+    "id": "ADV-027",
+    "label": "ALL_CANDIDATES_UNVERIFIED",
+    "target": "MENTOR_DATASET",
+    "expectsSchemaValid": true,
+    "description": "Every candidate is unverified while the request demands verifiedOnly.",
+    "expectedBehavior": "All mentors are filtered out on UNVERIFIED; the diagnostics report the count.",
+    "request": {
+      "requestId": "ADV-027",
+      "goal": {
+        "domain": "IELTS",
+        "focusSkills": [
+          "IELTS.WRITING"
+        ]
+      },
+      "hardConstraints": {
+        "verifiedOnly": true,
+        "requiredExpertise": [],
+        "requireAllAvailability": false
+      },
+      "availability": [
+        "TUE_19_00"
+      ],
+      "softPreferences": {
+        "teachingStyles": [],
+        "languages": []
+      },
+      "additionalPreferences": []
+    },
+    "mentors": [
+      {
+        "id": "ADV-027-M1",
+        "name": "Adversarial Mentor ADV-027-M1",
+        "birthYear": 1995,
+        "verified": false,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-027-M2",
+        "name": "Adversarial Mentor ADV-027-M2",
+        "birthYear": 2004,
+        "verified": false,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-027-M3",
+        "name": "Adversarial Mentor ADV-027-M3",
+        "birthYear": 1996,
+        "verified": false,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      }
+    ]
+  },
+  {
+    "id": "ADV-028",
+    "label": "ALL_CANDIDATES_UNVERIFIED",
+    "target": "MENTOR_DATASET",
+    "expectsSchemaValid": true,
+    "description": "Every candidate is unverified while the request demands verifiedOnly.",
+    "expectedBehavior": "All mentors are filtered out on UNVERIFIED; the diagnostics report the count.",
+    "request": {
+      "requestId": "ADV-028",
+      "goal": {
+        "domain": "IELTS",
+        "focusSkills": [
+          "IELTS.WRITING"
+        ]
+      },
+      "hardConstraints": {
+        "verifiedOnly": true,
+        "requiredExpertise": [],
+        "requireAllAvailability": false
+      },
+      "availability": [
+        "TUE_19_00"
+      ],
+      "softPreferences": {
+        "teachingStyles": [],
+        "languages": []
+      },
+      "additionalPreferences": []
+    },
+    "mentors": [
+      {
+        "id": "ADV-028-M1",
+        "name": "Adversarial Mentor ADV-028-M1",
+        "birthYear": 2004,
+        "verified": false,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-028-M2",
+        "name": "Adversarial Mentor ADV-028-M2",
+        "birthYear": 1996,
+        "verified": false,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-028-M3",
+        "name": "Adversarial Mentor ADV-028-M3",
+        "birthYear": 1999,
+        "verified": false,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-028-M4",
+        "name": "Adversarial Mentor ADV-028-M4",
+        "birthYear": 1994,
+        "verified": false,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      }
+    ]
+  },
+  {
+    "id": "ADV-029",
+    "label": "ALL_CANDIDATES_UNVERIFIED",
+    "target": "MENTOR_DATASET",
+    "expectsSchemaValid": true,
+    "description": "Every candidate is unverified while the request demands verifiedOnly.",
+    "expectedBehavior": "All mentors are filtered out on UNVERIFIED; the diagnostics report the count.",
+    "request": {
+      "requestId": "ADV-029",
+      "goal": {
+        "domain": "IELTS",
+        "focusSkills": [
+          "IELTS.WRITING"
+        ]
+      },
+      "hardConstraints": {
+        "verifiedOnly": true,
+        "requiredExpertise": [],
+        "requireAllAvailability": false
+      },
+      "availability": [
+        "TUE_19_00"
+      ],
+      "softPreferences": {
+        "teachingStyles": [],
+        "languages": []
+      },
+      "additionalPreferences": []
+    },
+    "mentors": [
+      {
+        "id": "ADV-029-M1",
+        "name": "Adversarial Mentor ADV-029-M1",
+        "birthYear": 1992,
+        "verified": false,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-029-M2",
+        "name": "Adversarial Mentor ADV-029-M2",
+        "birthYear": 1996,
+        "verified": false,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-029-M3",
+        "name": "Adversarial Mentor ADV-029-M3",
+        "birthYear": 1994,
+        "verified": false,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-029-M4",
+        "name": "Adversarial Mentor ADV-029-M4",
+        "birthYear": 1995,
+        "verified": false,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-029-M5",
+        "name": "Adversarial Mentor ADV-029-M5",
+        "birthYear": 1990,
+        "verified": false,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      }
+    ]
+  },
+  {
+    "id": "ADV-030",
+    "label": "ALL_CANDIDATES_UNVERIFIED",
+    "target": "MENTOR_DATASET",
+    "expectsSchemaValid": true,
+    "description": "Every candidate is unverified while the request demands verifiedOnly.",
+    "expectedBehavior": "All mentors are filtered out on UNVERIFIED; the diagnostics report the count.",
+    "request": {
+      "requestId": "ADV-030",
+      "goal": {
+        "domain": "IELTS",
+        "focusSkills": [
+          "IELTS.WRITING"
+        ]
+      },
+      "hardConstraints": {
+        "verifiedOnly": true,
+        "requiredExpertise": [],
+        "requireAllAvailability": false
+      },
+      "availability": [
+        "TUE_19_00"
+      ],
+      "softPreferences": {
+        "teachingStyles": [],
+        "languages": []
+      },
+      "additionalPreferences": []
+    },
+    "mentors": [
+      {
+        "id": "ADV-030-M1",
+        "name": "Adversarial Mentor ADV-030-M1",
+        "birthYear": 2002,
+        "verified": false,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-030-M2",
+        "name": "Adversarial Mentor ADV-030-M2",
+        "birthYear": 1995,
+        "verified": false,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-030-M3",
+        "name": "Adversarial Mentor ADV-030-M3",
+        "birthYear": 1998,
+        "verified": false,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      }
+    ]
+  },
+  {
+    "id": "ADV-031",
+    "label": "UNKNOWN_SKILL",
+    "target": "REQUEST",
+    "expectsSchemaValid": false,
+    "description": "Focus skill the ontology has never heard of.",
+    "expectedBehavior": "Schema rejects the canonical form; the resolver reports UNKNOWN_SKILL and preserves the raw text.",
+    "request": {
+      "requestId": "ADV-031",
+      "goal": {
+        "domain": "IELTS",
+        "focusSkills": [
+          "IELTS.GRAMMAR"
+        ]
+      },
+      "hardConstraints": {
+        "verifiedOnly": false,
+        "requiredExpertise": [],
+        "requireAllAvailability": false
+      },
+      "availability": [
+        "TUE_19_00"
+      ],
+      "softPreferences": {
+        "teachingStyles": [],
+        "languages": []
+      },
+      "additionalPreferences": []
+    }
+  },
+  {
+    "id": "ADV-032",
+    "label": "UNKNOWN_SKILL",
+    "target": "REQUEST",
+    "expectsSchemaValid": false,
+    "description": "Focus skill the ontology has never heard of.",
+    "expectedBehavior": "Schema rejects the canonical form; the resolver reports UNKNOWN_SKILL and preserves the raw text.",
+    "request": {
+      "requestId": "ADV-032",
+      "goal": {
+        "domain": "IELTS",
+        "focusSkills": [
+          "IELTS.PRONUNCIATION"
+        ]
+      },
+      "hardConstraints": {
+        "verifiedOnly": false,
+        "requiredExpertise": [],
+        "requireAllAvailability": false
+      },
+      "availability": [
+        "TUE_19_00"
+      ],
+      "softPreferences": {
+        "teachingStyles": [],
+        "languages": []
+      },
+      "additionalPreferences": []
+    }
+  },
+  {
+    "id": "ADV-033",
+    "label": "UNKNOWN_SKILL",
+    "target": "REQUEST",
+    "expectsSchemaValid": false,
+    "description": "Focus skill the ontology has never heard of.",
+    "expectedBehavior": "Schema rejects the canonical form; the resolver reports UNKNOWN_SKILL and preserves the raw text.",
+    "request": {
+      "requestId": "ADV-033",
+      "goal": {
+        "domain": "IELTS",
+        "focusSkills": [
+          "IELTS.VOCABULARY"
+        ]
+      },
+      "hardConstraints": {
+        "verifiedOnly": false,
+        "requiredExpertise": [],
+        "requireAllAvailability": false
+      },
+      "availability": [
+        "TUE_19_00"
+      ],
+      "softPreferences": {
+        "teachingStyles": [],
+        "languages": []
+      },
+      "additionalPreferences": []
+    }
+  },
+  {
+    "id": "ADV-034",
+    "label": "UNKNOWN_SKILL",
+    "target": "REQUEST",
+    "expectsSchemaValid": false,
+    "description": "Focus skill the ontology has never heard of.",
+    "expectedBehavior": "Schema rejects the canonical form; the resolver reports UNKNOWN_SKILL and preserves the raw text.",
+    "request": {
+      "requestId": "ADV-034",
+      "goal": {
+        "domain": "IELTS",
+        "focusSkills": [
+          "IELTS.GRAMMAR"
+        ]
+      },
+      "hardConstraints": {
+        "verifiedOnly": false,
+        "requiredExpertise": [],
+        "requireAllAvailability": false
+      },
+      "availability": [
+        "TUE_19_00"
+      ],
+      "softPreferences": {
+        "teachingStyles": [],
+        "languages": []
+      },
+      "additionalPreferences": []
+    }
+  },
+  {
+    "id": "ADV-035",
+    "label": "UNKNOWN_SKILL",
+    "target": "REQUEST",
+    "expectsSchemaValid": false,
+    "description": "Focus skill the ontology has never heard of.",
+    "expectedBehavior": "Schema rejects the canonical form; the resolver reports UNKNOWN_SKILL and preserves the raw text.",
+    "request": {
+      "requestId": "ADV-035",
+      "goal": {
+        "domain": "IELTS",
+        "focusSkills": [
+          "IELTS.PRONUNCIATION"
+        ]
+      },
+      "hardConstraints": {
+        "verifiedOnly": false,
+        "requiredExpertise": [],
+        "requireAllAvailability": false
+      },
+      "availability": [
+        "TUE_19_00"
+      ],
+      "softPreferences": {
+        "teachingStyles": [],
+        "languages": []
+      },
+      "additionalPreferences": []
+    }
+  },
+  {
+    "id": "ADV-036",
+    "label": "UNKNOWN_SKILL",
+    "target": "REQUEST",
+    "expectsSchemaValid": false,
+    "description": "Focus skill the ontology has never heard of.",
+    "expectedBehavior": "Schema rejects the canonical form; the resolver reports UNKNOWN_SKILL and preserves the raw text.",
+    "request": {
+      "requestId": "ADV-036",
+      "goal": {
+        "domain": "IELTS",
+        "focusSkills": [
+          "IELTS.VOCABULARY"
+        ]
+      },
+      "hardConstraints": {
+        "verifiedOnly": false,
+        "requiredExpertise": [],
+        "requireAllAvailability": false
+      },
+      "availability": [
+        "TUE_19_00"
+      ],
+      "softPreferences": {
+        "teachingStyles": [],
+        "languages": []
+      },
+      "additionalPreferences": []
+    }
+  },
+  {
+    "id": "ADV-037",
+    "label": "UNKNOWN_SKILL",
+    "target": "REQUEST",
+    "expectsSchemaValid": false,
+    "description": "Focus skill the ontology has never heard of.",
+    "expectedBehavior": "Schema rejects the canonical form; the resolver reports UNKNOWN_SKILL and preserves the raw text.",
+    "request": {
+      "requestId": "ADV-037",
+      "goal": {
+        "domain": "IELTS",
+        "focusSkills": [
+          "IELTS.GRAMMAR"
+        ]
+      },
+      "hardConstraints": {
+        "verifiedOnly": false,
+        "requiredExpertise": [],
+        "requireAllAvailability": false
+      },
+      "availability": [
+        "TUE_19_00"
+      ],
+      "softPreferences": {
+        "teachingStyles": [],
+        "languages": []
+      },
+      "additionalPreferences": []
+    }
+  },
+  {
+    "id": "ADV-038",
+    "label": "UNKNOWN_SKILL",
+    "target": "REQUEST",
+    "expectsSchemaValid": false,
+    "description": "Focus skill the ontology has never heard of.",
+    "expectedBehavior": "Schema rejects the canonical form; the resolver reports UNKNOWN_SKILL and preserves the raw text.",
+    "request": {
+      "requestId": "ADV-038",
+      "goal": {
+        "domain": "IELTS",
+        "focusSkills": [
+          "IELTS.PRONUNCIATION"
+        ]
+      },
+      "hardConstraints": {
+        "verifiedOnly": false,
+        "requiredExpertise": [],
+        "requireAllAvailability": false
+      },
+      "availability": [
+        "TUE_19_00"
+      ],
+      "softPreferences": {
+        "teachingStyles": [],
+        "languages": []
+      },
+      "additionalPreferences": []
+    }
+  },
+  {
+    "id": "ADV-039",
+    "label": "UNKNOWN_SKILL",
+    "target": "REQUEST",
+    "expectsSchemaValid": false,
+    "description": "Focus skill the ontology has never heard of.",
+    "expectedBehavior": "Schema rejects the canonical form; the resolver reports UNKNOWN_SKILL and preserves the raw text.",
+    "request": {
+      "requestId": "ADV-039",
+      "goal": {
+        "domain": "IELTS",
+        "focusSkills": [
+          "IELTS.VOCABULARY"
+        ]
+      },
+      "hardConstraints": {
+        "verifiedOnly": false,
+        "requiredExpertise": [],
+        "requireAllAvailability": false
+      },
+      "availability": [
+        "TUE_19_00"
+      ],
+      "softPreferences": {
+        "teachingStyles": [],
+        "languages": []
+      },
+      "additionalPreferences": []
+    }
+  },
+  {
+    "id": "ADV-040",
+    "label": "UNKNOWN_SKILL",
+    "target": "REQUEST",
+    "expectsSchemaValid": false,
+    "description": "Focus skill the ontology has never heard of.",
+    "expectedBehavior": "Schema rejects the canonical form; the resolver reports UNKNOWN_SKILL and preserves the raw text.",
+    "request": {
+      "requestId": "ADV-040",
+      "goal": {
+        "domain": "IELTS",
+        "focusSkills": [
+          "IELTS.GRAMMAR"
+        ]
+      },
+      "hardConstraints": {
+        "verifiedOnly": false,
+        "requiredExpertise": [],
+        "requireAllAvailability": false
+      },
+      "availability": [
+        "TUE_19_00"
+      ],
+      "softPreferences": {
+        "teachingStyles": [],
+        "languages": []
+      },
+      "additionalPreferences": []
+    }
+  },
+  {
+    "id": "ADV-041",
+    "label": "MISSING_CREDENTIAL",
+    "target": "MENTOR_DATASET",
+    "expectsSchemaValid": true,
+    "description": "Mentors claim IELTS expertise but their IELTS credential is UNKNOWN (key omitted).",
+    "expectedBehavior": "Missing credentials are reported as missing data; they must never be scored as zero, nor praised in explanations.",
+    "mentors": [
+      {
+        "id": "ADV-041-M1",
+        "name": "Adversarial Mentor ADV-041-M1",
+        "birthYear": 1995,
+        "verified": true,
+        "credentials": {},
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-041-M2",
+        "name": "Adversarial Mentor ADV-041-M2",
+        "birthYear": 1990,
+        "verified": true,
+        "credentials": {},
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      }
+    ],
+    "request": {
+      "requestId": "ADV-041",
+      "goal": {
+        "domain": "IELTS",
+        "focusSkills": [
+          "IELTS.WRITING"
+        ]
+      },
+      "hardConstraints": {
+        "verifiedOnly": false,
+        "minCredentialScore": 7,
+        "requiredExpertise": [],
+        "requireAllAvailability": false
+      },
+      "availability": [
+        "TUE_19_00"
+      ],
+      "softPreferences": {
+        "teachingStyles": [],
+        "languages": []
+      },
+      "additionalPreferences": []
+    }
+  },
+  {
+    "id": "ADV-042",
+    "label": "MISSING_CREDENTIAL",
+    "target": "MENTOR_DATASET",
+    "expectsSchemaValid": true,
+    "description": "Mentors claim IELTS expertise but their IELTS credential is UNKNOWN (key omitted).",
+    "expectedBehavior": "Missing credentials are reported as missing data; they must never be scored as zero, nor praised in explanations.",
+    "mentors": [
+      {
+        "id": "ADV-042-M1",
+        "name": "Adversarial Mentor ADV-042-M1",
+        "birthYear": 1999,
+        "verified": true,
+        "credentials": {},
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-042-M2",
+        "name": "Adversarial Mentor ADV-042-M2",
+        "birthYear": 1994,
+        "verified": true,
+        "credentials": {},
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-042-M3",
+        "name": "Adversarial Mentor ADV-042-M3",
+        "birthYear": 2000,
+        "verified": true,
+        "credentials": {},
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      }
+    ],
+    "request": {
+      "requestId": "ADV-042",
+      "goal": {
+        "domain": "IELTS",
+        "focusSkills": [
+          "IELTS.WRITING"
+        ]
+      },
+      "hardConstraints": {
+        "verifiedOnly": false,
+        "minCredentialScore": 7,
+        "requiredExpertise": [],
+        "requireAllAvailability": false
+      },
+      "availability": [
+        "TUE_19_00"
+      ],
+      "softPreferences": {
+        "teachingStyles": [],
+        "languages": []
+      },
+      "additionalPreferences": []
+    }
+  },
+  {
+    "id": "ADV-043",
+    "label": "MISSING_CREDENTIAL",
+    "target": "MENTOR_DATASET",
+    "expectsSchemaValid": true,
+    "description": "Mentors claim IELTS expertise but their IELTS credential is UNKNOWN (key omitted).",
+    "expectedBehavior": "Missing credentials are reported as missing data; they must never be scored as zero, nor praised in explanations.",
+    "mentors": [
+      {
+        "id": "ADV-043-M1",
+        "name": "Adversarial Mentor ADV-043-M1",
+        "birthYear": 2003,
+        "verified": true,
+        "credentials": {},
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-043-M2",
+        "name": "Adversarial Mentor ADV-043-M2",
+        "birthYear": 2004,
+        "verified": true,
+        "credentials": {},
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-043-M3",
+        "name": "Adversarial Mentor ADV-043-M3",
+        "birthYear": 1997,
+        "verified": true,
+        "credentials": {},
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-043-M4",
+        "name": "Adversarial Mentor ADV-043-M4",
+        "birthYear": 1997,
+        "verified": true,
+        "credentials": {},
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      }
+    ],
+    "request": {
+      "requestId": "ADV-043",
+      "goal": {
+        "domain": "IELTS",
+        "focusSkills": [
+          "IELTS.WRITING"
+        ]
+      },
+      "hardConstraints": {
+        "verifiedOnly": false,
+        "minCredentialScore": 7,
+        "requiredExpertise": [],
+        "requireAllAvailability": false
+      },
+      "availability": [
+        "TUE_19_00"
+      ],
+      "softPreferences": {
+        "teachingStyles": [],
+        "languages": []
+      },
+      "additionalPreferences": []
+    }
+  },
+  {
+    "id": "ADV-044",
+    "label": "MISSING_CREDENTIAL",
+    "target": "MENTOR_DATASET",
+    "expectsSchemaValid": true,
+    "description": "Mentors claim IELTS expertise but their IELTS credential is UNKNOWN (key omitted).",
+    "expectedBehavior": "Missing credentials are reported as missing data; they must never be scored as zero, nor praised in explanations.",
+    "mentors": [
+      {
+        "id": "ADV-044-M1",
+        "name": "Adversarial Mentor ADV-044-M1",
+        "birthYear": 2001,
+        "verified": true,
+        "credentials": {},
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-044-M2",
+        "name": "Adversarial Mentor ADV-044-M2",
+        "birthYear": 1996,
+        "verified": true,
+        "credentials": {},
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      }
+    ],
+    "request": {
+      "requestId": "ADV-044",
+      "goal": {
+        "domain": "IELTS",
+        "focusSkills": [
+          "IELTS.WRITING"
+        ]
+      },
+      "hardConstraints": {
+        "verifiedOnly": false,
+        "minCredentialScore": 7,
+        "requiredExpertise": [],
+        "requireAllAvailability": false
+      },
+      "availability": [
+        "TUE_19_00"
+      ],
+      "softPreferences": {
+        "teachingStyles": [],
+        "languages": []
+      },
+      "additionalPreferences": []
+    }
+  },
+  {
+    "id": "ADV-045",
+    "label": "MISSING_CREDENTIAL",
+    "target": "MENTOR_DATASET",
+    "expectsSchemaValid": true,
+    "description": "Mentors claim IELTS expertise but their IELTS credential is UNKNOWN (key omitted).",
+    "expectedBehavior": "Missing credentials are reported as missing data; they must never be scored as zero, nor praised in explanations.",
+    "mentors": [
+      {
+        "id": "ADV-045-M1",
+        "name": "Adversarial Mentor ADV-045-M1",
+        "birthYear": 2001,
+        "verified": true,
+        "credentials": {},
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-045-M2",
+        "name": "Adversarial Mentor ADV-045-M2",
+        "birthYear": 1993,
+        "verified": true,
+        "credentials": {},
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-045-M3",
+        "name": "Adversarial Mentor ADV-045-M3",
+        "birthYear": 1999,
+        "verified": true,
+        "credentials": {},
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      }
+    ],
+    "request": {
+      "requestId": "ADV-045",
+      "goal": {
+        "domain": "IELTS",
+        "focusSkills": [
+          "IELTS.WRITING"
+        ]
+      },
+      "hardConstraints": {
+        "verifiedOnly": false,
+        "minCredentialScore": 7,
+        "requiredExpertise": [],
+        "requireAllAvailability": false
+      },
+      "availability": [
+        "TUE_19_00"
+      ],
+      "softPreferences": {
+        "teachingStyles": [],
+        "languages": []
+      },
+      "additionalPreferences": []
+    }
+  },
+  {
+    "id": "ADV-046",
+    "label": "MISSING_CREDENTIAL",
+    "target": "MENTOR_DATASET",
+    "expectsSchemaValid": true,
+    "description": "Mentors claim IELTS expertise but their IELTS credential is UNKNOWN (key omitted).",
+    "expectedBehavior": "Missing credentials are reported as missing data; they must never be scored as zero, nor praised in explanations.",
+    "mentors": [
+      {
+        "id": "ADV-046-M1",
+        "name": "Adversarial Mentor ADV-046-M1",
+        "birthYear": 2001,
+        "verified": true,
+        "credentials": {},
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-046-M2",
+        "name": "Adversarial Mentor ADV-046-M2",
+        "birthYear": 1995,
+        "verified": true,
+        "credentials": {},
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-046-M3",
+        "name": "Adversarial Mentor ADV-046-M3",
+        "birthYear": 1990,
+        "verified": true,
+        "credentials": {},
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-046-M4",
+        "name": "Adversarial Mentor ADV-046-M4",
+        "birthYear": 2002,
+        "verified": true,
+        "credentials": {},
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      }
+    ],
+    "request": {
+      "requestId": "ADV-046",
+      "goal": {
+        "domain": "IELTS",
+        "focusSkills": [
+          "IELTS.WRITING"
+        ]
+      },
+      "hardConstraints": {
+        "verifiedOnly": false,
+        "minCredentialScore": 7,
+        "requiredExpertise": [],
+        "requireAllAvailability": false
+      },
+      "availability": [
+        "TUE_19_00"
+      ],
+      "softPreferences": {
+        "teachingStyles": [],
+        "languages": []
+      },
+      "additionalPreferences": []
+    }
+  },
+  {
+    "id": "ADV-047",
+    "label": "MISSING_CREDENTIAL",
+    "target": "MENTOR_DATASET",
+    "expectsSchemaValid": true,
+    "description": "Mentors claim IELTS expertise but their IELTS credential is UNKNOWN (key omitted).",
+    "expectedBehavior": "Missing credentials are reported as missing data; they must never be scored as zero, nor praised in explanations.",
+    "mentors": [
+      {
+        "id": "ADV-047-M1",
+        "name": "Adversarial Mentor ADV-047-M1",
+        "birthYear": 1993,
+        "verified": true,
+        "credentials": {},
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-047-M2",
+        "name": "Adversarial Mentor ADV-047-M2",
+        "birthYear": 1993,
+        "verified": true,
+        "credentials": {},
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      }
+    ],
+    "request": {
+      "requestId": "ADV-047",
+      "goal": {
+        "domain": "IELTS",
+        "focusSkills": [
+          "IELTS.WRITING"
+        ]
+      },
+      "hardConstraints": {
+        "verifiedOnly": false,
+        "minCredentialScore": 7,
+        "requiredExpertise": [],
+        "requireAllAvailability": false
+      },
+      "availability": [
+        "TUE_19_00"
+      ],
+      "softPreferences": {
+        "teachingStyles": [],
+        "languages": []
+      },
+      "additionalPreferences": []
+    }
+  },
+  {
+    "id": "ADV-048",
+    "label": "MISSING_CREDENTIAL",
+    "target": "MENTOR_DATASET",
+    "expectsSchemaValid": true,
+    "description": "Mentors claim IELTS expertise but their IELTS credential is UNKNOWN (key omitted).",
+    "expectedBehavior": "Missing credentials are reported as missing data; they must never be scored as zero, nor praised in explanations.",
+    "mentors": [
+      {
+        "id": "ADV-048-M1",
+        "name": "Adversarial Mentor ADV-048-M1",
+        "birthYear": 1992,
+        "verified": true,
+        "credentials": {},
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-048-M2",
+        "name": "Adversarial Mentor ADV-048-M2",
+        "birthYear": 2002,
+        "verified": true,
+        "credentials": {},
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-048-M3",
+        "name": "Adversarial Mentor ADV-048-M3",
+        "birthYear": 1994,
+        "verified": true,
+        "credentials": {},
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      }
+    ],
+    "request": {
+      "requestId": "ADV-048",
+      "goal": {
+        "domain": "IELTS",
+        "focusSkills": [
+          "IELTS.WRITING"
+        ]
+      },
+      "hardConstraints": {
+        "verifiedOnly": false,
+        "minCredentialScore": 7,
+        "requiredExpertise": [],
+        "requireAllAvailability": false
+      },
+      "availability": [
+        "TUE_19_00"
+      ],
+      "softPreferences": {
+        "teachingStyles": [],
+        "languages": []
+      },
+      "additionalPreferences": []
+    }
+  },
+  {
+    "id": "ADV-049",
+    "label": "MISSING_CREDENTIAL",
+    "target": "MENTOR_DATASET",
+    "expectsSchemaValid": true,
+    "description": "Mentors claim IELTS expertise but their IELTS credential is UNKNOWN (key omitted).",
+    "expectedBehavior": "Missing credentials are reported as missing data; they must never be scored as zero, nor praised in explanations.",
+    "mentors": [
+      {
+        "id": "ADV-049-M1",
+        "name": "Adversarial Mentor ADV-049-M1",
+        "birthYear": 1990,
+        "verified": true,
+        "credentials": {},
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-049-M2",
+        "name": "Adversarial Mentor ADV-049-M2",
+        "birthYear": 1993,
+        "verified": true,
+        "credentials": {},
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-049-M3",
+        "name": "Adversarial Mentor ADV-049-M3",
+        "birthYear": 2004,
+        "verified": true,
+        "credentials": {},
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-049-M4",
+        "name": "Adversarial Mentor ADV-049-M4",
+        "birthYear": 2004,
+        "verified": true,
+        "credentials": {},
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      }
+    ],
+    "request": {
+      "requestId": "ADV-049",
+      "goal": {
+        "domain": "IELTS",
+        "focusSkills": [
+          "IELTS.WRITING"
+        ]
+      },
+      "hardConstraints": {
+        "verifiedOnly": false,
+        "minCredentialScore": 7,
+        "requiredExpertise": [],
+        "requireAllAvailability": false
+      },
+      "availability": [
+        "TUE_19_00"
+      ],
+      "softPreferences": {
+        "teachingStyles": [],
+        "languages": []
+      },
+      "additionalPreferences": []
+    }
+  },
+  {
+    "id": "ADV-050",
+    "label": "MISSING_CREDENTIAL",
+    "target": "MENTOR_DATASET",
+    "expectsSchemaValid": true,
+    "description": "Mentors claim IELTS expertise but their IELTS credential is UNKNOWN (key omitted).",
+    "expectedBehavior": "Missing credentials are reported as missing data; they must never be scored as zero, nor praised in explanations.",
+    "mentors": [
+      {
+        "id": "ADV-050-M1",
+        "name": "Adversarial Mentor ADV-050-M1",
+        "birthYear": 1993,
+        "verified": true,
+        "credentials": {},
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-050-M2",
+        "name": "Adversarial Mentor ADV-050-M2",
+        "birthYear": 2002,
+        "verified": true,
+        "credentials": {},
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      }
+    ],
+    "request": {
+      "requestId": "ADV-050",
+      "goal": {
+        "domain": "IELTS",
+        "focusSkills": [
+          "IELTS.WRITING"
+        ]
+      },
+      "hardConstraints": {
+        "verifiedOnly": false,
+        "minCredentialScore": 7,
+        "requiredExpertise": [],
+        "requireAllAvailability": false
+      },
+      "availability": [
+        "TUE_19_00"
+      ],
+      "softPreferences": {
+        "teachingStyles": [],
+        "languages": []
+      },
+      "additionalPreferences": []
+    }
+  },
+  {
+    "id": "ADV-051",
+    "label": "EMPTY_PREFERENCE_SET",
+    "target": "REQUEST",
+    "expectsSchemaValid": true,
+    "description": "Student states a domain and nothing else.",
+    "expectedBehavior": "The engine ranks on what little it has and reports low data coverage; it must not invent preferences.",
+    "request": {
+      "requestId": "ADV-051",
+      "goal": {
+        "domain": "IELTS"
+      }
+    }
+  },
+  {
+    "id": "ADV-052",
+    "label": "EMPTY_PREFERENCE_SET",
+    "target": "REQUEST",
+    "expectsSchemaValid": true,
+    "description": "Student states a domain and nothing else.",
+    "expectedBehavior": "The engine ranks on what little it has and reports low data coverage; it must not invent preferences.",
+    "request": {
+      "requestId": "ADV-052",
+      "goal": {
+        "domain": "SAT"
+      }
+    }
+  },
+  {
+    "id": "ADV-053",
+    "label": "EMPTY_PREFERENCE_SET",
+    "target": "REQUEST",
+    "expectsSchemaValid": true,
+    "description": "Student states a domain and nothing else.",
+    "expectedBehavior": "The engine ranks on what little it has and reports low data coverage; it must not invent preferences.",
+    "request": {
+      "requestId": "ADV-053",
+      "goal": {
+        "domain": "HSK"
+      }
+    }
+  },
+  {
+    "id": "ADV-054",
+    "label": "EMPTY_PREFERENCE_SET",
+    "target": "REQUEST",
+    "expectsSchemaValid": true,
+    "description": "Student states a domain and nothing else.",
+    "expectedBehavior": "The engine ranks on what little it has and reports low data coverage; it must not invent preferences.",
+    "request": {
+      "requestId": "ADV-054",
+      "goal": {
+        "domain": "IELTS"
+      }
+    }
+  },
+  {
+    "id": "ADV-055",
+    "label": "EMPTY_PREFERENCE_SET",
+    "target": "REQUEST",
+    "expectsSchemaValid": true,
+    "description": "Student states a domain and nothing else.",
+    "expectedBehavior": "The engine ranks on what little it has and reports low data coverage; it must not invent preferences.",
+    "request": {
+      "requestId": "ADV-055",
+      "goal": {
+        "domain": "SAT"
+      }
+    }
+  },
+  {
+    "id": "ADV-056",
+    "label": "EMPTY_PREFERENCE_SET",
+    "target": "REQUEST",
+    "expectsSchemaValid": true,
+    "description": "Student states a domain and nothing else.",
+    "expectedBehavior": "The engine ranks on what little it has and reports low data coverage; it must not invent preferences.",
+    "request": {
+      "requestId": "ADV-056",
+      "goal": {
+        "domain": "HSK"
+      }
+    }
+  },
+  {
+    "id": "ADV-057",
+    "label": "EMPTY_PREFERENCE_SET",
+    "target": "REQUEST",
+    "expectsSchemaValid": true,
+    "description": "Student states a domain and nothing else.",
+    "expectedBehavior": "The engine ranks on what little it has and reports low data coverage; it must not invent preferences.",
+    "request": {
+      "requestId": "ADV-057",
+      "goal": {
+        "domain": "IELTS"
+      }
+    }
+  },
+  {
+    "id": "ADV-058",
+    "label": "EMPTY_PREFERENCE_SET",
+    "target": "REQUEST",
+    "expectsSchemaValid": true,
+    "description": "Student states a domain and nothing else.",
+    "expectedBehavior": "The engine ranks on what little it has and reports low data coverage; it must not invent preferences.",
+    "request": {
+      "requestId": "ADV-058",
+      "goal": {
+        "domain": "SAT"
+      }
+    }
+  },
+  {
+    "id": "ADV-059",
+    "label": "EMPTY_PREFERENCE_SET",
+    "target": "REQUEST",
+    "expectsSchemaValid": true,
+    "description": "Student states a domain and nothing else.",
+    "expectedBehavior": "The engine ranks on what little it has and reports low data coverage; it must not invent preferences.",
+    "request": {
+      "requestId": "ADV-059",
+      "goal": {
+        "domain": "HSK"
+      }
+    }
+  },
+  {
+    "id": "ADV-060",
+    "label": "EMPTY_PREFERENCE_SET",
+    "target": "REQUEST",
+    "expectsSchemaValid": true,
+    "description": "Student states a domain and nothing else.",
+    "expectedBehavior": "The engine ranks on what little it has and reports low data coverage; it must not invent preferences.",
+    "request": {
+      "requestId": "ADV-060",
+      "goal": {
+        "domain": "IELTS"
+      }
+    }
+  },
+  {
+    "id": "ADV-061",
+    "label": "IMPOSSIBLE_HARD_CONSTRAINTS",
+    "target": "REQUEST",
+    "expectsSchemaValid": true,
+    "description": "Top credential, lowest price, verified only, and every slot required at once.",
+    "expectedBehavior": "Returns NO_FEASIBLE_MATCH with per-constraint filter counts; no constraint is relaxed to produce results.",
+    "request": {
+      "requestId": "ADV-061",
+      "goal": {
+        "domain": "IELTS",
+        "focusSkills": [
+          "IELTS.WRITING"
+        ]
+      },
+      "hardConstraints": {
+        "verifiedOnly": true,
+        "maxPricePerHour": 50000,
+        "minCredentialScore": 9,
+        "requiredExpertise": [
+          "IELTS.WRITING",
+          "IELTS.SPEAKING"
+        ],
+        "requireAllAvailability": true
+      },
+      "availability": [
+        "MON_19_00",
+        "TUE_19_00",
+        "WED_19_00",
+        "THU_19_00",
+        "FRI_19_00",
+        "SAT_09_00"
+      ],
+      "softPreferences": {
+        "teachingStyles": [],
+        "languages": []
+      },
+      "additionalPreferences": []
+    }
+  },
+  {
+    "id": "ADV-062",
+    "label": "IMPOSSIBLE_HARD_CONSTRAINTS",
+    "target": "REQUEST",
+    "expectsSchemaValid": true,
+    "description": "Top credential, lowest price, verified only, and every slot required at once.",
+    "expectedBehavior": "Returns NO_FEASIBLE_MATCH with per-constraint filter counts; no constraint is relaxed to produce results.",
+    "request": {
+      "requestId": "ADV-062",
+      "goal": {
+        "domain": "IELTS",
+        "focusSkills": [
+          "IELTS.WRITING"
+        ]
+      },
+      "hardConstraints": {
+        "verifiedOnly": true,
+        "maxPricePerHour": 51000,
+        "minCredentialScore": 9,
+        "requiredExpertise": [
+          "IELTS.WRITING",
+          "IELTS.SPEAKING"
+        ],
+        "requireAllAvailability": true
+      },
+      "availability": [
+        "MON_19_00",
+        "TUE_19_00",
+        "WED_19_00",
+        "THU_19_00",
+        "FRI_19_00",
+        "SAT_09_00"
+      ],
+      "softPreferences": {
+        "teachingStyles": [],
+        "languages": []
+      },
+      "additionalPreferences": []
+    }
+  },
+  {
+    "id": "ADV-063",
+    "label": "IMPOSSIBLE_HARD_CONSTRAINTS",
+    "target": "REQUEST",
+    "expectsSchemaValid": true,
+    "description": "Top credential, lowest price, verified only, and every slot required at once.",
+    "expectedBehavior": "Returns NO_FEASIBLE_MATCH with per-constraint filter counts; no constraint is relaxed to produce results.",
+    "request": {
+      "requestId": "ADV-063",
+      "goal": {
+        "domain": "IELTS",
+        "focusSkills": [
+          "IELTS.WRITING"
+        ]
+      },
+      "hardConstraints": {
+        "verifiedOnly": true,
+        "maxPricePerHour": 52000,
+        "minCredentialScore": 9,
+        "requiredExpertise": [
+          "IELTS.WRITING",
+          "IELTS.SPEAKING"
+        ],
+        "requireAllAvailability": true
+      },
+      "availability": [
+        "MON_19_00",
+        "TUE_19_00",
+        "WED_19_00",
+        "THU_19_00",
+        "FRI_19_00",
+        "SAT_09_00"
+      ],
+      "softPreferences": {
+        "teachingStyles": [],
+        "languages": []
+      },
+      "additionalPreferences": []
+    }
+  },
+  {
+    "id": "ADV-064",
+    "label": "IMPOSSIBLE_HARD_CONSTRAINTS",
+    "target": "REQUEST",
+    "expectsSchemaValid": true,
+    "description": "Top credential, lowest price, verified only, and every slot required at once.",
+    "expectedBehavior": "Returns NO_FEASIBLE_MATCH with per-constraint filter counts; no constraint is relaxed to produce results.",
+    "request": {
+      "requestId": "ADV-064",
+      "goal": {
+        "domain": "IELTS",
+        "focusSkills": [
+          "IELTS.WRITING"
+        ]
+      },
+      "hardConstraints": {
+        "verifiedOnly": true,
+        "maxPricePerHour": 53000,
+        "minCredentialScore": 9,
+        "requiredExpertise": [
+          "IELTS.WRITING",
+          "IELTS.SPEAKING"
+        ],
+        "requireAllAvailability": true
+      },
+      "availability": [
+        "MON_19_00",
+        "TUE_19_00",
+        "WED_19_00",
+        "THU_19_00",
+        "FRI_19_00",
+        "SAT_09_00"
+      ],
+      "softPreferences": {
+        "teachingStyles": [],
+        "languages": []
+      },
+      "additionalPreferences": []
+    }
+  },
+  {
+    "id": "ADV-065",
+    "label": "IMPOSSIBLE_HARD_CONSTRAINTS",
+    "target": "REQUEST",
+    "expectsSchemaValid": true,
+    "description": "Top credential, lowest price, verified only, and every slot required at once.",
+    "expectedBehavior": "Returns NO_FEASIBLE_MATCH with per-constraint filter counts; no constraint is relaxed to produce results.",
+    "request": {
+      "requestId": "ADV-065",
+      "goal": {
+        "domain": "IELTS",
+        "focusSkills": [
+          "IELTS.WRITING"
+        ]
+      },
+      "hardConstraints": {
+        "verifiedOnly": true,
+        "maxPricePerHour": 54000,
+        "minCredentialScore": 9,
+        "requiredExpertise": [
+          "IELTS.WRITING",
+          "IELTS.SPEAKING"
+        ],
+        "requireAllAvailability": true
+      },
+      "availability": [
+        "MON_19_00",
+        "TUE_19_00",
+        "WED_19_00",
+        "THU_19_00",
+        "FRI_19_00",
+        "SAT_09_00"
+      ],
+      "softPreferences": {
+        "teachingStyles": [],
+        "languages": []
+      },
+      "additionalPreferences": []
+    }
+  },
+  {
+    "id": "ADV-066",
+    "label": "IMPOSSIBLE_HARD_CONSTRAINTS",
+    "target": "REQUEST",
+    "expectsSchemaValid": true,
+    "description": "Top credential, lowest price, verified only, and every slot required at once.",
+    "expectedBehavior": "Returns NO_FEASIBLE_MATCH with per-constraint filter counts; no constraint is relaxed to produce results.",
+    "request": {
+      "requestId": "ADV-066",
+      "goal": {
+        "domain": "IELTS",
+        "focusSkills": [
+          "IELTS.WRITING"
+        ]
+      },
+      "hardConstraints": {
+        "verifiedOnly": true,
+        "maxPricePerHour": 55000,
+        "minCredentialScore": 9,
+        "requiredExpertise": [
+          "IELTS.WRITING",
+          "IELTS.SPEAKING"
+        ],
+        "requireAllAvailability": true
+      },
+      "availability": [
+        "MON_19_00",
+        "TUE_19_00",
+        "WED_19_00",
+        "THU_19_00",
+        "FRI_19_00",
+        "SAT_09_00"
+      ],
+      "softPreferences": {
+        "teachingStyles": [],
+        "languages": []
+      },
+      "additionalPreferences": []
+    }
+  },
+  {
+    "id": "ADV-067",
+    "label": "IMPOSSIBLE_HARD_CONSTRAINTS",
+    "target": "REQUEST",
+    "expectsSchemaValid": true,
+    "description": "Top credential, lowest price, verified only, and every slot required at once.",
+    "expectedBehavior": "Returns NO_FEASIBLE_MATCH with per-constraint filter counts; no constraint is relaxed to produce results.",
+    "request": {
+      "requestId": "ADV-067",
+      "goal": {
+        "domain": "IELTS",
+        "focusSkills": [
+          "IELTS.WRITING"
+        ]
+      },
+      "hardConstraints": {
+        "verifiedOnly": true,
+        "maxPricePerHour": 56000,
+        "minCredentialScore": 9,
+        "requiredExpertise": [
+          "IELTS.WRITING",
+          "IELTS.SPEAKING"
+        ],
+        "requireAllAvailability": true
+      },
+      "availability": [
+        "MON_19_00",
+        "TUE_19_00",
+        "WED_19_00",
+        "THU_19_00",
+        "FRI_19_00",
+        "SAT_09_00"
+      ],
+      "softPreferences": {
+        "teachingStyles": [],
+        "languages": []
+      },
+      "additionalPreferences": []
+    }
+  },
+  {
+    "id": "ADV-068",
+    "label": "IMPOSSIBLE_HARD_CONSTRAINTS",
+    "target": "REQUEST",
+    "expectsSchemaValid": true,
+    "description": "Top credential, lowest price, verified only, and every slot required at once.",
+    "expectedBehavior": "Returns NO_FEASIBLE_MATCH with per-constraint filter counts; no constraint is relaxed to produce results.",
+    "request": {
+      "requestId": "ADV-068",
+      "goal": {
+        "domain": "IELTS",
+        "focusSkills": [
+          "IELTS.WRITING"
+        ]
+      },
+      "hardConstraints": {
+        "verifiedOnly": true,
+        "maxPricePerHour": 57000,
+        "minCredentialScore": 9,
+        "requiredExpertise": [
+          "IELTS.WRITING",
+          "IELTS.SPEAKING"
+        ],
+        "requireAllAvailability": true
+      },
+      "availability": [
+        "MON_19_00",
+        "TUE_19_00",
+        "WED_19_00",
+        "THU_19_00",
+        "FRI_19_00",
+        "SAT_09_00"
+      ],
+      "softPreferences": {
+        "teachingStyles": [],
+        "languages": []
+      },
+      "additionalPreferences": []
+    }
+  },
+  {
+    "id": "ADV-069",
+    "label": "IMPOSSIBLE_HARD_CONSTRAINTS",
+    "target": "REQUEST",
+    "expectsSchemaValid": true,
+    "description": "Top credential, lowest price, verified only, and every slot required at once.",
+    "expectedBehavior": "Returns NO_FEASIBLE_MATCH with per-constraint filter counts; no constraint is relaxed to produce results.",
+    "request": {
+      "requestId": "ADV-069",
+      "goal": {
+        "domain": "IELTS",
+        "focusSkills": [
+          "IELTS.WRITING"
+        ]
+      },
+      "hardConstraints": {
+        "verifiedOnly": true,
+        "maxPricePerHour": 58000,
+        "minCredentialScore": 9,
+        "requiredExpertise": [
+          "IELTS.WRITING",
+          "IELTS.SPEAKING"
+        ],
+        "requireAllAvailability": true
+      },
+      "availability": [
+        "MON_19_00",
+        "TUE_19_00",
+        "WED_19_00",
+        "THU_19_00",
+        "FRI_19_00",
+        "SAT_09_00"
+      ],
+      "softPreferences": {
+        "teachingStyles": [],
+        "languages": []
+      },
+      "additionalPreferences": []
+    }
+  },
+  {
+    "id": "ADV-070",
+    "label": "IMPOSSIBLE_HARD_CONSTRAINTS",
+    "target": "REQUEST",
+    "expectsSchemaValid": true,
+    "description": "Top credential, lowest price, verified only, and every slot required at once.",
+    "expectedBehavior": "Returns NO_FEASIBLE_MATCH with per-constraint filter counts; no constraint is relaxed to produce results.",
+    "request": {
+      "requestId": "ADV-070",
+      "goal": {
+        "domain": "IELTS",
+        "focusSkills": [
+          "IELTS.WRITING"
+        ]
+      },
+      "hardConstraints": {
+        "verifiedOnly": true,
+        "maxPricePerHour": 59000,
+        "minCredentialScore": 9,
+        "requiredExpertise": [
+          "IELTS.WRITING",
+          "IELTS.SPEAKING"
+        ],
+        "requireAllAvailability": true
+      },
+      "availability": [
+        "MON_19_00",
+        "TUE_19_00",
+        "WED_19_00",
+        "THU_19_00",
+        "FRI_19_00",
+        "SAT_09_00"
+      ],
+      "softPreferences": {
+        "teachingStyles": [],
+        "languages": []
+      },
+      "additionalPreferences": []
+    }
+  },
+  {
+    "id": "ADV-071",
+    "label": "RARE_DOMAIN_COMBINATION",
+    "target": "MENTOR_DATASET",
+    "expectsSchemaValid": true,
+    "description": "HSK writing request against a candidate pool that is almost entirely IELTS.",
+    "expectedBehavior": "Domain filtering leaves few or no candidates; the engine reports the shortage instead of substituting another domain.",
+    "request": {
+      "requestId": "ADV-071",
+      "goal": {
+        "domain": "HSK",
+        "focusSkills": [
+          "HSK.WRITING"
+        ]
+      },
+      "hardConstraints": {
+        "verifiedOnly": false,
+        "requiredExpertise": [
+          "HSK.WRITING"
+        ],
+        "requireAllAvailability": false
+      },
+      "availability": [
+        "TUE_19_00"
+      ],
+      "softPreferences": {
+        "teachingStyles": [],
+        "languages": []
+      },
+      "additionalPreferences": []
+    },
+    "mentors": [
+      {
+        "id": "ADV-071-M1",
+        "name": "Adversarial Mentor ADV-071-M1",
+        "birthYear": 1999,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-071-M2",
+        "name": "Adversarial Mentor ADV-071-M2",
+        "birthYear": 1993,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-071-M3",
+        "name": "Adversarial Mentor ADV-071-M3",
+        "birthYear": 1999,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-071-M4",
+        "name": "Adversarial Mentor ADV-071-M4",
+        "birthYear": 2001,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-071-M5",
+        "name": "Adversarial Mentor ADV-071-M5",
+        "birthYear": 2003,
+        "verified": true,
+        "credentials": {
+          "ielts": null,
+          "sat": null,
+          "hsk": {
+            "level": 4
+          }
+        },
+        "expertise": [
+          "HSK.READING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      }
+    ]
+  },
+  {
+    "id": "ADV-072",
+    "label": "RARE_DOMAIN_COMBINATION",
+    "target": "MENTOR_DATASET",
+    "expectsSchemaValid": true,
+    "description": "HSK writing request against a candidate pool that is almost entirely IELTS.",
+    "expectedBehavior": "Domain filtering leaves few or no candidates; the engine reports the shortage instead of substituting another domain.",
+    "request": {
+      "requestId": "ADV-072",
+      "goal": {
+        "domain": "HSK",
+        "focusSkills": [
+          "HSK.WRITING"
+        ]
+      },
+      "hardConstraints": {
+        "verifiedOnly": false,
+        "requiredExpertise": [
+          "HSK.WRITING"
+        ],
+        "requireAllAvailability": false
+      },
+      "availability": [
+        "TUE_19_00"
+      ],
+      "softPreferences": {
+        "teachingStyles": [],
+        "languages": []
+      },
+      "additionalPreferences": []
+    },
+    "mentors": [
+      {
+        "id": "ADV-072-M1",
+        "name": "Adversarial Mentor ADV-072-M1",
+        "birthYear": 1992,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-072-M2",
+        "name": "Adversarial Mentor ADV-072-M2",
+        "birthYear": 2003,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-072-M3",
+        "name": "Adversarial Mentor ADV-072-M3",
+        "birthYear": 1999,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-072-M4",
+        "name": "Adversarial Mentor ADV-072-M4",
+        "birthYear": 1997,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-072-M5",
+        "name": "Adversarial Mentor ADV-072-M5",
+        "birthYear": 1992,
+        "verified": true,
+        "credentials": {
+          "ielts": null,
+          "sat": null,
+          "hsk": {
+            "level": 5
+          }
+        },
+        "expertise": [
+          "HSK.READING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      }
+    ]
+  },
+  {
+    "id": "ADV-073",
+    "label": "RARE_DOMAIN_COMBINATION",
+    "target": "MENTOR_DATASET",
+    "expectsSchemaValid": true,
+    "description": "HSK writing request against a candidate pool that is almost entirely IELTS.",
+    "expectedBehavior": "Domain filtering leaves few or no candidates; the engine reports the shortage instead of substituting another domain.",
+    "request": {
+      "requestId": "ADV-073",
+      "goal": {
+        "domain": "HSK",
+        "focusSkills": [
+          "HSK.WRITING"
+        ]
+      },
+      "hardConstraints": {
+        "verifiedOnly": false,
+        "requiredExpertise": [
+          "HSK.WRITING"
+        ],
+        "requireAllAvailability": false
+      },
+      "availability": [
+        "TUE_19_00"
+      ],
+      "softPreferences": {
+        "teachingStyles": [],
+        "languages": []
+      },
+      "additionalPreferences": []
+    },
+    "mentors": [
+      {
+        "id": "ADV-073-M1",
+        "name": "Adversarial Mentor ADV-073-M1",
+        "birthYear": 1992,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-073-M2",
+        "name": "Adversarial Mentor ADV-073-M2",
+        "birthYear": 2000,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-073-M3",
+        "name": "Adversarial Mentor ADV-073-M3",
+        "birthYear": 1998,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-073-M4",
+        "name": "Adversarial Mentor ADV-073-M4",
+        "birthYear": 1991,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-073-M5",
+        "name": "Adversarial Mentor ADV-073-M5",
+        "birthYear": 1992,
+        "verified": true,
+        "credentials": {
+          "ielts": null,
+          "sat": null,
+          "hsk": {
+            "level": 6
+          }
+        },
+        "expertise": [
+          "HSK.READING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      }
+    ]
+  },
+  {
+    "id": "ADV-074",
+    "label": "RARE_DOMAIN_COMBINATION",
+    "target": "MENTOR_DATASET",
+    "expectsSchemaValid": true,
+    "description": "HSK writing request against a candidate pool that is almost entirely IELTS.",
+    "expectedBehavior": "Domain filtering leaves few or no candidates; the engine reports the shortage instead of substituting another domain.",
+    "request": {
+      "requestId": "ADV-074",
+      "goal": {
+        "domain": "HSK",
+        "focusSkills": [
+          "HSK.WRITING"
+        ]
+      },
+      "hardConstraints": {
+        "verifiedOnly": false,
+        "requiredExpertise": [
+          "HSK.WRITING"
+        ],
+        "requireAllAvailability": false
+      },
+      "availability": [
+        "TUE_19_00"
+      ],
+      "softPreferences": {
+        "teachingStyles": [],
+        "languages": []
+      },
+      "additionalPreferences": []
+    },
+    "mentors": [
+      {
+        "id": "ADV-074-M1",
+        "name": "Adversarial Mentor ADV-074-M1",
+        "birthYear": 2003,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-074-M2",
+        "name": "Adversarial Mentor ADV-074-M2",
+        "birthYear": 1992,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-074-M3",
+        "name": "Adversarial Mentor ADV-074-M3",
+        "birthYear": 1994,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-074-M4",
+        "name": "Adversarial Mentor ADV-074-M4",
+        "birthYear": 1999,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-074-M5",
+        "name": "Adversarial Mentor ADV-074-M5",
+        "birthYear": 2002,
+        "verified": true,
+        "credentials": {
+          "ielts": null,
+          "sat": null,
+          "hsk": {
+            "level": 4
+          }
+        },
+        "expertise": [
+          "HSK.READING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      }
+    ]
+  },
+  {
+    "id": "ADV-075",
+    "label": "RARE_DOMAIN_COMBINATION",
+    "target": "MENTOR_DATASET",
+    "expectsSchemaValid": true,
+    "description": "HSK writing request against a candidate pool that is almost entirely IELTS.",
+    "expectedBehavior": "Domain filtering leaves few or no candidates; the engine reports the shortage instead of substituting another domain.",
+    "request": {
+      "requestId": "ADV-075",
+      "goal": {
+        "domain": "HSK",
+        "focusSkills": [
+          "HSK.WRITING"
+        ]
+      },
+      "hardConstraints": {
+        "verifiedOnly": false,
+        "requiredExpertise": [
+          "HSK.WRITING"
+        ],
+        "requireAllAvailability": false
+      },
+      "availability": [
+        "TUE_19_00"
+      ],
+      "softPreferences": {
+        "teachingStyles": [],
+        "languages": []
+      },
+      "additionalPreferences": []
+    },
+    "mentors": [
+      {
+        "id": "ADV-075-M1",
+        "name": "Adversarial Mentor ADV-075-M1",
+        "birthYear": 2001,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-075-M2",
+        "name": "Adversarial Mentor ADV-075-M2",
+        "birthYear": 1993,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-075-M3",
+        "name": "Adversarial Mentor ADV-075-M3",
+        "birthYear": 2001,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-075-M4",
+        "name": "Adversarial Mentor ADV-075-M4",
+        "birthYear": 1994,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-075-M5",
+        "name": "Adversarial Mentor ADV-075-M5",
+        "birthYear": 1991,
+        "verified": true,
+        "credentials": {
+          "ielts": null,
+          "sat": null,
+          "hsk": {
+            "level": 5
+          }
+        },
+        "expertise": [
+          "HSK.READING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      }
+    ]
+  },
+  {
+    "id": "ADV-076",
+    "label": "RARE_DOMAIN_COMBINATION",
+    "target": "MENTOR_DATASET",
+    "expectsSchemaValid": true,
+    "description": "HSK writing request against a candidate pool that is almost entirely IELTS.",
+    "expectedBehavior": "Domain filtering leaves few or no candidates; the engine reports the shortage instead of substituting another domain.",
+    "request": {
+      "requestId": "ADV-076",
+      "goal": {
+        "domain": "HSK",
+        "focusSkills": [
+          "HSK.WRITING"
+        ]
+      },
+      "hardConstraints": {
+        "verifiedOnly": false,
+        "requiredExpertise": [
+          "HSK.WRITING"
+        ],
+        "requireAllAvailability": false
+      },
+      "availability": [
+        "TUE_19_00"
+      ],
+      "softPreferences": {
+        "teachingStyles": [],
+        "languages": []
+      },
+      "additionalPreferences": []
+    },
+    "mentors": [
+      {
+        "id": "ADV-076-M1",
+        "name": "Adversarial Mentor ADV-076-M1",
+        "birthYear": 1999,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-076-M2",
+        "name": "Adversarial Mentor ADV-076-M2",
+        "birthYear": 2004,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-076-M3",
+        "name": "Adversarial Mentor ADV-076-M3",
+        "birthYear": 1990,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-076-M4",
+        "name": "Adversarial Mentor ADV-076-M4",
+        "birthYear": 1999,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-076-M5",
+        "name": "Adversarial Mentor ADV-076-M5",
+        "birthYear": 2002,
+        "verified": true,
+        "credentials": {
+          "ielts": null,
+          "sat": null,
+          "hsk": {
+            "level": 6
+          }
+        },
+        "expertise": [
+          "HSK.READING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      }
+    ]
+  },
+  {
+    "id": "ADV-077",
+    "label": "RARE_DOMAIN_COMBINATION",
+    "target": "MENTOR_DATASET",
+    "expectsSchemaValid": true,
+    "description": "HSK writing request against a candidate pool that is almost entirely IELTS.",
+    "expectedBehavior": "Domain filtering leaves few or no candidates; the engine reports the shortage instead of substituting another domain.",
+    "request": {
+      "requestId": "ADV-077",
+      "goal": {
+        "domain": "HSK",
+        "focusSkills": [
+          "HSK.WRITING"
+        ]
+      },
+      "hardConstraints": {
+        "verifiedOnly": false,
+        "requiredExpertise": [
+          "HSK.WRITING"
+        ],
+        "requireAllAvailability": false
+      },
+      "availability": [
+        "TUE_19_00"
+      ],
+      "softPreferences": {
+        "teachingStyles": [],
+        "languages": []
+      },
+      "additionalPreferences": []
+    },
+    "mentors": [
+      {
+        "id": "ADV-077-M1",
+        "name": "Adversarial Mentor ADV-077-M1",
+        "birthYear": 1997,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-077-M2",
+        "name": "Adversarial Mentor ADV-077-M2",
+        "birthYear": 1991,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-077-M3",
+        "name": "Adversarial Mentor ADV-077-M3",
+        "birthYear": 2000,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-077-M4",
+        "name": "Adversarial Mentor ADV-077-M4",
+        "birthYear": 1992,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-077-M5",
+        "name": "Adversarial Mentor ADV-077-M5",
+        "birthYear": 1998,
+        "verified": true,
+        "credentials": {
+          "ielts": null,
+          "sat": null,
+          "hsk": {
+            "level": 4
+          }
+        },
+        "expertise": [
+          "HSK.READING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      }
+    ]
+  },
+  {
+    "id": "ADV-078",
+    "label": "RARE_DOMAIN_COMBINATION",
+    "target": "MENTOR_DATASET",
+    "expectsSchemaValid": true,
+    "description": "HSK writing request against a candidate pool that is almost entirely IELTS.",
+    "expectedBehavior": "Domain filtering leaves few or no candidates; the engine reports the shortage instead of substituting another domain.",
+    "request": {
+      "requestId": "ADV-078",
+      "goal": {
+        "domain": "HSK",
+        "focusSkills": [
+          "HSK.WRITING"
+        ]
+      },
+      "hardConstraints": {
+        "verifiedOnly": false,
+        "requiredExpertise": [
+          "HSK.WRITING"
+        ],
+        "requireAllAvailability": false
+      },
+      "availability": [
+        "TUE_19_00"
+      ],
+      "softPreferences": {
+        "teachingStyles": [],
+        "languages": []
+      },
+      "additionalPreferences": []
+    },
+    "mentors": [
+      {
+        "id": "ADV-078-M1",
+        "name": "Adversarial Mentor ADV-078-M1",
+        "birthYear": 2001,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-078-M2",
+        "name": "Adversarial Mentor ADV-078-M2",
+        "birthYear": 1992,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-078-M3",
+        "name": "Adversarial Mentor ADV-078-M3",
+        "birthYear": 1992,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-078-M4",
+        "name": "Adversarial Mentor ADV-078-M4",
+        "birthYear": 1996,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-078-M5",
+        "name": "Adversarial Mentor ADV-078-M5",
+        "birthYear": 1993,
+        "verified": true,
+        "credentials": {
+          "ielts": null,
+          "sat": null,
+          "hsk": {
+            "level": 5
+          }
+        },
+        "expertise": [
+          "HSK.READING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      }
+    ]
+  },
+  {
+    "id": "ADV-079",
+    "label": "RARE_DOMAIN_COMBINATION",
+    "target": "MENTOR_DATASET",
+    "expectsSchemaValid": true,
+    "description": "HSK writing request against a candidate pool that is almost entirely IELTS.",
+    "expectedBehavior": "Domain filtering leaves few or no candidates; the engine reports the shortage instead of substituting another domain.",
+    "request": {
+      "requestId": "ADV-079",
+      "goal": {
+        "domain": "HSK",
+        "focusSkills": [
+          "HSK.WRITING"
+        ]
+      },
+      "hardConstraints": {
+        "verifiedOnly": false,
+        "requiredExpertise": [
+          "HSK.WRITING"
+        ],
+        "requireAllAvailability": false
+      },
+      "availability": [
+        "TUE_19_00"
+      ],
+      "softPreferences": {
+        "teachingStyles": [],
+        "languages": []
+      },
+      "additionalPreferences": []
+    },
+    "mentors": [
+      {
+        "id": "ADV-079-M1",
+        "name": "Adversarial Mentor ADV-079-M1",
+        "birthYear": 1995,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-079-M2",
+        "name": "Adversarial Mentor ADV-079-M2",
+        "birthYear": 1991,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-079-M3",
+        "name": "Adversarial Mentor ADV-079-M3",
+        "birthYear": 1994,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-079-M4",
+        "name": "Adversarial Mentor ADV-079-M4",
+        "birthYear": 1996,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-079-M5",
+        "name": "Adversarial Mentor ADV-079-M5",
+        "birthYear": 2002,
+        "verified": true,
+        "credentials": {
+          "ielts": null,
+          "sat": null,
+          "hsk": {
+            "level": 6
+          }
+        },
+        "expertise": [
+          "HSK.READING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      }
+    ]
+  },
+  {
+    "id": "ADV-080",
+    "label": "RARE_DOMAIN_COMBINATION",
+    "target": "MENTOR_DATASET",
+    "expectsSchemaValid": true,
+    "description": "HSK writing request against a candidate pool that is almost entirely IELTS.",
+    "expectedBehavior": "Domain filtering leaves few or no candidates; the engine reports the shortage instead of substituting another domain.",
+    "request": {
+      "requestId": "ADV-080",
+      "goal": {
+        "domain": "HSK",
+        "focusSkills": [
+          "HSK.WRITING"
+        ]
+      },
+      "hardConstraints": {
+        "verifiedOnly": false,
+        "requiredExpertise": [
+          "HSK.WRITING"
+        ],
+        "requireAllAvailability": false
+      },
+      "availability": [
+        "TUE_19_00"
+      ],
+      "softPreferences": {
+        "teachingStyles": [],
+        "languages": []
+      },
+      "additionalPreferences": []
+    },
+    "mentors": [
+      {
+        "id": "ADV-080-M1",
+        "name": "Adversarial Mentor ADV-080-M1",
+        "birthYear": 2002,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-080-M2",
+        "name": "Adversarial Mentor ADV-080-M2",
+        "birthYear": 2002,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-080-M3",
+        "name": "Adversarial Mentor ADV-080-M3",
+        "birthYear": 1994,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-080-M4",
+        "name": "Adversarial Mentor ADV-080-M4",
+        "birthYear": 1995,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-080-M5",
+        "name": "Adversarial Mentor ADV-080-M5",
+        "birthYear": 2000,
+        "verified": true,
+        "credentials": {
+          "ielts": null,
+          "sat": null,
+          "hsk": {
+            "level": 4
+          }
+        },
+        "expertise": [
+          "HSK.READING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      }
+    ]
+  },
+  {
+    "id": "ADV-081",
+    "label": "DUPLICATE_MENTOR_IDS",
+    "target": "MENTOR_DATASET",
+    "expectsSchemaValid": false,
+    "description": "The same mentor id appears twice in one candidate set.",
+    "expectedBehavior": "validateMentors rejects the dataset; a duplicate must never yield duplicate recommendations.",
+    "mentors": [
+      {
+        "id": "ADV-081-DUP",
+        "name": "Adversarial Mentor ADV-081-DUP",
+        "birthYear": 1999,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-081-M2",
+        "name": "Adversarial Mentor ADV-081-M2",
+        "birthYear": 2001,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-081-DUP",
+        "name": "Adversarial Mentor ADV-081-DUP",
+        "birthYear": 1991,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 300000
+      }
+    ]
+  },
+  {
+    "id": "ADV-082",
+    "label": "DUPLICATE_MENTOR_IDS",
+    "target": "MENTOR_DATASET",
+    "expectsSchemaValid": false,
+    "description": "The same mentor id appears twice in one candidate set.",
+    "expectedBehavior": "validateMentors rejects the dataset; a duplicate must never yield duplicate recommendations.",
+    "mentors": [
+      {
+        "id": "ADV-082-DUP",
+        "name": "Adversarial Mentor ADV-082-DUP",
+        "birthYear": 1998,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-082-M2",
+        "name": "Adversarial Mentor ADV-082-M2",
+        "birthYear": 2002,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-082-DUP",
+        "name": "Adversarial Mentor ADV-082-DUP",
+        "birthYear": 2002,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 301000
+      }
+    ]
+  },
+  {
+    "id": "ADV-083",
+    "label": "DUPLICATE_MENTOR_IDS",
+    "target": "MENTOR_DATASET",
+    "expectsSchemaValid": false,
+    "description": "The same mentor id appears twice in one candidate set.",
+    "expectedBehavior": "validateMentors rejects the dataset; a duplicate must never yield duplicate recommendations.",
+    "mentors": [
+      {
+        "id": "ADV-083-DUP",
+        "name": "Adversarial Mentor ADV-083-DUP",
+        "birthYear": 2001,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-083-M2",
+        "name": "Adversarial Mentor ADV-083-M2",
+        "birthYear": 1997,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-083-DUP",
+        "name": "Adversarial Mentor ADV-083-DUP",
+        "birthYear": 1999,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 302000
+      }
+    ]
+  },
+  {
+    "id": "ADV-084",
+    "label": "DUPLICATE_MENTOR_IDS",
+    "target": "MENTOR_DATASET",
+    "expectsSchemaValid": false,
+    "description": "The same mentor id appears twice in one candidate set.",
+    "expectedBehavior": "validateMentors rejects the dataset; a duplicate must never yield duplicate recommendations.",
+    "mentors": [
+      {
+        "id": "ADV-084-DUP",
+        "name": "Adversarial Mentor ADV-084-DUP",
+        "birthYear": 1992,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-084-M2",
+        "name": "Adversarial Mentor ADV-084-M2",
+        "birthYear": 2004,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-084-DUP",
+        "name": "Adversarial Mentor ADV-084-DUP",
+        "birthYear": 1991,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 303000
+      }
+    ]
+  },
+  {
+    "id": "ADV-085",
+    "label": "DUPLICATE_MENTOR_IDS",
+    "target": "MENTOR_DATASET",
+    "expectsSchemaValid": false,
+    "description": "The same mentor id appears twice in one candidate set.",
+    "expectedBehavior": "validateMentors rejects the dataset; a duplicate must never yield duplicate recommendations.",
+    "mentors": [
+      {
+        "id": "ADV-085-DUP",
+        "name": "Adversarial Mentor ADV-085-DUP",
+        "birthYear": 1996,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-085-M2",
+        "name": "Adversarial Mentor ADV-085-M2",
+        "birthYear": 1997,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-085-DUP",
+        "name": "Adversarial Mentor ADV-085-DUP",
+        "birthYear": 1996,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 304000
+      }
+    ]
+  },
+  {
+    "id": "ADV-086",
+    "label": "DUPLICATE_MENTOR_IDS",
+    "target": "MENTOR_DATASET",
+    "expectsSchemaValid": false,
+    "description": "The same mentor id appears twice in one candidate set.",
+    "expectedBehavior": "validateMentors rejects the dataset; a duplicate must never yield duplicate recommendations.",
+    "mentors": [
+      {
+        "id": "ADV-086-DUP",
+        "name": "Adversarial Mentor ADV-086-DUP",
+        "birthYear": 1991,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-086-M2",
+        "name": "Adversarial Mentor ADV-086-M2",
+        "birthYear": 2001,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-086-DUP",
+        "name": "Adversarial Mentor ADV-086-DUP",
+        "birthYear": 1997,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 305000
+      }
+    ]
+  },
+  {
+    "id": "ADV-087",
+    "label": "DUPLICATE_MENTOR_IDS",
+    "target": "MENTOR_DATASET",
+    "expectsSchemaValid": false,
+    "description": "The same mentor id appears twice in one candidate set.",
+    "expectedBehavior": "validateMentors rejects the dataset; a duplicate must never yield duplicate recommendations.",
+    "mentors": [
+      {
+        "id": "ADV-087-DUP",
+        "name": "Adversarial Mentor ADV-087-DUP",
+        "birthYear": 1993,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-087-M2",
+        "name": "Adversarial Mentor ADV-087-M2",
+        "birthYear": 2001,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-087-DUP",
+        "name": "Adversarial Mentor ADV-087-DUP",
+        "birthYear": 1997,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 306000
+      }
+    ]
+  },
+  {
+    "id": "ADV-088",
+    "label": "DUPLICATE_MENTOR_IDS",
+    "target": "MENTOR_DATASET",
+    "expectsSchemaValid": false,
+    "description": "The same mentor id appears twice in one candidate set.",
+    "expectedBehavior": "validateMentors rejects the dataset; a duplicate must never yield duplicate recommendations.",
+    "mentors": [
+      {
+        "id": "ADV-088-DUP",
+        "name": "Adversarial Mentor ADV-088-DUP",
+        "birthYear": 1997,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-088-M2",
+        "name": "Adversarial Mentor ADV-088-M2",
+        "birthYear": 2002,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-088-DUP",
+        "name": "Adversarial Mentor ADV-088-DUP",
+        "birthYear": 1997,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 307000
+      }
+    ]
+  },
+  {
+    "id": "ADV-089",
+    "label": "DUPLICATE_MENTOR_IDS",
+    "target": "MENTOR_DATASET",
+    "expectsSchemaValid": false,
+    "description": "The same mentor id appears twice in one candidate set.",
+    "expectedBehavior": "validateMentors rejects the dataset; a duplicate must never yield duplicate recommendations.",
+    "mentors": [
+      {
+        "id": "ADV-089-DUP",
+        "name": "Adversarial Mentor ADV-089-DUP",
+        "birthYear": 1990,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-089-M2",
+        "name": "Adversarial Mentor ADV-089-M2",
+        "birthYear": 1999,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-089-DUP",
+        "name": "Adversarial Mentor ADV-089-DUP",
+        "birthYear": 2001,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 308000
+      }
+    ]
+  },
+  {
+    "id": "ADV-090",
+    "label": "DUPLICATE_MENTOR_IDS",
+    "target": "MENTOR_DATASET",
+    "expectsSchemaValid": false,
+    "description": "The same mentor id appears twice in one candidate set.",
+    "expectedBehavior": "validateMentors rejects the dataset; a duplicate must never yield duplicate recommendations.",
+    "mentors": [
+      {
+        "id": "ADV-090-DUP",
+        "name": "Adversarial Mentor ADV-090-DUP",
+        "birthYear": 1996,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-090-M2",
+        "name": "Adversarial Mentor ADV-090-M2",
+        "birthYear": 1997,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-090-DUP",
+        "name": "Adversarial Mentor ADV-090-DUP",
+        "birthYear": 2000,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 309000
+      }
+    ]
+  },
+  {
+    "id": "ADV-091",
+    "label": "CORRUPTED_RECORD",
+    "target": "MENTOR_DATASET",
+    "expectsSchemaValid": false,
+    "description": "A mentor record with corrupted field types and out-of-range values.",
+    "expectedBehavior": "Validation fails with precise field paths; no partially-parsed mentor reaches the ranker.",
+    "mentors": [
+      {
+        "id": "ADV-091-M1",
+        "name": "Adversarial Mentor ADV-091-M1",
+        "birthYear": 1997,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-091-BAD",
+        "name": "Adversarial Mentor ADV-091-BAD",
+        "birthYear": 2002,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": "rẻ"
+      }
+    ]
+  },
+  {
+    "id": "ADV-092",
+    "label": "CORRUPTED_RECORD",
+    "target": "MENTOR_DATASET",
+    "expectsSchemaValid": false,
+    "description": "A mentor record with corrupted field types and out-of-range values.",
+    "expectedBehavior": "Validation fails with precise field paths; no partially-parsed mentor reaches the ranker.",
+    "mentors": [
+      {
+        "id": "ADV-092-M1",
+        "name": "Adversarial Mentor ADV-092-M1",
+        "birthYear": 1996,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-092-BAD",
+        "name": "Adversarial Mentor ADV-092-BAD",
+        "birthYear": 2000,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 9.5
+          }
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      }
+    ]
+  },
+  {
+    "id": "ADV-093",
+    "label": "CORRUPTED_RECORD",
+    "target": "MENTOR_DATASET",
+    "expectsSchemaValid": false,
+    "description": "A mentor record with corrupted field types and out-of-range values.",
+    "expectedBehavior": "Validation fails with precise field paths; no partially-parsed mentor reaches the ranker.",
+    "mentors": [
+      {
+        "id": "ADV-093-M1",
+        "name": "Adversarial Mentor ADV-093-M1",
+        "birthYear": 2002,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-093-BAD",
+        "name": "Adversarial Mentor ADV-093-BAD",
+        "birthYear": 1200,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      }
+    ]
+  },
+  {
+    "id": "ADV-094",
+    "label": "CORRUPTED_RECORD",
+    "target": "MENTOR_DATASET",
+    "expectsSchemaValid": false,
+    "description": "A mentor record with corrupted field types and out-of-range values.",
+    "expectedBehavior": "Validation fails with precise field paths; no partially-parsed mentor reaches the ranker.",
+    "mentors": [
+      {
+        "id": "ADV-094-M1",
+        "name": "Adversarial Mentor ADV-094-M1",
+        "birthYear": 2000,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-094-BAD",
+        "name": "Adversarial Mentor ADV-094-BAD",
+        "birthYear": 1993,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      }
+    ]
+  },
+  {
+    "id": "ADV-095",
+    "label": "CORRUPTED_RECORD",
+    "target": "MENTOR_DATASET",
+    "expectsSchemaValid": false,
+    "description": "A mentor record with corrupted field types and out-of-range values.",
+    "expectedBehavior": "Validation fails with precise field paths; no partially-parsed mentor reaches the ranker.",
+    "mentors": [
+      {
+        "id": "ADV-095-M1",
+        "name": "Adversarial Mentor ADV-095-M1",
+        "birthYear": 2000,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-095-BAD",
+        "name": "Adversarial Mentor ADV-095-BAD",
+        "birthYear": 1990,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "Tuesday evening"
+        ],
+        "pricePerHour": 250000
+      }
+    ]
+  },
+  {
+    "id": "ADV-096",
+    "label": "CORRUPTED_RECORD",
+    "target": "MENTOR_DATASET",
+    "expectsSchemaValid": false,
+    "description": "A mentor record with corrupted field types and out-of-range values.",
+    "expectedBehavior": "Validation fails with precise field paths; no partially-parsed mentor reaches the ranker.",
+    "mentors": [
+      {
+        "id": "ADV-096-M1",
+        "name": "Adversarial Mentor ADV-096-M1",
+        "birthYear": 1997,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-096-BAD",
+        "name": "Adversarial Mentor ADV-096-BAD",
+        "birthYear": 1991,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": "rẻ"
+      }
+    ]
+  },
+  {
+    "id": "ADV-097",
+    "label": "CORRUPTED_RECORD",
+    "target": "MENTOR_DATASET",
+    "expectsSchemaValid": false,
+    "description": "A mentor record with corrupted field types and out-of-range values.",
+    "expectedBehavior": "Validation fails with precise field paths; no partially-parsed mentor reaches the ranker.",
+    "mentors": [
+      {
+        "id": "ADV-097-M1",
+        "name": "Adversarial Mentor ADV-097-M1",
+        "birthYear": 2001,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-097-BAD",
+        "name": "Adversarial Mentor ADV-097-BAD",
+        "birthYear": 2002,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 9.5
+          }
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      }
+    ]
+  },
+  {
+    "id": "ADV-098",
+    "label": "CORRUPTED_RECORD",
+    "target": "MENTOR_DATASET",
+    "expectsSchemaValid": false,
+    "description": "A mentor record with corrupted field types and out-of-range values.",
+    "expectedBehavior": "Validation fails with precise field paths; no partially-parsed mentor reaches the ranker.",
+    "mentors": [
+      {
+        "id": "ADV-098-M1",
+        "name": "Adversarial Mentor ADV-098-M1",
+        "birthYear": 1994,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-098-BAD",
+        "name": "Adversarial Mentor ADV-098-BAD",
+        "birthYear": 1200,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      }
+    ]
+  },
+  {
+    "id": "ADV-099",
+    "label": "CORRUPTED_RECORD",
+    "target": "MENTOR_DATASET",
+    "expectsSchemaValid": false,
+    "description": "A mentor record with corrupted field types and out-of-range values.",
+    "expectedBehavior": "Validation fails with precise field paths; no partially-parsed mentor reaches the ranker.",
+    "mentors": [
+      {
+        "id": "ADV-099-M1",
+        "name": "Adversarial Mentor ADV-099-M1",
+        "birthYear": 1993,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-099-BAD",
+        "name": "Adversarial Mentor ADV-099-BAD",
+        "birthYear": 2004,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      }
+    ]
+  },
+  {
+    "id": "ADV-100",
+    "label": "CORRUPTED_RECORD",
+    "target": "MENTOR_DATASET",
+    "expectsSchemaValid": false,
+    "description": "A mentor record with corrupted field types and out-of-range values.",
+    "expectedBehavior": "Validation fails with precise field paths; no partially-parsed mentor reaches the ranker.",
+    "mentors": [
+      {
+        "id": "ADV-100-M1",
+        "name": "Adversarial Mentor ADV-100-M1",
+        "birthYear": 1994,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "TUE_19_00"
+        ],
+        "pricePerHour": 250000
+      },
+      {
+        "id": "ADV-100-BAD",
+        "name": "Adversarial Mentor ADV-100-BAD",
+        "birthYear": 1991,
+        "verified": true,
+        "credentials": {
+          "ielts": {
+            "overall": 7.5
+          },
+          "sat": null,
+          "hsk": null
+        },
+        "expertise": [
+          "IELTS.WRITING"
+        ],
+        "availability": [
+          "Tuesday evening"
+        ],
+        "pricePerHour": 250000
+      }
+    ]
+  }
+]

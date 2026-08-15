@@ -1,0 +1,37 @@
+@import "tailwindcss";
+
+:root {
+  --paper: #f4efe6;
+  --ink: #1c1915;
+  --muted: #6b6258;
+  --pine: #1f4d3a;
+  --pine-deep: #16382b;
+  --clay: #b4532a;
+  --line: #ddd4c6;
+  --card: #fffaf3;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+html,
+body {
+  background: var(--paper);
+  color: var(--ink);
+}
+
+body {
+  font-family: var(--font-sans), "IBM Plex Sans", sans-serif;
+}
+
+.wordmark {
+  font-family: var(--font-display), "Fraunces", serif;
+}

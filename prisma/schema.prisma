@@ -1,0 +1,717 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../apps/web/src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum MemberType {
+  STUDENT
+  TEACHER
+  STAFF
+}
+
+enum MembershipStatus {
+  ACTIVE
+  GRADUATED
+  LEFT_SCHOOL
+  SUSPENDED
+}
+
+enum SystemRole {
+  STUDENT
+  TEACHER
+  MENTOR
+  SCHOOL_ADMIN
+  ADMIN_IT
+}
+
+enum RoomStatus {
+  ACTIVE
+  MAINTENANCE
+  DISABLED
+}
+
+enum ApplicationStatus {
+  DRAFT
+  SUBMITTED
+  IN_REVIEW
+  NEEDS_MORE_INFO
+  APPROVED
+  REJECTED
+  CANCELLED
+  COMPLETED
+}
+
+enum AppointmentStatus {
+  REQUESTED
+  ACCEPTED
+  DECLINED
+  RESCHEDULE_PROPOSED
+  CANCELLED
+  COMPLETED
+}
+
+enum RoomRequestStatus {
+  DRAFT
+  SUBMITTED
+  PENDING_APPROVAL
+  CHANGES_REQUESTED
+  APPROVED
+  REJECTED
+  CANCELLED
+  COMPLETED
+}
+
+enum ClubStatus {
+  PROPOSED
+  ACTIVE
+  SUSPENDED
+  ARCHIVED
+  REJECTED
+}
+
+enum ClubRole {
+  PRESIDENT
+  VICE_PRESIDENT
+  CORE
+  MEMBER
+}
+
+enum ClubMemberStatus {
+  PENDING
+  ACTIVE
+  REJECTED
+  LEFT
+  REMOVED
+}
+
+enum FinanceStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  VOIDED
+}
+
+enum FinanceKind {
+  INCOME
+  EXPENSE
+}
+
+enum EventVisibility {
+  SCHOOL
+  GRADE
+  CLASS
+  CLUB
+  PRIVATE
+}
+
+enum ApprovalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  CANCELLED
+}
+
+enum ThreadType {
+  DISCUSSION
+  QUESTION
+  ANNOUNCEMENT
+}
+
+enum Weekday {
+  MON
+  TUE
+  WED
+  THU
+  FRI
+}
+
+model Tenant {
+  id        String   @id @default(uuid())
+  slug      String   @unique
+  name      String
+  createdAt DateTime @default(now())
+
+  users                User[]
+  memberships          SchoolMembership[]
+  periods              AcademicPeriod[]
+  years                AcademicYear[]
+  classes              Class[]
+  subjects             Subject[]
+  rooms                Room[]
+  roomTypes            RoomType[]
+  roomFeatures         RoomFeatureDefinition[]
+  timetableEntries     TimetableEntry[]
+  applications         Application[]
+  appointments         Appointment[]
+  files                StoredFile[]
+  auditEvents          AuditEvent[]
+  notifications        Notification[]
+  approvals            Approval[]
+  mentorProfiles       MentorProfile[]
+  matchRequests        MentorMatchRequest[]
+  mentorBookings       MentorBooking[]
+  roomRequests         RoomRequest[]
+  roomBookings         RoomBooking[]
+  roomBlocks           RoomBlock[]
+  clubs                Club[]
+  events               SchoolEvent[]
+  categories           DiscussionCategory[]
+  operationalHours     OperationalHours?
+}
+
+model User {
+  id                 String   @id @default(uuid())
+  tenantId           String
+  tenant             Tenant   @relation(fields: [tenantId], references: [id])
+  fullName           String
+  passwordHash       String
+  mustChangePassword Boolean  @default(true)
+  createdAt          DateTime @default(now())
+
+  memberships      SchoolMembership[]
+  roles            UserRoleAssignment[]
+  sessions         Session[]
+  credentialExport CredentialExport?
+
+  @@index([tenantId])
+}
+
+model SchoolMembership {
+  id               String           @id @default(uuid())
+  tenantId         String
+  tenant           Tenant           @relation(fields: [tenantId], references: [id])
+  userId           String
+  user             User             @relation(fields: [userId], references: [id])
+  schoolMemberCode String
+  memberType       MemberType
+  membershipStatus MembershipStatus
+  classId          String?
+  class            Class?           @relation(fields: [classId], references: [id])
+  startedAt        DateTime
+  endedAt          DateTime?
+
+  @@unique([tenantId, schoolMemberCode])
+  @@index([userId])
+}
+
+model UserRoleAssignment {
+  id         String     @id @default(uuid())
+  userId     String
+  user       User       @relation(fields: [userId], references: [id])
+  role       SystemRole
+  assignedBy String
+  assignedAt DateTime   @default(now())
+
+  @@unique([userId, role])
+}
+
+model Session {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  tokenHash String   @unique
+  expiresAt DateTime
+  revokedAt DateTime?
+  createdAt DateTime @default(now())
+}
+
+model CredentialExport {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id])
+  exported  Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model AcademicYear {
+  id        String   @id @default(uuid())
+  tenantId  String
+  tenant    Tenant   @relation(fields: [tenantId], references: [id])
+  name      String
+  startsOn  DateTime
+  endsOn    DateTime
+  semesters Semester[]
+}
+
+model Semester {
+  id       String       @id @default(uuid())
+  yearId   String
+  year     AcademicYear @relation(fields: [yearId], references: [id])
+  name     String
+  startsOn DateTime
+  endsOn   DateTime
+}
+
+model Class {
+  id           String            @id @default(uuid())
+  tenantId     String
+  tenant       Tenant            @relation(fields: [tenantId], references: [id])
+  code         String
+  name         String
+  grade        String
+  memberships  SchoolMembership[]
+  timetable    TimetableEntry[]
+}
+
+model Subject {
+  id       String           @id @default(uuid())
+  tenantId String
+  tenant   Tenant           @relation(fields: [tenantId], references: [id])
+  code     String
+  name     String
+  entries  TimetableEntry[]
+}
+
+model AcademicPeriod {
+  id        String           @id @default(uuid())
+  tenantId  String
+  tenant    Tenant           @relation(fields: [tenantId], references: [id])
+  code      String
+  startTime String
+  endTime   String
+  sortOrder Int
+  entries   TimetableEntry[]
+}
+
+model RoomType {
+  id       String @id @default(uuid())
+  tenantId String
+  tenant   Tenant @relation(fields: [tenantId], references: [id])
+  code     String
+  name     String
+  rooms    Room[]
+}
+
+model RoomFeatureDefinition {
+  id       String             @id @default(uuid())
+  tenantId String
+  tenant   Tenant             @relation(fields: [tenantId], references: [id])
+  code     String
+  name     String
+  dataType String
+  values   RoomFeatureValue[]
+
+  @@unique([tenantId, code])
+}
+
+model Room {
+  id         String             @id @default(uuid())
+  tenantId   String
+  tenant     Tenant             @relation(fields: [tenantId], references: [id])
+  code       String
+  name       String
+  roomTypeId String
+  roomType   RoomType           @relation(fields: [roomTypeId], references: [id])
+  building   String
+  floor      String
+  capacity   Int
+  status     RoomStatus
+  features   RoomFeatureValue[]
+  blocks     RoomBlock[]
+  timetable  TimetableEntry[]
+  requests   RoomRequest[]
+  bookings   RoomBooking[]
+}
+
+model RoomFeatureValue {
+  id         String                 @id @default(uuid())
+  roomId     String
+  room       Room                   @relation(fields: [roomId], references: [id])
+  featureId  String
+  feature    RoomFeatureDefinition  @relation(fields: [featureId], references: [id])
+  value      String
+
+  @@unique([roomId, featureId])
+}
+
+model RoomBlock {
+  id       String   @id @default(uuid())
+  tenantId String
+  tenant   Tenant   @relation(fields: [tenantId], references: [id])
+  roomId   String
+  room     Room     @relation(fields: [roomId], references: [id])
+  startAt  DateTime
+  endAt    DateTime
+  reason   String
+}
+
+model OperationalHours {
+  id           String @id @default(uuid())
+  tenantId     String @unique
+  tenant       Tenant @relation(fields: [tenantId], references: [id])
+  startMinutes Int
+  endMinutes   Int
+}
+
+model TimetableEntry {
+  id             String         @id @default(uuid())
+  tenantId       String
+  tenant         Tenant         @relation(fields: [tenantId], references: [id])
+  academicYearId String
+  semesterId     String
+  classId        String
+  class          Class          @relation(fields: [classId], references: [id])
+  subjectId      String
+  subject        Subject        @relation(fields: [subjectId], references: [id])
+  teacherId      String
+  roomId         String
+  room           Room           @relation(fields: [roomId], references: [id])
+  weekday        Weekday
+  periodId       String
+  period         AcademicPeriod @relation(fields: [periodId], references: [id])
+
+  @@index([tenantId, teacherId, weekday, periodId])
+  @@index([tenantId, roomId, weekday, periodId])
+}
+
+model StoredFile {
+  id         String   @id @default(uuid())
+  tenantId   String
+  tenant     Tenant   @relation(fields: [tenantId], references: [id])
+  filename   String
+  mime       String
+  size       Int
+  sha256     String
+  storageKey String
+  deletedAt  DateTime?
+  createdBy  String
+  createdAt  DateTime @default(now())
+}
+
+model Application {
+  id                      String              @id @default(uuid())
+  tenantId                String
+  tenant                  Tenant              @relation(fields: [tenantId], references: [id])
+  studentId               String
+  rawRequestText          String
+  classifiedCategory      String?
+  currentTeacherId        String
+  pendingTransferTo       String?
+  status                  ApplicationStatus
+  description             String?
+  latestSubmissionVersion Int?
+  createdAt               DateTime            @default(now())
+  updatedAt               DateTime            @updatedAt
+  versions                ApplicationSubmissionVersion[]
+}
+
+model ApplicationSubmissionVersion {
+  id             String      @id @default(uuid())
+  applicationId  String
+  application    Application @relation(fields: [applicationId], references: [id])
+  versionNumber  Int
+  fileId         String
+  submittedBy    String
+  submittedAt    DateTime    @default(now())
+
+  @@unique([applicationId, versionNumber])
+}
+
+model Appointment {
+  id         String            @id @default(uuid())
+  tenantId   String
+  tenant     Tenant            @relation(fields: [tenantId], references: [id])
+  studentId  String
+  teacherId  String
+  title      String
+  startAt    DateTime
+  endAt      DateTime
+  status     AppointmentStatus
+  applicationId String?
+  conversation Conversation?
+}
+
+model Conversation {
+  id            String      @id @default(uuid())
+  appointmentId String      @unique
+  appointment   Appointment @relation(fields: [appointmentId], references: [id])
+  createdAt     DateTime    @default(now())
+  messages      Message[]
+}
+
+model Message {
+  id             String       @id @default(uuid())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id])
+  senderId       String
+  body           String
+  fileId         String?
+  createdAt      DateTime     @default(now())
+  readAt         DateTime?
+}
+
+model AuditEvent {
+  id         String   @id @default(uuid())
+  tenantId   String
+  tenant     Tenant   @relation(fields: [tenantId], references: [id])
+  actorId    String?
+  action     String
+  entityType String
+  entityId   String
+  beforeJson Json?
+  afterJson  Json?
+  requestId  String
+  timestamp  DateTime @default(now())
+}
+
+model Notification {
+  id         String   @id @default(uuid())
+  tenantId   String
+  tenant     Tenant   @relation(fields: [tenantId], references: [id])
+  userId     String
+  type       String
+  title      String
+  body       String
+  entityType String?
+  entityId   String?
+  readAt     DateTime?
+  createdAt  DateTime @default(now())
+}
+
+model Approval {
+  id          String         @id @default(uuid())
+  tenantId    String
+  tenant      Tenant         @relation(fields: [tenantId], references: [id])
+  subjectType String
+  subjectId   String
+  status      ApprovalStatus
+  requestedBy String
+  requestedAt DateTime       @default(now())
+  resolvedBy  String?
+  resolvedAt  DateTime?
+  reason      String?
+}
+
+model MentorProfile {
+  id          String   @id @default(uuid())
+  tenantId    String
+  tenant      Tenant   @relation(fields: [tenantId], references: [id])
+  userId      String
+  verified    Boolean  @default(false)
+  headline    String
+  expertise   String[]
+  availability String[]
+  pricePerHour Int
+  graduationYear Int
+  skills      String[]
+}
+
+model MentorMatchRequest {
+  id        String   @id @default(uuid())
+  tenantId  String
+  tenant    Tenant   @relation(fields: [tenantId], references: [id])
+  studentId String
+  rawText   String
+  payload   Json
+  createdAt DateTime @default(now())
+  run       MentorRecommendationRun?
+}
+
+model MentorRecommendationRun {
+  id        String             @id @default(uuid())
+  requestId String             @unique
+  request   MentorMatchRequest @relation(fields: [requestId], references: [id])
+  engineVersion String
+  result    Json
+  createdAt DateTime           @default(now())
+}
+
+model MentorBooking {
+  id        String   @id @default(uuid())
+  tenantId  String
+  tenant    Tenant   @relation(fields: [tenantId], references: [id])
+  studentId String
+  mentorId  String
+  slot      String
+  createdAt DateTime @default(now())
+}
+
+model RoomRequest {
+  id            String            @id @default(uuid())
+  tenantId      String
+  tenant        Tenant            @relation(fields: [tenantId], references: [id])
+  roomId        String
+  room          Room              @relation(fields: [roomId], references: [id])
+  requestedBy   String
+  status        RoomRequestStatus
+  eventStart    DateTime
+  eventEnd      DateTime
+  setupMinutes  Int               @default(15)
+  cleanupMinutes Int              @default(15)
+  holdCreatedAt DateTime          @default(now())
+  recommendation Json?
+  booking       RoomBooking?
+}
+
+model RoomBooking {
+  id        String      @id @default(uuid())
+  tenantId  String
+  tenant    Tenant      @relation(fields: [tenantId], references: [id])
+  roomId    String
+  room      Room        @relation(fields: [roomId], references: [id])
+  requestId String      @unique
+  request   RoomRequest @relation(fields: [requestId], references: [id])
+  startAt   DateTime
+  endAt     DateTime
+  cancelledAt DateTime?
+}
+
+model Club {
+  id          String           @id @default(uuid())
+  tenantId    String
+  tenant      Tenant           @relation(fields: [tenantId], references: [id])
+  name        String
+  status      ClubStatus
+  proposalFileId String?
+  members     ClubMembership[]
+  documents   ClubDocument[]
+  finance     FinanceEntry[]
+  events      ClubEvent[]
+}
+
+model ClubMembership {
+  id     String           @id @default(uuid())
+  clubId String
+  club   Club             @relation(fields: [clubId], references: [id])
+  userId String
+  role   ClubRole
+  status ClubMemberStatus
+}
+
+model ClubDocument {
+  id         String                @id @default(uuid())
+  clubId     String
+  club       Club                  @relation(fields: [clubId], references: [id])
+  title      String
+  visibility String
+  versions   ClubDocumentVersion[]
+}
+
+model ClubDocumentVersion {
+  id         String       @id @default(uuid())
+  documentId String
+  document   ClubDocument @relation(fields: [documentId], references: [id])
+  version    Int
+  fileId     String
+}
+
+model FinanceEntry {
+  id          String        @id @default(uuid())
+  clubId      String
+  club        Club          @relation(fields: [clubId], references: [id])
+  kind        FinanceKind
+  amount      Int
+  currency    String        @default("VND")
+  category    String
+  description String
+  status      FinanceStatus
+  createdBy   String
+  approvedBy  String?
+}
+
+model ClubEvent {
+  id          String          @id @default(uuid())
+  clubId      String
+  club        Club            @relation(fields: [clubId], references: [id])
+  title       String
+  startAt     DateTime
+  endAt       DateTime
+  visibility  EventVisibility
+  roomRequired Boolean
+  roomResolved Boolean        @default(false)
+  status      String
+}
+
+model SchoolEvent {
+  id         String          @id @default(uuid())
+  tenantId   String
+  tenant     Tenant          @relation(fields: [tenantId], references: [id])
+  title      String
+  startAt    DateTime
+  endAt      DateTime
+  visibility EventVisibility
+  classId    String?
+  grade      String?
+  clubId     String?
+  priority   Int             @default(0)
+}
+
+model DiscussionCategory {
+  id       String  @id @default(uuid())
+  tenantId String
+  tenant   Tenant  @relation(fields: [tenantId], references: [id])
+  name     String
+  forums   Forum[]
+}
+
+model Forum {
+  id         String             @id @default(uuid())
+  categoryId String
+  category   DiscussionCategory @relation(fields: [categoryId], references: [id])
+  name       String
+  threads    Thread[]
+}
+
+model Thread {
+  id       String     @id @default(uuid())
+  forumId  String
+  forum    Forum      @relation(fields: [forumId], references: [id])
+  title    String
+  type     ThreadType
+  authorId String
+  pinned   Boolean    @default(false)
+  locked   Boolean    @default(false)
+  posts    Post[]
+}
+
+model Post {
+  id        String     @id @default(uuid())
+  threadId  String
+  thread    Thread     @relation(fields: [threadId], references: [id])
+  authorId  String
+  body      String
+  deletedAt DateTime?
+  createdAt DateTime   @default(now())
+  reactions Reaction[]
+  reports   Report[]
+}
+
+model Reaction {
+  id     String @id @default(uuid())
+  postId String
+  post   Post   @relation(fields: [postId], references: [id])
+  userId String
+  kind   String
+
+  @@unique([postId, userId, kind])
+}
+
+model Report {
+  id       String          @id @default(uuid())
+  postId   String
+  post     Post            @relation(fields: [postId], references: [id])
+  reporterId String
+  category String
+  case     ModerationCase? @relation(fields: [caseId], references: [id])
+  caseId   String?
+}
+
+model ModerationCase {
+  id      String              @id @default(uuid())
+  reports Report[]
+  actions ModerationActionRow[]
+}
+
+model ModerationActionRow {
+  id       String         @id @default(uuid())
+  caseId   String
+  case     ModerationCase @relation(fields: [caseId], references: [id])
+  action   String
+  reason   String
+  actorId  String
+  createdAt DateTime      @default(now())
+}

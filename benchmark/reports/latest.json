@@ -1,0 +1,36 @@
+{
+  "reportVersion": "facility-benchmark.v1",
+  "status": "PASS",
+  "versions": {
+    "engine": "facility-engine-v1.0.0",
+    "package": "@ed4u/facility-engine@1.0.0",
+    "gitCommit": null,
+    "config": "facility-default-v1"
+  },
+  "dataset": {
+    "sha256": "a600afbdfa750cde51490138dbd900bf98335ff0bf41409bd9d53bb5416ef847",
+    "requests": 40,
+    "rooms": 24
+  },
+  "metrics": {
+    "hardConstraintViolations": 0,
+    "hardConstraintViolationRate": 0,
+    "feasibleSolutionRate": 1,
+    "latencyMs": {
+      "p50": 0.019083000000009065,
+      "p95": 0.04025000000000034,
+      "max": 5.369875
+    }
+  },
+  "humanQuality": {
+    "ndcgAt3": null,
+    "precisionAt3": null,
+    "note": "NOT_MEASURED — no human labels"
+  },
+  "runtime": {
+    "node": "v24.19.0",
+    "platform": "darwin",
+    "arch": "arm64",
+    "cpu": "Apple M4"
+  }
+}

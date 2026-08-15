@@ -1,0 +1,2649 @@
+{
+  "formatVersion": "gold-set.v1",
+  "engineVersion": "mentor-engine-v1.0.0",
+  "schemaVersion": "mentor-engine-schema-v1.0.0",
+  "seed": 42,
+  "labelsAreFabricated": false,
+  "instructions": [
+    "Each scenario is one student request and a shortlist of eligible mentors.",
+    "Rank or grade the candidates for that specific request, using the request's own goal, constraints and preferences.",
+    "Suggested grades: 3 = ideal match, 2 = good, 1 = weak but defensible, 0 = unsuitable.",
+    "Candidates are listed in id order, NOT in the engine's ranking order, so your judgement is not anchored to it.",
+    "Do not consult the engine's output while labelling.",
+    "At least two independent reviewers should label each scenario so agreement can be measured.",
+    "Write labels to data/gold/labels/<reviewerId>.json — never into this template."
+  ],
+  "scenarios": [
+    {
+      "scenarioId": "GS-001",
+      "requestId": "R00001",
+      "request": {
+        "requestId": "R00001",
+        "goal": {
+          "domain": "HSK",
+          "currentScore": 2,
+          "targetScore": 5,
+          "focusSkills": []
+        },
+        "hardConstraints": {
+          "verifiedOnly": false,
+          "requiredExpertise": [],
+          "requireAllAvailability": false
+        },
+        "availability": [
+          "MON_20_00",
+          "SAT_14_00"
+        ],
+        "softPreferences": {
+          "teachingStyles": [],
+          "languages": [
+            "VI"
+          ]
+        },
+        "additionalPreferences": []
+      },
+      "candidateMentorIds": [
+        "M0006",
+        "M0039",
+        "M0053",
+        "M0169",
+        "M0219",
+        "M0348",
+        "M0429",
+        "M0493"
+      ],
+      "labels": []
+    },
+    {
+      "scenarioId": "GS-002",
+      "requestId": "R00002",
+      "request": {
+        "requestId": "R00002",
+        "goal": {
+          "domain": "IELTS",
+          "currentScore": 5,
+          "targetScore": 8,
+          "focusSkills": []
+        },
+        "hardConstraints": {
+          "verifiedOnly": false,
+          "maxPricePerHour": 280000,
+          "minCredentialScore": 7,
+          "requiredExpertise": [
+            "IELTS.READING"
+          ],
+          "requireAllAvailability": false
+        },
+        "availability": [
+          "FRI_20_00",
+          "MON_20_00",
+          "WED_20_00"
+        ],
+        "softPreferences": {
+          "teachingStyles": [
+            "EXAM_FOCUSED",
+            "STRUCTURED"
+          ],
+          "languages": []
+        },
+        "additionalPreferences": []
+      },
+      "candidateMentorIds": [
+        "M0059",
+        "M0106",
+        "M0155",
+        "M0172",
+        "M0286",
+        "M0322",
+        "M0324",
+        "M0398"
+      ],
+      "labels": []
+    },
+    {
+      "scenarioId": "GS-003",
+      "requestId": "R00003",
+      "request": {
+        "requestId": "R00003",
+        "goal": {
+          "domain": "IELTS",
+          "targetScore": 8,
+          "focusSkills": [
+            "IELTS.LISTENING"
+          ]
+        },
+        "hardConstraints": {
+          "verifiedOnly": true,
+          "maxPricePerHour": 290000,
+          "requiredExpertise": [],
+          "requireAllAvailability": false
+        },
+        "availability": [
+          "WED_19_00",
+          "WED_20_00"
+        ],
+        "softPreferences": {
+          "teachingStyles": [],
+          "languages": [
+            "VI"
+          ]
+        },
+        "additionalPreferences": []
+      },
+      "candidateMentorIds": [
+        "M0114",
+        "M0130",
+        "M0192",
+        "M0216",
+        "M0388",
+        "M0418",
+        "M0423",
+        "M0492"
+      ],
+      "labels": []
+    },
+    {
+      "scenarioId": "GS-004",
+      "requestId": "R00006",
+      "request": {
+        "requestId": "R00006",
+        "goal": {
+          "domain": "HSK",
+          "currentScore": 2,
+          "targetScore": 6,
+          "focusSkills": [
+            "HSK.LISTENING"
+          ]
+        },
+        "hardConstraints": {
+          "verifiedOnly": true,
+          "maxPricePerHour": 460000,
+          "minCredentialScore": 5,
+          "requiredExpertise": [],
+          "requireAllAvailability": false
+        },
+        "availability": [
+          "MON_19_00",
+          "TUE_19_30"
+        ],
+        "softPreferences": {
+          "teachingStyles": [
+            "FLEXIBLE"
+          ],
+          "languages": []
+        },
+        "additionalPreferences": []
+      },
+      "candidateMentorIds": [
+        "M0006",
+        "M0035",
+        "M0218",
+        "M0226",
+        "M0256",
+        "M0309",
+        "M0357",
+        "M0410"
+      ],
+      "labels": []
+    },
+    {
+      "scenarioId": "GS-005",
+      "requestId": "R00009",
+      "request": {
+        "requestId": "R00009",
+        "goal": {
+          "domain": "IELTS",
+          "currentScore": 7,
+          "targetScore": 8,
+          "focusSkills": [
+            "IELTS.SPEAKING",
+            "IELTS.WRITING"
+          ]
+        },
+        "hardConstraints": {
+          "verifiedOnly": false,
+          "minCredentialScore": 7,
+          "requiredExpertise": [],
+          "requireAllAvailability": false
+        },
+        "availability": [
+          "SUN_09_00"
+        ],
+        "softPreferences": {
+          "teachingStyles": [],
+          "languages": []
+        },
+        "additionalPreferences": []
+      },
+      "candidateMentorIds": [
+        "M0084",
+        "M0132",
+        "M0206",
+        "M0248",
+        "M0258",
+        "M0269",
+        "M0286",
+        "M0465"
+      ],
+      "labels": []
+    },
+    {
+      "scenarioId": "GS-006",
+      "requestId": "R00010",
+      "request": {
+        "requestId": "R00010",
+        "goal": {
+          "domain": "IELTS",
+          "currentScore": 4.5,
+          "targetScore": 7.5,
+          "focusSkills": [
+            "IELTS.LISTENING",
+            "IELTS.READING"
+          ]
+        },
+        "hardConstraints": {
+          "verifiedOnly": true,
+          "requiredExpertise": [],
+          "requireAllAvailability": false
+        },
+        "availability": [
+          "MON_19_00",
+          "THU_20_00",
+          "TUE_20_00"
+        ],
+        "softPreferences": {
+          "teachingStyles": [
+            "CONVERSATIONAL",
+            "MOTIVATING"
+          ],
+          "languages": [],
+          "gender": "male"
+        },
+        "additionalPreferences": []
+      },
+      "candidateMentorIds": [
+        "M0018",
+        "M0069",
+        "M0077",
+        "M0089",
+        "M0098",
+        "M0150",
+        "M0252",
+        "M0440"
+      ],
+      "labels": []
+    },
+    {
+      "scenarioId": "GS-007",
+      "requestId": "R00011",
+      "request": {
+        "requestId": "R00011",
+        "goal": {
+          "domain": "IELTS",
+          "currentScore": 7,
+          "targetScore": 8,
+          "focusSkills": [
+            "IELTS.SPEAKING",
+            "IELTS.WRITING"
+          ]
+        },
+        "hardConstraints": {
+          "verifiedOnly": false,
+          "maxPricePerHour": 430000,
+          "requiredExpertise": [
+            "IELTS.LISTENING"
+          ],
+          "requireAllAvailability": false
+        },
+        "availability": [
+          "SUN_09_00",
+          "THU_19_00",
+          "THU_20_00",
+          "WED_20_00"
+        ],
+        "softPreferences": {
+          "teachingStyles": [
+            "INTENSIVE",
+            "STRUCTURED"
+          ],
+          "languages": []
+        },
+        "additionalPreferences": []
+      },
+      "candidateMentorIds": [
+        "M0075",
+        "M0259",
+        "M0286",
+        "M0325",
+        "M0417",
+        "M0423",
+        "M0431",
+        "M0476"
+      ],
+      "labels": []
+    },
+    {
+      "scenarioId": "GS-008",
+      "requestId": "R00014",
+      "request": {
+        "requestId": "R00014",
+        "goal": {
+          "domain": "IELTS",
+          "currentScore": 6.5,
+          "targetScore": 7,
+          "focusSkills": [
+            "IELTS.LISTENING"
+          ]
+        },
+        "hardConstraints": {
+          "verifiedOnly": false,
+          "maxPricePerHour": 280000,
+          "minCredentialScore": 6.5,
+          "requiredExpertise": [],
+          "requireAllAvailability": false
+        },
+        "availability": [
+          "TUE_20_00"
+        ],
+        "softPreferences": {
+          "teachingStyles": [
+            "ANALYTICAL",
+            "CONVERSATIONAL"
+          ],
+          "languages": [
+            "VI"
+          ],
+          "gender": "female"
+        },
+        "additionalPreferences": []
+      },
+      "candidateMentorIds": [
+        "M0076",
+        "M0130",
+        "M0155",
+        "M0295",
+        "M0401",
+        "M0433",
+        "M0465",
+        "M0469"
+      ],
+      "labels": []
+    },
+    {
+      "scenarioId": "GS-009",
+      "requestId": "R00015",
+      "request": {
+        "requestId": "R00015",
+        "goal": {
+          "domain": "IELTS",
+          "currentScore": 5.5,
+          "targetScore": 8,
+          "focusSkills": [
+            "IELTS.READING"
+          ]
+        },
+        "hardConstraints": {
+          "verifiedOnly": true,
+          "maxPricePerHour": 380000,
+          "minCredentialScore": 8,
+          "requiredExpertise": [],
+          "requireAllAvailability": false
+        },
+        "availability": [
+          "FRI_19_00",
+          "SUN_09_00",
+          "TUE_20_00"
+        ],
+        "softPreferences": {
+          "teachingStyles": [],
+          "languages": []
+        },
+        "additionalPreferences": [
+          "mentor vui tính, hay kể chuyện"
+        ]
+      },
+      "candidateMentorIds": [
+        "M0075",
+        "M0084",
+        "M0264",
+        "M0275",
+        "M0319",
+        "M0474",
+        "M0476",
+        "M0477"
+      ],
+      "labels": []
+    },
+    {
+      "scenarioId": "GS-010",
+      "requestId": "R00016",
+      "request": {
+        "requestId": "R00016",
+        "goal": {
+          "domain": "IELTS",
+          "currentScore": 5.5,
+          "targetScore": 6.5,
+          "focusSkills": [
+            "IELTS.WRITING"
+          ]
+        },
+        "hardConstraints": {
+          "verifiedOnly": false,
+          "minCredentialScore": 7,
+          "requiredExpertise": [
+            "IELTS.WRITING"
+          ],
+          "requireAllAvailability": false
+        },
+        "availability": [
+          "MON_19_00",
+          "THU_19_30",
+          "THU_20_00"
+        ],
+        "softPreferences": {
+          "teachingStyles": [
+            "MOTIVATING",
+            "PATIENT"
+          ],
+          "languages": []
+        },
+        "additionalPreferences": []
+      },
+      "candidateMentorIds": [
+        "M0022",
+        "M0069",
+        "M0089",
+        "M0133",
+        "M0258",
+        "M0276",
+        "M0358",
+        "M0492"
+      ],
+      "labels": []
+    },
+    {
+      "scenarioId": "GS-011",
+      "requestId": "R00020",
+      "request": {
+        "requestId": "R00020",
+        "goal": {
+          "domain": "IELTS",
+          "currentScore": 6,
+          "targetScore": 7,
+          "focusSkills": [
+            "IELTS.WRITING"
+          ]
+        },
+        "hardConstraints": {
+          "verifiedOnly": false,
+          "requiredExpertise": [],
+          "requireAllAvailability": true
+        },
+        "availability": [
+          "FRI_20_00"
+        ],
+        "softPreferences": {
+          "teachingStyles": [
+            "ANALYTICAL",
+            "PATIENT"
+          ],
+          "languages": [
+            "VI"
+          ]
+        },
+        "additionalPreferences": [
+          "mong mentor từng du học"
+        ]
+      },
+      "candidateMentorIds": [
+        "M0043",
+        "M0044",
+        "M0059",
+        "M0155",
+        "M0264",
+        "M0286",
+        "M0329",
+        "M0336"
+      ],
+      "labels": []
+    },
+    {
+      "scenarioId": "GS-012",
+      "requestId": "R00022",
+      "request": {
+        "requestId": "R00022",
+        "goal": {
+          "domain": "IELTS",
+          "currentScore": 6,
+          "targetScore": 7.5,
+          "focusSkills": [
+            "IELTS.SPEAKING",
+            "IELTS.WRITING"
+          ]
+        },
+        "hardConstraints": {
+          "verifiedOnly": true,
+          "requiredExpertise": [],
+          "requireAllAvailability": false
+        },
+        "availability": [
+          "MON_20_00",
+          "SAT_10_00",
+          "THU_20_00",
+          "TUE_19_00"
+        ],
+        "softPreferences": {
+          "teachingStyles": [
+            "FLEXIBLE"
+          ],
+          "languages": []
+        },
+        "additionalPreferences": []
+      },
+      "candidateMentorIds": [
+        "M0106",
+        "M0181",
+        "M0280",
+        "M0316",
+        "M0322",
+        "M0397",
+        "M0452",
+        "M0485"
+      ],
+      "labels": []
+    },
+    {
+      "scenarioId": "GS-013",
+      "requestId": "R00026",
+      "request": {
+        "requestId": "R00026",
+        "goal": {
+          "domain": "IELTS",
+          "currentScore": 7,
+          "targetScore": 8,
+          "focusSkills": [
+            "IELTS.LISTENING",
+            "IELTS.SPEAKING"
+          ]
+        },
+        "hardConstraints": {
+          "verifiedOnly": false,
+          "maxPricePerHour": 230000,
+          "requiredExpertise": [],
+          "requireAllAvailability": false
+        },
+        "availability": [
+          "MON_19_00",
+          "SAT_10_00",
+          "SAT_14_00"
+        ],
+        "softPreferences": {
+          "teachingStyles": [
+            "CONVERSATIONAL"
+          ],
+          "languages": []
+        },
+        "additionalPreferences": []
+      },
+      "candidateMentorIds": [
+        "M0014",
+        "M0020",
+        "M0030",
+        "M0059",
+        "M0082",
+        "M0293",
+        "M0338",
+        "M0346"
+      ],
+      "labels": []
+    },
+    {
+      "scenarioId": "GS-014",
+      "requestId": "R00027",
+      "request": {
+        "requestId": "R00027",
+        "goal": {
+          "domain": "HSK",
+          "currentScore": 1,
+          "focusSkills": [
+            "HSK.LISTENING",
+            "HSK.READING"
+          ]
+        },
+        "hardConstraints": {
+          "verifiedOnly": false,
+          "requiredExpertise": [],
+          "requireAllAvailability": true
+        },
+        "availability": [
+          "WED_19_00"
+        ],
+        "softPreferences": {
+          "teachingStyles": [
+            "MOTIVATING",
+            "PATIENT"
+          ],
+          "languages": []
+        },
+        "additionalPreferences": []
+      },
+      "candidateMentorIds": [
+        "M0002",
+        "M0027",
+        "M0051",
+        "M0207",
+        "M0216",
+        "M0244",
+        "M0278",
+        "M0298"
+      ],
+      "labels": []
+    },
+    {
+      "scenarioId": "GS-015",
+      "requestId": "R00031",
+      "request": {
+        "requestId": "R00031",
+        "goal": {
+          "domain": "IELTS",
+          "currentScore": 6,
+          "targetScore": 6.5,
+          "focusSkills": [
+            "IELTS.READING",
+            "IELTS.SPEAKING"
+          ]
+        },
+        "hardConstraints": {
+          "verifiedOnly": true,
+          "maxPricePerHour": 400000,
+          "requiredExpertise": [],
+          "requireAllAvailability": false
+        },
+        "availability": [
+          "FRI_19_00",
+          "SUN_09_30"
+        ],
+        "softPreferences": {
+          "teachingStyles": [],
+          "languages": [
+            "VI"
+          ]
+        },
+        "additionalPreferences": [
+          "mong mentor từng du học"
+        ]
+      },
+      "candidateMentorIds": [
+        "M0059",
+        "M0103",
+        "M0149",
+        "M0202",
+        "M0303",
+        "M0316",
+        "M0319",
+        "M0492"
+      ],
+      "labels": []
+    },
+    {
+      "scenarioId": "GS-016",
+      "requestId": "R00032",
+      "request": {
+        "requestId": "R00032",
+        "goal": {
+          "domain": "IELTS",
+          "targetScore": 6.5,
+          "focusSkills": [
+            "IELTS.WRITING"
+          ]
+        },
+        "hardConstraints": {
+          "verifiedOnly": false,
+          "requiredExpertise": [],
+          "requireAllAvailability": false
+        },
+        "availability": [
+          "WED_20_00"
+        ],
+        "softPreferences": {
+          "teachingStyles": [],
+          "languages": []
+        },
+        "additionalPreferences": []
+      },
+      "candidateMentorIds": [
+        "M0050",
+        "M0065",
+        "M0120",
+        "M0134",
+        "M0316",
+        "M0418",
+        "M0423",
+        "M0459"
+      ],
+      "labels": []
+    },
+    {
+      "scenarioId": "GS-017",
+      "requestId": "R00033",
+      "request": {
+        "requestId": "R00033",
+        "goal": {
+          "domain": "IELTS",
+          "currentScore": 5,
+          "targetScore": 7.5,
+          "focusSkills": [
+            "IELTS.LISTENING",
+            "IELTS.SPEAKING"
+          ]
+        },
+        "hardConstraints": {
+          "verifiedOnly": true,
+          "requiredExpertise": [
+            "IELTS.READING"
+          ],
+          "requireAllAvailability": false
+        },
+        "availability": [
+          "SAT_09_00",
+          "THU_20_00",
+          "TUE_19_00"
+        ],
+        "softPreferences": {
+          "teachingStyles": [
+            "STRUCTURED"
+          ],
+          "languages": [
+            "VI"
+          ]
+        },
+        "additionalPreferences": []
+      },
+      "candidateMentorIds": [
+        "M0010",
+        "M0074",
+        "M0217",
+        "M0252",
+        "M0281",
+        "M0348",
+        "M0367",
+        "M0423"
+      ],
+      "labels": []
+    },
+    {
+      "scenarioId": "GS-018",
+      "requestId": "R00034",
+      "request": {
+        "requestId": "R00034",
+        "goal": {
+          "domain": "IELTS",
+          "currentScore": 7,
+          "targetScore": 7.5,
+          "focusSkills": [
+            "IELTS.SPEAKING",
+            "IELTS.WRITING"
+          ]
+        },
+        "hardConstraints": {
+          "verifiedOnly": false,
+          "requiredExpertise": [],
+          "requireAllAvailability": false
+        },
+        "availability": [
+          "MON_19_00",
+          "SAT_10_00",
+          "SUN_15_00"
+        ],
+        "softPreferences": {
+          "teachingStyles": [
+            "INTENSIVE"
+          ],
+          "languages": []
+        },
+        "additionalPreferences": []
+      },
+      "candidateMentorIds": [
+        "M0045",
+        "M0228",
+        "M0338",
+        "M0346",
+        "M0350",
+        "M0358",
+        "M0425",
+        "M0426"
+      ],
+      "labels": []
+    },
+    {
+      "scenarioId": "GS-019",
+      "requestId": "R00036",
+      "request": {
+        "requestId": "R00036",
+        "goal": {
+          "domain": "SAT",
+          "currentScore": 1000,
+          "targetScore": 1300,
+          "focusSkills": [
+            "SAT.MATH"
+          ]
+        },
+        "hardConstraints": {
+          "verifiedOnly": false,
+          "maxPricePerHour": 340000,
+          "requiredExpertise": [],
+          "requireAllAvailability": false
+        },
+        "availability": [
+          "SAT_14_00",
+          "SUN_15_00",
+          "THU_19_30",
+          "WED_20_00"
+        ],
+        "softPreferences": {
+          "teachingStyles": [
+            "MOTIVATING",
+            "PATIENT"
+          ],
+          "languages": [
+            "VI"
+          ]
+        },
+        "additionalPreferences": []
+      },
+      "candidateMentorIds": [
+        "M0064",
+        "M0107",
+        "M0113",
+        "M0180",
+        "M0202",
+        "M0255",
+        "M0263",
+        "M0376"
+      ],
+      "labels": []
+    },
+    {
+      "scenarioId": "GS-020",
+      "requestId": "R00044",
+      "request": {
+        "requestId": "R00044",
+        "goal": {
+          "domain": "IELTS",
+          "currentScore": 4.5,
+          "targetScore": 6.5,
+          "focusSkills": [
+            "IELTS.WRITING"
+          ]
+        },
+        "hardConstraints": {
+          "verifiedOnly": true,
+          "maxPricePerHour": 480000,
+          "minCredentialScore": 7.5,
+          "requiredExpertise": [],
+          "requireAllAvailability": false
+        },
+        "availability": [
+          "SUN_15_00",
+          "SUN_20_00"
+        ],
+        "softPreferences": {
+          "teachingStyles": [
+            "ANALYTICAL"
+          ],
+          "languages": [
+            "VI"
+          ]
+        },
+        "additionalPreferences": []
+      },
+      "candidateMentorIds": [
+        "M0063",
+        "M0066",
+        "M0136",
+        "M0259",
+        "M0364",
+        "M0371",
+        "M0452",
+        "M0471"
+      ],
+      "labels": []
+    },
+    {
+      "scenarioId": "GS-021",
+      "requestId": "R00045",
+      "request": {
+        "requestId": "R00045",
+        "goal": {
+          "domain": "SAT",
+          "currentScore": 1100,
+          "focusSkills": []
+        },
+        "hardConstraints": {
+          "verifiedOnly": true,
+          "maxPricePerHour": 410000,
+          "requiredExpertise": [],
+          "requireAllAvailability": false
+        },
+        "availability": [
+          "SAT_14_00",
+          "SUN_09_30",
+          "TUE_19_30"
+        ],
+        "softPreferences": {
+          "teachingStyles": [
+            "ANALYTICAL"
+          ],
+          "languages": []
+        },
+        "additionalPreferences": []
+      },
+      "candidateMentorIds": [
+        "M0010",
+        "M0047",
+        "M0168",
+        "M0202",
+        "M0262",
+        "M0268",
+        "M0321",
+        "M0376"
+      ],
+      "labels": []
+    },
+    {
+      "scenarioId": "GS-022",
+      "requestId": "R00046",
+      "request": {
+        "requestId": "R00046",
+        "goal": {
+          "domain": "IELTS",
+          "currentScore": 4.5,
+          "focusSkills": [
+            "IELTS.LISTENING",
+            "IELTS.WRITING"
+          ]
+        },
+        "hardConstraints": {
+          "verifiedOnly": false,
+          "maxPricePerHour": 230000,
+          "requiredExpertise": [],
+          "requireAllAvailability": false
+        },
+        "availability": [
+          "SAT_10_00",
+          "THU_19_00",
+          "TUE_20_00"
+        ],
+        "softPreferences": {
+          "teachingStyles": [],
+          "languages": [],
+          "gender": "male"
+        },
+        "additionalPreferences": [
+          "thích học qua ví dụ thực tế"
+        ]
+      },
+      "candidateMentorIds": [
+        "M0076",
+        "M0082",
+        "M0098",
+        "M0105",
+        "M0346",
+        "M0401",
+        "M0465",
+        "M0469"
+      ],
+      "labels": []
+    },
+    {
+      "scenarioId": "GS-023",
+      "requestId": "R00047",
+      "request": {
+        "requestId": "R00047",
+        "goal": {
+          "domain": "IELTS",
+          "currentScore": 4.5,
+          "focusSkills": [
+            "IELTS.LISTENING",
+            "IELTS.WRITING"
+          ]
+        },
+        "hardConstraints": {
+          "verifiedOnly": false,
+          "maxPricePerHour": 420000,
+          "requiredExpertise": [],
+          "requireAllAvailability": false
+        },
+        "availability": [
+          "MON_20_00",
+          "WED_20_00"
+        ],
+        "softPreferences": {
+          "teachingStyles": [],
+          "languages": []
+        },
+        "additionalPreferences": [
+          "muốn được chữa bài chi tiết"
+        ]
+      },
+      "candidateMentorIds": [
+        "M0011",
+        "M0094",
+        "M0115",
+        "M0120",
+        "M0370",
+        "M0430",
+        "M0450",
+        "M0459"
+      ],
+      "labels": []
+    },
+    {
+      "scenarioId": "GS-024",
+      "requestId": "R00048",
+      "request": {
+        "requestId": "R00048",
+        "goal": {
+          "domain": "SAT",
+          "currentScore": 1100,
+          "targetScore": 1500,
+          "focusSkills": [
+            "SAT.READING_WRITING"
+          ]
+        },
+        "hardConstraints": {
+          "verifiedOnly": false,
+          "maxPricePerHour": 300000,
+          "requiredExpertise": [],
+          "requireAllAvailability": false
+        },
+        "availability": [
+          "FRI_19_00",
+          "SUN_09_30",
+          "THU_19_30",
+          "TUE_19_30"
+        ],
+        "softPreferences": {
+          "teachingStyles": [],
+          "languages": []
+        },
+        "additionalPreferences": [
+          "cần người nhắc bài thường xuyên"
+        ]
+      },
+      "candidateMentorIds": [
+        "M0064",
+        "M0083",
+        "M0180",
+        "M0245",
+        "M0310",
+        "M0328",
+        "M0375",
+        "M0413"
+      ],
+      "labels": []
+    },
+    {
+      "scenarioId": "GS-025",
+      "requestId": "R00050",
+      "request": {
+        "requestId": "R00050",
+        "goal": {
+          "domain": "IELTS",
+          "currentScore": 4.5,
+          "targetScore": 7.5,
+          "focusSkills": [
+            "IELTS.WRITING"
+          ]
+        },
+        "hardConstraints": {
+          "verifiedOnly": true,
+          "maxPricePerHour": 310000,
+          "requiredExpertise": [],
+          "requireAllAvailability": false
+        },
+        "availability": [
+          "THU_19_00",
+          "THU_19_30"
+        ],
+        "softPreferences": {
+          "teachingStyles": [],
+          "languages": []
+        },
+        "additionalPreferences": []
+      },
+      "candidateMentorIds": [
+        "M0071",
+        "M0083",
+        "M0170",
+        "M0196",
+        "M0199",
+        "M0226",
+        "M0459",
+        "M0492"
+      ],
+      "labels": []
+    },
+    {
+      "scenarioId": "GS-026",
+      "requestId": "R00051",
+      "request": {
+        "requestId": "R00051",
+        "goal": {
+          "domain": "IELTS",
+          "currentScore": 5.5,
+          "targetScore": 6,
+          "focusSkills": []
+        },
+        "hardConstraints": {
+          "verifiedOnly": false,
+          "maxPricePerHour": 460000,
+          "requiredExpertise": [
+            "IELTS.READING"
+          ],
+          "requireAllAvailability": false
+        },
+        "availability": [
+          "MON_19_00",
+          "SAT_10_00",
+          "SUN_09_30",
+          "SUN_15_00"
+        ],
+        "softPreferences": {
+          "teachingStyles": [],
+          "languages": [
+            "VI"
+          ]
+        },
+        "additionalPreferences": [
+          "cần người nhắc bài thường xuyên"
+        ]
+      },
+      "candidateMentorIds": [
+        "M0087",
+        "M0179",
+        "M0185",
+        "M0231",
+        "M0362",
+        "M0425",
+        "M0426",
+        "M0452"
+      ],
+      "labels": []
+    },
+    {
+      "scenarioId": "GS-027",
+      "requestId": "R00055",
+      "request": {
+        "requestId": "R00055",
+        "goal": {
+          "domain": "IELTS",
+          "targetScore": 7.5,
+          "focusSkills": [
+            "IELTS.READING"
+          ]
+        },
+        "hardConstraints": {
+          "verifiedOnly": false,
+          "minCredentialScore": 8,
+          "requiredExpertise": [],
+          "requireAllAvailability": false
+        },
+        "availability": [
+          "FRI_20_00",
+          "SAT_14_00",
+          "THU_19_30"
+        ],
+        "softPreferences": {
+          "teachingStyles": [],
+          "languages": [
+            "VI"
+          ]
+        },
+        "additionalPreferences": []
+      },
+      "candidateMentorIds": [
+        "M0044",
+        "M0075",
+        "M0110",
+        "M0145",
+        "M0254",
+        "M0264",
+        "M0319",
+        "M0397"
+      ],
+      "labels": []
+    },
+    {
+      "scenarioId": "GS-028",
+      "requestId": "R00058",
+      "request": {
+        "requestId": "R00058",
+        "goal": {
+          "domain": "IELTS",
+          "currentScore": 5.5,
+          "targetScore": 6,
+          "focusSkills": [
+            "IELTS.LISTENING",
+            "IELTS.WRITING"
+          ]
+        },
+        "hardConstraints": {
+          "verifiedOnly": false,
+          "requiredExpertise": [],
+          "requireAllAvailability": false
+        },
+        "availability": [
+          "SUN_15_00",
+          "WED_19_00"
+        ],
+        "softPreferences": {
+          "teachingStyles": [
+            "CONVERSATIONAL"
+          ],
+          "languages": [
+            "VI"
+          ]
+        },
+        "additionalPreferences": [
+          "thích học qua ví dụ thực tế"
+        ]
+      },
+      "candidateMentorIds": [
+        "M0087",
+        "M0132",
+        "M0205",
+        "M0207",
+        "M0234",
+        "M0363",
+        "M0364",
+        "M0471"
+      ],
+      "labels": []
+    },
+    {
+      "scenarioId": "GS-029",
+      "requestId": "R00060",
+      "request": {
+        "requestId": "R00060",
+        "goal": {
+          "domain": "IELTS",
+          "currentScore": 5,
+          "targetScore": 6.5,
+          "focusSkills": [
+            "IELTS.SPEAKING"
+          ]
+        },
+        "hardConstraints": {
+          "verifiedOnly": false,
+          "maxPricePerHour": 250000,
+          "requiredExpertise": [],
+          "requireAllAvailability": false
+        },
+        "availability": [
+          "SAT_10_00",
+          "TUE_20_00"
+        ],
+        "softPreferences": {
+          "teachingStyles": [],
+          "languages": []
+        },
+        "additionalPreferences": []
+      },
+      "candidateMentorIds": [
+        "M0014",
+        "M0082",
+        "M0098",
+        "M0130",
+        "M0295",
+        "M0330",
+        "M0338",
+        "M0433"
+      ],
+      "labels": []
+    },
+    {
+      "scenarioId": "GS-030",
+      "requestId": "R00064",
+      "request": {
+        "requestId": "R00064",
+        "goal": {
+          "domain": "SAT",
+          "currentScore": 1200,
+          "focusSkills": []
+        },
+        "hardConstraints": {
+          "verifiedOnly": true,
+          "requiredExpertise": [],
+          "requireAllAvailability": false
+        },
+        "availability": [
+          "FRI_20_00",
+          "MON_20_00"
+        ],
+        "softPreferences": {
+          "teachingStyles": [
+            "MOTIVATING",
+            "STRUCTURED"
+          ],
+          "languages": [
+            "VI"
+          ]
+        },
+        "additionalPreferences": [
+          "thích học qua ví dụ thực tế"
+        ]
+      },
+      "candidateMentorIds": [
+        "M0050",
+        "M0263",
+        "M0314",
+        "M0342",
+        "M0389",
+        "M0390",
+        "M0482",
+        "M0500"
+      ],
+      "labels": []
+    },
+    {
+      "scenarioId": "GS-031",
+      "requestId": "R00066",
+      "request": {
+        "requestId": "R00066",
+        "goal": {
+          "domain": "IELTS",
+          "currentScore": 5,
+          "targetScore": 8,
+          "focusSkills": [
+            "IELTS.LISTENING",
+            "IELTS.SPEAKING"
+          ]
+        },
+        "hardConstraints": {
+          "verifiedOnly": true,
+          "requiredExpertise": [],
+          "requireAllAvailability": false
+        },
+        "availability": [
+          "MON_19_00"
+        ],
+        "softPreferences": {
+          "teachingStyles": [
+            "PATIENT"
+          ],
+          "languages": []
+        },
+        "additionalPreferences": []
+      },
+      "candidateMentorIds": [
+        "M0045",
+        "M0069",
+        "M0077",
+        "M0083",
+        "M0120",
+        "M0233",
+        "M0350",
+        "M0363"
+      ],
+      "labels": []
+    },
+    {
+      "scenarioId": "GS-032",
+      "requestId": "R00069",
+      "request": {
+        "requestId": "R00069",
+        "goal": {
+          "domain": "HSK",
+          "currentScore": 2,
+          "targetScore": 4,
+          "focusSkills": [
+            "HSK.LISTENING",
+            "HSK.READING"
+          ]
+        },
+        "hardConstraints": {
+          "verifiedOnly": false,
+          "maxPricePerHour": 480000,
+          "requiredExpertise": [],
+          "requireAllAvailability": false
+        },
+        "availability": [
+          "SUN_09_30"
+        ],
+        "softPreferences": {
+          "teachingStyles": [
+            "PATIENT",
+            "STRUCTURED"
+          ],
+          "languages": []
+        },
+        "additionalPreferences": []
+      },
+      "candidateMentorIds": [
+        "M0002",
+        "M0025",
+        "M0038",
+        "M0053",
+        "M0138",
+        "M0149",
+        "M0168",
+        "M0238"
+      ],
+      "labels": []
+    },
+    {
+      "scenarioId": "GS-033",
+      "requestId": "R00071",
+      "request": {
+        "requestId": "R00071",
+        "goal": {
+          "domain": "SAT",
+          "targetScore": 1300,
+          "focusSkills": [
+            "SAT.READING_WRITING"
+          ]
+        },
+        "hardConstraints": {
+          "verifiedOnly": true,
+          "minCredentialScore": 1400,
+          "requiredExpertise": [],
+          "requireAllAvailability": false
+        },
+        "availability": [
+          "MON_20_00",
+          "SAT_09_00",
+          "SUN_20_00",
+          "THU_20_00"
+        ],
+        "softPreferences": {
+          "teachingStyles": [],
+          "languages": []
+        },
+        "additionalPreferences": []
+      },
+      "candidateMentorIds": [
+        "M0037",
+        "M0118",
+        "M0253",
+        "M0257",
+        "M0259",
+        "M0345",
+        "M0390",
+        "M0440"
+      ],
+      "labels": []
+    },
+    {
+      "scenarioId": "GS-034",
+      "requestId": "R00073",
+      "request": {
+        "requestId": "R00073",
+        "goal": {
+          "domain": "HSK",
+          "targetScore": 6,
+          "focusSkills": [
+            "HSK.WRITING"
+          ]
+        },
+        "hardConstraints": {
+          "verifiedOnly": false,
+          "minCredentialScore": 5,
+          "requiredExpertise": [],
+          "requireAllAvailability": false
+        },
+        "availability": [
+          "MON_20_00",
+          "THU_19_30",
+          "TUE_19_30"
+        ],
+        "softPreferences": {
+          "teachingStyles": [],
+          "languages": []
+        },
+        "additionalPreferences": []
+      },
+      "candidateMentorIds": [
+        "M0006",
+        "M0035",
+        "M0039",
+        "M0153",
+        "M0182",
+        "M0226",
+        "M0330",
+        "M0493"
+      ],
+      "labels": []
+    },
+    {
+      "scenarioId": "GS-035",
+      "requestId": "R00075",
+      "request": {
+        "requestId": "R00075",
+        "goal": {
+          "domain": "HSK",
+          "currentScore": 4,
+          "targetScore": 5,
+          "focusSkills": [
+            "HSK.LISTENING"
+          ]
+        },
+        "hardConstraints": {
+          "verifiedOnly": true,
+          "maxPricePerHour": 470000,
+          "minCredentialScore": 5,
+          "requiredExpertise": [],
+          "requireAllAvailability": false
+        },
+        "availability": [
+          "MON_20_00",
+          "SUN_15_00",
+          "TUE_19_00"
+        ],
+        "softPreferences": {
+          "teachingStyles": [
+            "EXAM_FOCUSED",
+            "MOTIVATING"
+          ],
+          "languages": []
+        },
+        "additionalPreferences": []
+      },
+      "candidateMentorIds": [
+        "M0006",
+        "M0021",
+        "M0078",
+        "M0086",
+        "M0151",
+        "M0429",
+        "M0449",
+        "M0493"
+      ],
+      "labels": []
+    },
+    {
+      "scenarioId": "GS-036",
+      "requestId": "R00077",
+      "request": {
+        "requestId": "R00077",
+        "goal": {
+          "domain": "IELTS",
+          "currentScore": 7,
+          "targetScore": 7.5,
+          "focusSkills": []
+        },
+        "hardConstraints": {
+          "verifiedOnly": false,
+          "requiredExpertise": [],
+          "requireAllAvailability": false
+        },
+        "availability": [
+          "FRI_20_00",
+          "THU_19_00",
+          "TUE_19_00"
+        ],
+        "softPreferences": {
+          "teachingStyles": [
+            "PATIENT"
+          ],
+          "languages": [
+            "VI"
+          ],
+          "gender": "female"
+        },
+        "additionalPreferences": []
+      },
+      "candidateMentorIds": [
+        "M0014",
+        "M0056",
+        "M0145",
+        "M0200",
+        "M0367",
+        "M0386",
+        "M0430",
+        "M0435"
+      ],
+      "labels": []
+    },
+    {
+      "scenarioId": "GS-037",
+      "requestId": "R00079",
+      "request": {
+        "requestId": "R00079",
+        "goal": {
+          "domain": "IELTS",
+          "targetScore": 7.5,
+          "focusSkills": []
+        },
+        "hardConstraints": {
+          "verifiedOnly": true,
+          "maxPricePerHour": 370000,
+          "requiredExpertise": [],
+          "requireAllAvailability": false
+        },
+        "availability": [
+          "FRI_20_00",
+          "TUE_19_00"
+        ],
+        "softPreferences": {
+          "teachingStyles": [],
+          "languages": []
+        },
+        "additionalPreferences": []
+      },
+      "candidateMentorIds": [
+        "M0086",
+        "M0199",
+        "M0207",
+        "M0324",
+        "M0362",
+        "M0365",
+        "M0409",
+        "M0461"
+      ],
+      "labels": []
+    },
+    {
+      "scenarioId": "GS-038",
+      "requestId": "R00080",
+      "request": {
+        "requestId": "R00080",
+        "goal": {
+          "domain": "SAT",
+          "targetScore": 1500,
+          "focusSkills": [
+            "SAT.READING_WRITING"
+          ]
+        },
+        "hardConstraints": {
+          "verifiedOnly": false,
+          "maxPricePerHour": 370000,
+          "requiredExpertise": [],
+          "requireAllAvailability": false
+        },
+        "availability": [
+          "SAT_10_00",
+          "SUN_09_00",
+          "SUN_20_00"
+        ],
+        "softPreferences": {
+          "teachingStyles": [
+            "CONVERSATIONAL",
+            "STRUCTURED"
+          ],
+          "languages": [
+            "VI"
+          ]
+        },
+        "additionalPreferences": []
+      },
+      "candidateMentorIds": [
+        "M0214",
+        "M0228",
+        "M0248",
+        "M0263",
+        "M0280",
+        "M0373",
+        "M0376",
+        "M0383"
+      ],
+      "labels": []
+    },
+    {
+      "scenarioId": "GS-039",
+      "requestId": "R00083",
+      "request": {
+        "requestId": "R00083",
+        "goal": {
+          "domain": "IELTS",
+          "currentScore": 6,
+          "targetScore": 8,
+          "focusSkills": []
+        },
+        "hardConstraints": {
+          "verifiedOnly": false,
+          "maxPricePerHour": 500000,
+          "requiredExpertise": [],
+          "requireAllAvailability": false
+        },
+        "availability": [
+          "SAT_10_00",
+          "TUE_19_00"
+        ],
+        "softPreferences": {
+          "teachingStyles": [
+            "STRUCTURED"
+          ],
+          "languages": []
+        },
+        "additionalPreferences": [
+          "muốn mentor nói chuyện chill"
+        ]
+      },
+      "candidateMentorIds": [
+        "M0056",
+        "M0060",
+        "M0074",
+        "M0199",
+        "M0207",
+        "M0281",
+        "M0301",
+        "M0468"
+      ],
+      "labels": []
+    },
+    {
+      "scenarioId": "GS-040",
+      "requestId": "R00084",
+      "request": {
+        "requestId": "R00084",
+        "goal": {
+          "domain": "IELTS",
+          "currentScore": 6,
+          "targetScore": 7.5,
+          "focusSkills": [
+            "IELTS.READING"
+          ]
+        },
+        "hardConstraints": {
+          "verifiedOnly": false,
+          "maxPricePerHour": 470000,
+          "requiredExpertise": [],
+          "requireAllAvailability": false
+        },
+        "availability": [
+          "SUN_09_00",
+          "SUN_15_00"
+        ],
+        "softPreferences": {
+          "teachingStyles": [
+            "ANALYTICAL",
+            "PATIENT"
+          ],
+          "languages": []
+        },
+        "additionalPreferences": []
+      },
+      "candidateMentorIds": [
+        "M0066",
+        "M0077",
+        "M0173",
+        "M0206",
+        "M0258",
+        "M0269",
+        "M0382",
+        "M0476"
+      ],
+      "labels": []
+    },
+    {
+      "scenarioId": "GS-041",
+      "requestId": "R00086",
+      "request": {
+        "requestId": "R00086",
+        "goal": {
+          "domain": "IELTS",
+          "currentScore": 5,
+          "targetScore": 6,
+          "focusSkills": [
+            "IELTS.LISTENING",
+            "IELTS.SPEAKING"
+          ]
+        },
+        "hardConstraints": {
+          "verifiedOnly": true,
+          "minCredentialScore": 7,
+          "requiredExpertise": [],
+          "requireAllAvailability": false
+        },
+        "availability": [
+          "FRI_19_00",
+          "SAT_10_00",
+          "SUN_15_00"
+        ],
+        "softPreferences": {
+          "teachingStyles": [],
+          "languages": []
+        },
+        "additionalPreferences": []
+      },
+      "candidateMentorIds": [
+        "M0087",
+        "M0207",
+        "M0255",
+        "M0316",
+        "M0334",
+        "M0349",
+        "M0358",
+        "M0474"
+      ],
+      "labels": []
+    },
+    {
+      "scenarioId": "GS-042",
+      "requestId": "R00088",
+      "request": {
+        "requestId": "R00088",
+        "goal": {
+          "domain": "IELTS",
+          "currentScore": 5,
+          "focusSkills": [
+            "IELTS.SPEAKING"
+          ]
+        },
+        "hardConstraints": {
+          "verifiedOnly": false,
+          "maxPricePerHour": 410000,
+          "requiredExpertise": [],
+          "requireAllAvailability": false
+        },
+        "availability": [
+          "SAT_09_00",
+          "SAT_14_00"
+        ],
+        "softPreferences": {
+          "teachingStyles": [
+            "EXAM_FOCUSED"
+          ],
+          "languages": [
+            "VI"
+          ]
+        },
+        "additionalPreferences": [
+          "thích học qua ví dụ thực tế"
+        ]
+      },
+      "candidateMentorIds": [
+        "M0010",
+        "M0176",
+        "M0255",
+        "M0262",
+        "M0325",
+        "M0337",
+        "M0349",
+        "M0397"
+      ],
+      "labels": []
+    },
+    {
+      "scenarioId": "GS-043",
+      "requestId": "R00089",
+      "request": {
+        "requestId": "R00089",
+        "goal": {
+          "domain": "IELTS",
+          "currentScore": 5.5,
+          "targetScore": 7,
+          "focusSkills": [
+            "IELTS.WRITING"
+          ]
+        },
+        "hardConstraints": {
+          "verifiedOnly": false,
+          "requiredExpertise": [
+            "IELTS.SPEAKING"
+          ],
+          "requireAllAvailability": false
+        },
+        "availability": [
+          "SUN_15_00",
+          "TUE_19_00"
+        ],
+        "softPreferences": {
+          "teachingStyles": [
+            "STRUCTURED"
+          ],
+          "languages": []
+        },
+        "additionalPreferences": []
+      },
+      "candidateMentorIds": [
+        "M0086",
+        "M0153",
+        "M0222",
+        "M0265",
+        "M0362",
+        "M0364",
+        "M0430",
+        "M0498"
+      ],
+      "labels": []
+    },
+    {
+      "scenarioId": "GS-044",
+      "requestId": "R00092",
+      "request": {
+        "requestId": "R00092",
+        "goal": {
+          "domain": "HSK",
+          "targetScore": 6,
+          "focusSkills": [
+            "HSK.LISTENING"
+          ]
+        },
+        "hardConstraints": {
+          "verifiedOnly": false,
+          "maxPricePerHour": 490000,
+          "requiredExpertise": [],
+          "requireAllAvailability": true
+        },
+        "availability": [
+          "TUE_20_00"
+        ],
+        "softPreferences": {
+          "teachingStyles": [],
+          "languages": []
+        },
+        "additionalPreferences": []
+      },
+      "candidateMentorIds": [
+        "M0012",
+        "M0021",
+        "M0053",
+        "M0056",
+        "M0068",
+        "M0081",
+        "M0316",
+        "M0432"
+      ],
+      "labels": []
+    },
+    {
+      "scenarioId": "GS-045",
+      "requestId": "R00095",
+      "request": {
+        "requestId": "R00095",
+        "goal": {
+          "domain": "IELTS",
+          "targetScore": 6.5,
+          "focusSkills": [
+            "IELTS.READING",
+            "IELTS.SPEAKING"
+          ]
+        },
+        "hardConstraints": {
+          "verifiedOnly": false,
+          "maxPricePerHour": 340000,
+          "requiredExpertise": [],
+          "requireAllAvailability": false
+        },
+        "availability": [
+          "THU_19_00"
+        ],
+        "softPreferences": {
+          "teachingStyles": [
+            "CONVERSATIONAL"
+          ],
+          "languages": []
+        },
+        "additionalPreferences": []
+      },
+      "candidateMentorIds": [
+        "M0083",
+        "M0196",
+        "M0256",
+        "M0295",
+        "M0335",
+        "M0459",
+        "M0485",
+        "M0496"
+      ],
+      "labels": []
+    },
+    {
+      "scenarioId": "GS-046",
+      "requestId": "R00099",
+      "request": {
+        "requestId": "R00099",
+        "goal": {
+          "domain": "HSK",
+          "targetScore": 6,
+          "focusSkills": [
+            "HSK.WRITING"
+          ]
+        },
+        "hardConstraints": {
+          "verifiedOnly": false,
+          "requiredExpertise": [],
+          "requireAllAvailability": false
+        },
+        "availability": [
+          "FRI_20_00",
+          "SUN_09_30",
+          "TUE_19_30"
+        ],
+        "softPreferences": {
+          "teachingStyles": [
+            "MOTIVATING"
+          ],
+          "languages": []
+        },
+        "additionalPreferences": [
+          "thích học qua ví dụ thực tế"
+        ]
+      },
+      "candidateMentorIds": [
+        "M0035",
+        "M0053",
+        "M0083",
+        "M0149",
+        "M0168",
+        "M0225",
+        "M0241",
+        "M0249"
+      ],
+      "labels": []
+    },
+    {
+      "scenarioId": "GS-047",
+      "requestId": "R00102",
+      "request": {
+        "requestId": "R00102",
+        "goal": {
+          "domain": "IELTS",
+          "currentScore": 6,
+          "targetScore": 6.5,
+          "focusSkills": [
+            "IELTS.WRITING"
+          ]
+        },
+        "hardConstraints": {
+          "verifiedOnly": false,
+          "maxPricePerHour": 200000,
+          "requiredExpertise": [],
+          "requireAllAvailability": false
+        },
+        "availability": [
+          "SAT_14_00",
+          "SUN_15_00",
+          "TUE_19_30"
+        ],
+        "softPreferences": {
+          "teachingStyles": [
+            "PATIENT"
+          ],
+          "languages": []
+        },
+        "additionalPreferences": []
+      },
+      "candidateMentorIds": [
+        "M0030",
+        "M0065",
+        "M0176",
+        "M0184",
+        "M0346",
+        "M0362",
+        "M0412",
+        "M0465"
+      ],
+      "labels": []
+    },
+    {
+      "scenarioId": "GS-048",
+      "requestId": "R00104",
+      "request": {
+        "requestId": "R00104",
+        "goal": {
+          "domain": "IELTS",
+          "currentScore": 4.5,
+          "targetScore": 7.5,
+          "focusSkills": [
+            "IELTS.SPEAKING",
+            "IELTS.WRITING"
+          ]
+        },
+        "hardConstraints": {
+          "verifiedOnly": false,
+          "maxPricePerHour": 490000,
+          "requiredExpertise": [],
+          "requireAllAvailability": false
+        },
+        "availability": [
+          "SUN_09_00",
+          "TUE_19_30"
+        ],
+        "softPreferences": {
+          "teachingStyles": [
+            "EXAM_FOCUSED",
+            "FLEXIBLE"
+          ],
+          "languages": []
+        },
+        "additionalPreferences": []
+      },
+      "candidateMentorIds": [
+        "M0075",
+        "M0089",
+        "M0115",
+        "M0132",
+        "M0268",
+        "M0269",
+        "M0346",
+        "M0476"
+      ],
+      "labels": []
+    },
+    {
+      "scenarioId": "GS-049",
+      "requestId": "R00105",
+      "request": {
+        "requestId": "R00105",
+        "goal": {
+          "domain": "IELTS",
+          "currentScore": 5,
+          "targetScore": 7.5,
+          "focusSkills": [
+            "IELTS.SPEAKING"
+          ]
+        },
+        "hardConstraints": {
+          "verifiedOnly": false,
+          "maxPricePerHour": 270000,
+          "minCredentialScore": 6.5,
+          "requiredExpertise": [],
+          "requireAllAvailability": false
+        },
+        "availability": [
+          "SUN_09_00",
+          "TUE_19_30"
+        ],
+        "softPreferences": {
+          "teachingStyles": [
+            "ANALYTICAL"
+          ],
+          "languages": [
+            "VI"
+          ]
+        },
+        "additionalPreferences": []
+      },
+      "candidateMentorIds": [
+        "M0004",
+        "M0173",
+        "M0234",
+        "M0287",
+        "M0378",
+        "M0431",
+        "M0465",
+        "M0475"
+      ],
+      "labels": []
+    },
+    {
+      "scenarioId": "GS-050",
+      "requestId": "R00106",
+      "request": {
+        "requestId": "R00106",
+        "goal": {
+          "domain": "HSK",
+          "currentScore": 1,
+          "targetScore": 6,
+          "focusSkills": [
+            "HSK.READING",
+            "HSK.WRITING"
+          ]
+        },
+        "hardConstraints": {
+          "verifiedOnly": false,
+          "minCredentialScore": 5,
+          "requiredExpertise": [],
+          "requireAllAvailability": false
+        },
+        "availability": [
+          "SUN_15_00"
+        ],
+        "softPreferences": {
+          "teachingStyles": [],
+          "languages": [
+            "VI"
+          ]
+        },
+        "additionalPreferences": []
+      },
+      "candidateMentorIds": [
+        "M0087",
+        "M0111",
+        "M0140",
+        "M0151",
+        "M0153",
+        "M0207",
+        "M0227",
+        "M0317"
+      ],
+      "labels": []
+    },
+    {
+      "scenarioId": "GS-051",
+      "requestId": "R00107",
+      "request": {
+        "requestId": "R00107",
+        "goal": {
+          "domain": "SAT",
+          "currentScore": 1200,
+          "targetScore": 1300,
+          "focusSkills": [
+            "SAT.MATH"
+          ]
+        },
+        "hardConstraints": {
+          "verifiedOnly": true,
+          "requiredExpertise": [],
+          "requireAllAvailability": false
+        },
+        "availability": [
+          "SUN_09_30",
+          "THU_19_30"
+        ],
+        "softPreferences": {
+          "teachingStyles": [
+            "CONVERSATIONAL"
+          ],
+          "languages": []
+        },
+        "additionalPreferences": []
+      },
+      "candidateMentorIds": [
+        "M0064",
+        "M0107",
+        "M0117",
+        "M0149",
+        "M0238",
+        "M0262",
+        "M0268",
+        "M0472"
+      ],
+      "labels": []
+    },
+    {
+      "scenarioId": "GS-052",
+      "requestId": "R00108",
+      "request": {
+        "requestId": "R00108",
+        "goal": {
+          "domain": "IELTS",
+          "currentScore": 6,
+          "targetScore": 7.5,
+          "focusSkills": []
+        },
+        "hardConstraints": {
+          "verifiedOnly": false,
+          "maxPricePerHour": 420000,
+          "requiredExpertise": [],
+          "requireAllAvailability": false
+        },
+        "availability": [
+          "MON_20_00",
+          "TUE_20_00"
+        ],
+        "softPreferences": {
+          "teachingStyles": [
+            "CONVERSATIONAL"
+          ],
+          "languages": []
+        },
+        "additionalPreferences": []
+      },
+      "candidateMentorIds": [
+        "M0011",
+        "M0259",
+        "M0275",
+        "M0295",
+        "M0316",
+        "M0318",
+        "M0322",
+        "M0469"
+      ],
+      "labels": []
+    },
+    {
+      "scenarioId": "GS-053",
+      "requestId": "R00110",
+      "request": {
+        "requestId": "R00110",
+        "goal": {
+          "domain": "IELTS",
+          "currentScore": 5.5,
+          "focusSkills": [
+            "IELTS.LISTENING",
+            "IELTS.SPEAKING"
+          ]
+        },
+        "hardConstraints": {
+          "verifiedOnly": false,
+          "requiredExpertise": [],
+          "requireAllAvailability": false
+        },
+        "availability": [
+          "MON_20_00",
+          "SAT_09_00",
+          "THU_20_00"
+        ],
+        "softPreferences": {
+          "teachingStyles": [
+            "PATIENT"
+          ],
+          "languages": []
+        },
+        "additionalPreferences": []
+      },
+      "candidateMentorIds": [
+        "M0036",
+        "M0189",
+        "M0238",
+        "M0252",
+        "M0368",
+        "M0426",
+        "M0430",
+        "M0479"
+      ],
+      "labels": []
+    },
+    {
+      "scenarioId": "GS-054",
+      "requestId": "R00111",
+      "request": {
+        "requestId": "R00111",
+        "goal": {
+          "domain": "IELTS",
+          "targetScore": 8,
+          "focusSkills": [
+            "IELTS.READING",
+            "IELTS.WRITING"
+          ]
+        },
+        "hardConstraints": {
+          "verifiedOnly": true,
+          "maxPricePerHour": 470000,
+          "requiredExpertise": [],
+          "requireAllAvailability": false
+        },
+        "availability": [
+          "SUN_09_00",
+          "SUN_09_30",
+          "TUE_20_00",
+          "WED_19_00"
+        ],
+        "softPreferences": {
+          "teachingStyles": [],
+          "languages": []
+        },
+        "additionalPreferences": []
+      },
+      "candidateMentorIds": [
+        "M0110",
+        "M0170",
+        "M0202",
+        "M0295",
+        "M0367",
+        "M0415",
+        "M0430",
+        "M0492"
+      ],
+      "labels": []
+    },
+    {
+      "scenarioId": "GS-055",
+      "requestId": "R00112",
+      "request": {
+        "requestId": "R00112",
+        "goal": {
+          "domain": "IELTS",
+          "currentScore": 7,
+          "targetScore": 8,
+          "focusSkills": [
+            "IELTS.WRITING"
+          ]
+        },
+        "hardConstraints": {
+          "verifiedOnly": false,
+          "requiredExpertise": [
+            "IELTS.LISTENING"
+          ],
+          "requireAllAvailability": false
+        },
+        "availability": [
+          "SAT_09_00",
+          "THU_19_00",
+          "TUE_19_00"
+        ],
+        "softPreferences": {
+          "teachingStyles": [
+            "FLEXIBLE"
+          ],
+          "languages": []
+        },
+        "additionalPreferences": [
+          "mong mentor từng du học"
+        ]
+      },
+      "candidateMentorIds": [
+        "M0129",
+        "M0134",
+        "M0247",
+        "M0284",
+        "M0305",
+        "M0365",
+        "M0435",
+        "M0468"
+      ],
+      "labels": []
+    },
+    {
+      "scenarioId": "GS-056",
+      "requestId": "R00114",
+      "request": {
+        "requestId": "R00114",
+        "goal": {
+          "domain": "HSK",
+          "currentScore": 2,
+          "focusSkills": [
+            "HSK.LISTENING"
+          ]
+        },
+        "hardConstraints": {
+          "verifiedOnly": true,
+          "maxPricePerHour": 390000,
+          "minCredentialScore": 4,
+          "requiredExpertise": [],
+          "requireAllAvailability": false
+        },
+        "availability": [
+          "MON_20_00",
+          "SUN_15_00",
+          "TUE_19_00",
+          "WED_19_00"
+        ],
+        "softPreferences": {
+          "teachingStyles": [
+            "PATIENT"
+          ],
+          "languages": []
+        },
+        "additionalPreferences": []
+      },
+      "candidateMentorIds": [
+        "M0006",
+        "M0027",
+        "M0086",
+        "M0114",
+        "M0144",
+        "M0151",
+        "M0227",
+        "M0330"
+      ],
+      "labels": []
+    },
+    {
+      "scenarioId": "GS-057",
+      "requestId": "R00116",
+      "request": {
+        "requestId": "R00116",
+        "goal": {
+          "domain": "IELTS",
+          "targetScore": 8.5,
+          "focusSkills": [
+            "IELTS.READING"
+          ]
+        },
+        "hardConstraints": {
+          "verifiedOnly": true,
+          "maxPricePerHour": 430000,
+          "requiredExpertise": [],
+          "requireAllAvailability": false
+        },
+        "availability": [
+          "SAT_09_00",
+          "SAT_10_00",
+          "SUN_15_00",
+          "THU_20_00"
+        ],
+        "softPreferences": {
+          "teachingStyles": [],
+          "languages": [
+            "VI"
+          ]
+        },
+        "additionalPreferences": []
+      },
+      "candidateMentorIds": [
+        "M0050",
+        "M0066",
+        "M0083",
+        "M0207",
+        "M0280",
+        "M0351",
+        "M0362",
+        "M0387"
+      ],
+      "labels": []
+    },
+    {
+      "scenarioId": "GS-058",
+      "requestId": "R00118",
+      "request": {
+        "requestId": "R00118",
+        "goal": {
+          "domain": "IELTS",
+          "focusSkills": [
+            "IELTS.SPEAKING",
+            "IELTS.WRITING"
+          ]
+        },
+        "hardConstraints": {
+          "verifiedOnly": true,
+          "requiredExpertise": [],
+          "requireAllAvailability": false
+        },
+        "availability": [
+          "SAT_10_00",
+          "TUE_19_30"
+        ],
+        "softPreferences": {
+          "teachingStyles": [],
+          "languages": []
+        },
+        "additionalPreferences": [
+          "cần người nhắc bài thường xuyên"
+        ]
+      },
+      "candidateMentorIds": [
+        "M0036",
+        "M0050",
+        "M0130",
+        "M0230",
+        "M0241",
+        "M0268",
+        "M0280",
+        "M0465"
+      ],
+      "labels": []
+    },
+    {
+      "scenarioId": "GS-059",
+      "requestId": "R00119",
+      "request": {
+        "requestId": "R00119",
+        "goal": {
+          "domain": "HSK",
+          "targetScore": 5,
+          "focusSkills": [
+            "HSK.LISTENING",
+            "HSK.WRITING"
+          ]
+        },
+        "hardConstraints": {
+          "verifiedOnly": true,
+          "maxPricePerHour": 410000,
+          "requiredExpertise": [],
+          "requireAllAvailability": false
+        },
+        "availability": [
+          "FRI_20_00",
+          "THU_20_00",
+          "TUE_19_30"
+        ],
+        "softPreferences": {
+          "teachingStyles": [],
+          "languages": []
+        },
+        "additionalPreferences": [
+          "muốn mentor nói chuyện chill"
+        ]
+      },
+      "candidateMentorIds": [
+        "M0012",
+        "M0056",
+        "M0083",
+        "M0169",
+        "M0208",
+        "M0226",
+        "M0316",
+        "M0357"
+      ],
+      "labels": []
+    },
+    {
+      "scenarioId": "GS-060",
+      "requestId": "R00120",
+      "request": {
+        "requestId": "R00120",
+        "goal": {
+          "domain": "SAT",
+          "targetScore": 1450,
+          "focusSkills": [
+            "SAT.MATH",
+            "SAT.READING_WRITING"
+          ]
+        },
+        "hardConstraints": {
+          "verifiedOnly": false,
+          "maxPricePerHour": 400000,
+          "requiredExpertise": [],
+          "requireAllAvailability": false
+        },
+        "availability": [
+          "TUE_19_00",
+          "WED_20_00"
+        ],
+        "softPreferences": {
+          "teachingStyles": [
+            "CONVERSATIONAL"
+          ],
+          "languages": []
+        },
+        "additionalPreferences": []
+      },
+      "candidateMentorIds": [
+        "M0056",
+        "M0168",
+        "M0180",
+        "M0310",
+        "M0395",
+        "M0404",
+        "M0473",
+        "M0498"
+      ],
+      "labels": []
+    }
+  ]
+}

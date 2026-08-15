@@ -1,0 +1,69 @@
+{
+  "version": "weights.v1",
+  "description": "Ranking configuration. Every number the ranker uses lives here, not in code, so tuning is a reviewable config change rather than a code change.",
+
+  "baseWeights": {
+    "subjectExpertise": 0.25,
+    "focusSkillStrength": 0.3,
+    "availabilityFit": 0.15,
+    "budgetFit": 0.1,
+    "experience": 0.1,
+    "rating": 0.05,
+    "teachingStyleFit": 0.05
+  },
+
+  "requestAware": {
+    "comment": "Multipliers applied when the student states a preference explicitly. Weights are renormalised afterwards, so a boost shifts share rather than inflating the total.",
+    "focusSkillBoost": 1.5,
+    "teachingStyleBoost": 1.4
+  },
+
+  "missingDataPolicy": {
+    "comment": "REDISTRIBUTE: a feature with no data is dropped and its weight is shared among the features that do have data. Never substitute a neutral or zero value — that would be inventing an observation. The loss of evidence is reported separately as dataCoverage.",
+    "policy": "REDISTRIBUTE"
+  },
+
+  "credentialScale": {
+    "comment": "Maps a domain's headline score onto [0,1]. Floors are the level below which a mentor is not meaningfully stronger for teaching purposes.",
+    "IELTS": { "floor": 5.5, "ceiling": 9 },
+    "SAT": { "floor": 1000, "ceiling": 1600 },
+    "HSK": { "floor": 1, "ceiling": 6 }
+  },
+
+  "sectionScale": {
+    "comment": "Per-skill score scales. HSK has no per-skill scores in V1, so HSK focus skills score on teaching evidence alone.",
+    "IELTS": { "floor": 4.5, "ceiling": 9 },
+    "SAT": { "floor": 400, "ceiling": 800 }
+  },
+
+  "focusSkill": {
+    "comment": "How a single focus skill is scored when a per-skill band exists. When it does not, the taught signal carries the feature alone.",
+    "taughtWeight": 0.4,
+    "bandWeight": 0.6
+  },
+
+  "experience": {
+    "comment": "Saturating: the difference between 0 and 20 sessions matters far more than between 200 and 220. rate is the exponential constant in 1 - exp(-rate * x).",
+    "sessionsWeight": 0.6,
+    "sessionsRate": 0.09,
+    "monthsWeight": 0.4,
+    "monthsRate": 0.0578
+  },
+
+  "rating": {
+    "comment": "Ratings cluster near the top, so the usable range starts at 3.0 rather than 0.",
+    "floor": 3,
+    "ceiling": 5
+  },
+
+  "budget": {
+    "comment": "Headroom under the stated budget. A mentor priced exactly at the maximum is affordable but has no headroom, so they score floorAtMax rather than 0.",
+    "floorAtMax": 0.2
+  },
+
+  "explanation": {
+    "comment": "Caps on how much is said per recommendation. Reasons are ordered by the weight of the feature they come from, so a cap drops the least relevant facts first, never the most.",
+    "maxReasons": 5,
+    "maxTradeoffs": 4
+  }
+}

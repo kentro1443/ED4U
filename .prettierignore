@@ -1,0 +1,15 @@
+node_modules
+.next
+dist
+coverage
+apps/web/src/generated
+packages/mentor-engine
+packages/facility-engine/dist
+packages/facility-engine/dist
+benchmark/reports
+package-lock.json
+*.tgz
+playwright-report
+test-results
+storage
+PLAN.md
