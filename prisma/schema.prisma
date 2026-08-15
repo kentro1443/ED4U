@@ -858,3 +858,14 @@ model ModerationActionRow {
   actorId  String
   createdAt DateTime      @default(now())
 }
+
+
+model AuthThrottle {
+  key             String   @id
+  failures        Int      @default(0)
+  windowStartedAt DateTime @default(now())
+  lockedUntil     DateTime?
+  updatedAt       DateTime @updatedAt
+
+  @@index([updatedAt])
+}
