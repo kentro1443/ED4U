@@ -224,11 +224,11 @@ export default async function CalendarPage({
         timeZone,
       });
       const semester = semesterById.get(entry.semesterId);
-      if (
-        semester &&
-        (occurrence.startAt < semester.startsOn || occurrence.startAt > semester.endsOn)
-      )
-        continue;
+      if (semester) {
+        const semesterStart = civilDateKey(civilInZone(semester.startsOn, timeZone));
+        const semesterEnd = civilDateKey(civilInZone(semester.endsOn, timeZone));
+        if (occurrence.localDate < semesterStart || occurrence.localDate > semesterEnd) continue;
+      }
       if (occurrence.startAt >= range.end || occurrence.endAt <= range.start) continue;
       sources.push({
         id: `${entry.id}:${occurrence.localDate}`,

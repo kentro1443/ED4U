@@ -1,5 +1,11 @@
 import type { CalendarSource } from "@ed4u/domain";
-import { addCivilDays, civilDateKey, civilInZone, schoolWeekMonday } from "@ed4u/domain";
+import {
+  addCivilDays,
+  civilDateKey,
+  civilDateTimeToInstant,
+  civilInZone,
+  schoolWeekMonday,
+} from "@ed4u/domain";
 import { Badge } from "@/components/ui/Badge";
 import { Card } from "@/components/ui/Card";
 
@@ -238,7 +244,7 @@ export function MonthCalendar({
   const anchorCivil = civilInZone(anchor, timeZone);
   const first = { year: anchorCivil.year, month: anchorCivil.month, day: 1 };
   const firstInstantWeekday = civilInZone(
-    new Date(Date.UTC(first.year, first.month - 1, first.day, 12)),
+    civilDateTimeToInstant({ ...first, hour: 12, minute: 0 }, timeZone),
     timeZone,
   ).weekday;
   const mondayOffset = firstInstantWeekday === 0 ? -6 : 1 - firstInstantWeekday;
