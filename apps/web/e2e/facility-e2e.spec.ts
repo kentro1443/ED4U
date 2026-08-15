@@ -3,6 +3,8 @@ import { Pool } from "pg";
 
 const PASSWORD = "TempPass1!";
 const PURPOSE = "80 người, chiều thứ Hai, cần máy chiếu, ưu tiên hội trường";
+const CHANGES_PURPOSE =
+  "80 người, chiều thứ Hai, cần máy chiếu, ưu tiên hội trường, kiểm thử chỉnh sửa";
 const cleanupDb = new Pool({
   connectionString: process.env.DATABASE_URL ?? "postgresql://ed4u:ed4u_local@127.0.0.1:5434/ed4u",
 });
@@ -23,8 +25,8 @@ async function cleanup() {
   const row = membership.rows[0];
   if (!row) return;
   const ids = await cleanupDb.query<{ id: string }>(
-    `SELECT "id" FROM "RoomRequest" WHERE "tenantId"=$1 AND "requestedBy"=$2 AND "purpose"=$3`,
-    [row.tenantId, row.userId, PURPOSE],
+    `SELECT "id" FROM "RoomRequest" WHERE "tenantId"=$1 AND "requestedBy"=$2 AND "purpose" = ANY($3::text[])`,
+    [row.tenantId, row.userId, [PURPOSE, CHANGES_PURPOSE]],
   );
   const requestIds = ids.rows.map((entry) => entry.id);
   if (!requestIds.length) return;
@@ -73,14 +75,53 @@ test.describe("Facility Engine live E2E", () => {
     await page.context().clearCookies();
     await login(page, "AD000001");
     await page.goto("/admin/approvals");
-    await expect(page.getByText(`“${PURPOSE}”`)).toBeVisible();
-    await page.getByRole("button", { name: "Duyệt & khóa phòng" }).first().click();
-    await expect(page.getByText(`“${PURPOSE}”`)).toHaveCount(0);
+    const approval = page.getByTestId("room-approval-card").filter({ hasText: PURPOSE }).first();
+    await expect(approval).toBeVisible();
+    await approval.getByRole("button", { name: "Duyệt & khóa phòng" }).click();
+    await expect(approval).toHaveCount(0);
 
     await page.context().clearCookies();
     await login(page, "HS000002");
     await page.goto("/rooms");
     await expect(page.getByText("Đã duyệt").first()).toBeVisible();
     await expect(page.getByText("Đã có booking được xác nhận.").first()).toBeVisible();
+  });
+
+  test("admin requests changes and the student can cancel the revised request", async ({
+    page,
+  }) => {
+    await login(page, "HS000002");
+    await page.goto("/rooms");
+    await page.locator("#facility-prompt").fill(CHANGES_PURPOSE);
+    await page.getByRole("button", { name: "Phân tích yêu cầu" }).click();
+    await page.getByRole("button", { name: "Tìm phương án khả thi" }).click();
+    await expect(page.getByRole("heading", { name: "Kết quả lập kế hoạch" })).toBeVisible();
+    await page.getByRole("button", { name: "Gửi yêu cầu phòng này" }).first().click();
+    await expect(page.getByText(/Yêu cầu phòng đã được gửi tới School Admin/)).toBeVisible();
+
+    await page.context().clearCookies();
+    await login(page, "AD000001");
+    await page.goto("/admin/approvals");
+    const approval = page
+      .getByTestId("room-approval-card")
+      .filter({ hasText: CHANGES_PURPOSE })
+      .first();
+    await expect(approval).toBeVisible();
+    await approval.getByRole("button", { name: "Yêu cầu chỉnh sửa" }).click();
+    await page
+      .getByLabel("Lý do")
+      .fill("Hãy chọn khung giờ khác để tránh hoạt động ưu tiên của trường.");
+    await page.getByRole("button", { name: "Gửi yêu cầu chỉnh sửa" }).click();
+    await expect(approval).toHaveCount(0);
+
+    await page.context().clearCookies();
+    await login(page, "HS000002");
+    await page.goto("/rooms");
+    const requestCard = page.locator("div.rounded-xl").filter({ hasText: CHANGES_PURPOSE }).first();
+    await expect(requestCard.getByText("Cần chỉnh sửa")).toBeVisible();
+    await expect(requestCard.getByText(/Hãy chọn khung giờ khác/)).toBeVisible();
+    page.once("dialog", (dialog) => dialog.accept());
+    await requestCard.getByRole("button", { name: "Hủy yêu cầu" }).click();
+    await expect(requestCard.getByText("Đã hủy")).toBeVisible();
   });
 });

@@ -239,3 +239,56 @@ export async function rejectRoomRequestTx(
     return { requestId: req.id, status: transition.value, reason };
   });
 }
+
+export async function requestRoomChangesTx(
+  db: PrismaClient,
+  input: { requestId: string; actorId: string; tenantId: string; reason: string },
+) {
+  const reason = input.reason.trim();
+  if (!reason) throw new Error("Yêu cầu chỉnh sửa phải có lý do.");
+  return db.$transaction(async (tx) => {
+    await lockRequestAndRoom(tx, input);
+    const req = await tx.roomRequest.findFirstOrThrow({
+      where: { id: input.requestId, tenantId: input.tenantId },
+    });
+    if (req.status !== "PENDING_APPROVAL") throw new Error("Yêu cầu không còn chờ duyệt.");
+    const transition = transitionRoomRequest(req.status, "CHANGES_REQUESTED");
+    if (!transition.ok) throw transition.error;
+    await tx.roomRequest.update({
+      where: { id: req.id },
+      data: {
+        status: transition.value,
+        decisionReason: reason,
+        resolvedBy: input.actorId,
+        resolvedAt: new Date(),
+      },
+    });
+    await tx.clubEvent.updateMany({
+      where: { roomRequestId: req.id },
+      data: { roomResolved: false, status: "NEEDS_RESOURCE" },
+    });
+    await tx.notification.create({
+      data: {
+        tenantId: input.tenantId,
+        userId: req.requestedBy,
+        type: "ROOM_REQUEST_CHANGES_REQUESTED",
+        title: "Yêu cầu phòng cần chỉnh sửa",
+        body: reason,
+        entityType: "RoomRequest",
+        entityId: req.id,
+      },
+    });
+    await tx.auditEvent.create({
+      data: {
+        tenantId: input.tenantId,
+        actorId: input.actorId,
+        action: "ROOM_CHANGES_REQUESTED",
+        entityType: "RoomRequest",
+        entityId: req.id,
+        requestId: randomUUID(),
+        afterJson: { status: transition.value, reason },
+      },
+    });
+    return { requestId: req.id, status: transition.value, reason };
+  });
+}

@@ -6,12 +6,18 @@ import { Button } from "@/components/ui/Button";
 import { Dialog } from "@/components/ui/Overlays";
 import { Field, Textarea } from "@/components/ui/Field";
 import { Alert } from "@/components/ui/Feedback";
-import { approveRoomRequestAction, rejectRoomRequestAction } from "./actions";
+import {
+  approveRoomRequestAction,
+  rejectRoomRequestAction,
+  requestRoomChangesAction,
+} from "./actions";
+
+type DecisionMode = "reject" | "changes" | null;
 
 export function RoomApprovalActions({ requestId }: { requestId: string }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
-  const [rejectOpen, setRejectOpen] = useState(false);
+  const [mode, setMode] = useState<DecisionMode>(null);
   const [reason, setReason] = useState("");
   const [error, setError] = useState<string | null>(null);
 
@@ -27,26 +33,30 @@ export function RoomApprovalActions({ requestId }: { requestId: string }) {
     });
   };
 
-  const reject = () => {
-    if (!reason.trim()) {
-      setError("Hãy nhập lý do từ chối.");
+  const submitDecision = () => {
+    if (!mode || !reason.trim()) {
+      setError("Hãy nhập lý do trước khi tiếp tục.");
       return;
     }
     setError(null);
     startTransition(async () => {
-      const response = await rejectRoomRequestAction(requestId, reason);
+      const response =
+        mode === "reject"
+          ? await rejectRoomRequestAction(requestId, reason)
+          : await requestRoomChangesAction(requestId, reason);
       if (!response.ok) {
         setError(response.error);
         return;
       }
-      setRejectOpen(false);
+      setMode(null);
+      setReason("");
       router.refresh();
     });
   };
 
   return (
     <div className="space-y-2">
-      {error ? (
+      {error && mode === null ? (
         <Alert tone="danger" title="Không thể xử lý">
           {error}
         </Alert>
@@ -57,7 +67,24 @@ export function RoomApprovalActions({ requestId }: { requestId: string }) {
           variant="secondary"
           size="sm"
           disabled={isPending}
-          onClick={() => setRejectOpen(true)}
+          onClick={() => {
+            setMode("changes");
+            setReason("");
+            setError(null);
+          }}
+        >
+          Yêu cầu chỉnh sửa
+        </Button>
+        <Button
+          type="button"
+          variant="secondary"
+          size="sm"
+          disabled={isPending}
+          onClick={() => {
+            setMode("reject");
+            setReason("");
+            setError(null);
+          }}
         >
           Từ chối
         </Button>
@@ -66,27 +93,47 @@ export function RoomApprovalActions({ requestId }: { requestId: string }) {
         </Button>
       </div>
       <Dialog
-        open={rejectOpen}
-        onOpenChange={setRejectOpen}
-        title="Từ chối yêu cầu phòng"
-        description="Lý do sẽ được lưu và gửi lại cho học sinh."
+        open={mode !== null}
+        onOpenChange={(open) => {
+          if (!open) setMode(null);
+        }}
+        title={mode === "changes" ? "Yêu cầu học sinh chỉnh sửa" : "Từ chối yêu cầu phòng"}
+        description={
+          mode === "changes"
+            ? "Yêu cầu chuyển sang CHANGES_REQUESTED; học sinh có thể xem lý do và tạo phương án mới."
+            : "Lý do sẽ được lưu, audit và gửi lại cho học sinh."
+        }
       >
         <div className="space-y-4">
-          <Field id={`reject-${requestId}`} label="Lý do" required>
+          <Field id={`room-decision-${requestId}`} label="Lý do" required>
             <Textarea
-              id={`reject-${requestId}`}
+              id={`room-decision-${requestId}`}
               value={reason}
               onChange={(event) => setReason(event.target.value)}
               rows={4}
-              placeholder="Ví dụ: Khung giờ trùng sự kiện ưu tiên của trường."
+              placeholder={
+                mode === "changes"
+                  ? "Ví dụ: Hãy chọn khung giờ sau 16:30 để tránh lịch hoạt động của trường."
+                  : "Ví dụ: Phòng được ưu tiên cho kỳ thi của trường trong khung giờ này."
+              }
             />
           </Field>
+          {error ? (
+            <Alert tone="danger" title="Không thể xử lý">
+              {error}
+            </Alert>
+          ) : null}
           <div className="flex justify-end gap-2">
-            <Button type="button" variant="secondary" onClick={() => setRejectOpen(false)}>
+            <Button type="button" variant="secondary" onClick={() => setMode(null)}>
               Hủy
             </Button>
-            <Button type="button" variant="danger" disabled={isPending} onClick={reject}>
-              Xác nhận từ chối
+            <Button
+              type="button"
+              variant={mode === "reject" ? "danger" : "primary"}
+              disabled={isPending}
+              onClick={submitDecision}
+            >
+              {mode === "changes" ? "Gửi yêu cầu chỉnh sửa" : "Xác nhận từ chối"}
             </Button>
           </div>
         </div>

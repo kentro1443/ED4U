@@ -2,7 +2,7 @@
 
 import { randomUUID } from "node:crypto";
 import { z } from "zod";
-import { can } from "@ed4u/domain";
+import { can, transitionRoomRequest } from "@ed4u/domain";
 import { planRooms, type PlanningRequest } from "@ed4u/facility-engine";
 import { db } from "@/lib/db";
 import { requireActor } from "@/lib/authz";
@@ -276,6 +276,68 @@ export async function createRoomRequestFromPlanAction(input: {
     return {
       ok: false as const,
       error: error instanceof Error ? error.message : "Không thể gửi yêu cầu phòng.",
+    };
+  }
+}
+
+export async function cancelRoomRequestAction(requestId: string) {
+  const actor = await requireActor();
+  if (!can(actor, "room.request"))
+    return { ok: false as const, error: "Bạn không có quyền hủy yêu cầu phòng." };
+  try {
+    await db.$transaction(async (tx) => {
+      const rows = await tx.$queryRaw<Array<{ id: string; roomId: string }>>`
+        SELECT "id"::text, "roomId"::text
+        FROM "RoomRequest"
+        WHERE "id"=${requestId} AND "tenantId"=${actor.tenantId}
+        FOR UPDATE
+      `;
+      const locked = rows[0];
+      if (!locked) throw new Error("Không tìm thấy yêu cầu phòng.");
+      await tx.$queryRaw`SELECT "id"::text FROM "Room" WHERE "id"=${locked.roomId} FOR UPDATE`;
+      const request = await tx.roomRequest.findFirstOrThrow({
+        where: { id: requestId, tenantId: actor.tenantId },
+        include: { booking: true },
+      });
+      if (request.requestedBy !== actor.userId)
+        throw new Error("Yêu cầu phòng không thuộc tài khoản của bạn.");
+      if (!["PENDING_APPROVAL", "CHANGES_REQUESTED", "APPROVED"].includes(request.status)) {
+        throw new Error("Yêu cầu không còn có thể hủy.");
+      }
+      const transition = transitionRoomRequest(request.status, "CANCELLED");
+      if (!transition.ok) throw transition.error;
+      const now = new Date();
+      if (request.booking && !request.booking.cancelledAt) {
+        await tx.roomBooking.update({
+          where: { id: request.booking.id },
+          data: { cancelledAt: now },
+        });
+      }
+      await tx.roomRequest.update({
+        where: { id: request.id },
+        data: { status: transition.value, resolvedBy: actor.userId, resolvedAt: now },
+      });
+      await tx.clubEvent.updateMany({
+        where: { roomRequestId: request.id },
+        data: { roomResolved: false, status: "NEEDS_RESOURCE" },
+      });
+      await tx.auditEvent.create({
+        data: {
+          tenantId: actor.tenantId,
+          actorId: actor.userId,
+          action: "ROOM_REQUEST_CANCEL",
+          entityType: "RoomRequest",
+          entityId: request.id,
+          requestId: randomUUID(),
+          afterJson: { status: transition.value, bookingCancelled: !!request.booking },
+        },
+      });
+    });
+    return { ok: true as const };
+  } catch (error) {
+    return {
+      ok: false as const,
+      error: error instanceof Error ? error.message : "Không thể hủy yêu cầu phòng.",
     };
   }
 }

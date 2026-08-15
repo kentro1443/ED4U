@@ -65,7 +65,7 @@ export default async function ApprovalsPage() {
               engineVersion?: string;
             } | null;
             return (
-              <Card key={request.id} className="p-5">
+              <Card key={request.id} className="p-5" data-testid="room-approval-card">
                 <div className="grid gap-5 lg:grid-cols-[1fr_auto] lg:items-center">
                   <div className="space-y-3">
                     <div className="flex flex-wrap items-center gap-2">

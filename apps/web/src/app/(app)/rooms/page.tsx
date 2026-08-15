@@ -2,10 +2,12 @@ import { can } from "@ed4u/domain";
 import { db } from "@/lib/db";
 import { requireActor } from "@/lib/authz";
 import { PageHeader } from "@/components/ui/PageHeader";
+import { LinkButton } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { StatusBadge } from "@/components/ui/Badge";
 import { EmptyState } from "@/components/ui/Feedback";
 import { FacilityPlanner } from "@/features/facility/FacilityPlanner";
+import { RoomRequestActions } from "@/features/facility/RoomRequestActions";
 
 function formatSchoolTime(date: Date, timeZone: string) {
   return new Intl.DateTimeFormat("vi-VN", {
@@ -58,6 +60,11 @@ export default async function RoomsPage({
       <PageHeader
         title="Phòng & Cơ sở vật chất"
         description="Tìm phương án trên trạng thái phòng trực tiếp. Đề xuất không giữ chỗ; chỉ School Admin có thể xác nhận booking sau khi tái kiểm tra ràng buộc cứng."
+        actions={
+          <LinkButton href="/rooms/schedule" variant="secondary">
+            Xem lịch phòng
+          </LinkButton>
+        }
       />
 
       <FacilityPlanner
@@ -114,6 +121,9 @@ export default async function RoomsPage({
                       ? "Đang chờ School Admin; chưa phải booking được xác nhận."
                       : "Chưa có booking đang hoạt động."}
                 </p>
+                {canRequest ? (
+                  <RoomRequestActions requestId={request.id} status={request.status} />
+                ) : null}
               </Card>
             ))}
           </div>
