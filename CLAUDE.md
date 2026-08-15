@@ -184,6 +184,7 @@ controls; (12) add automated coverage where appropriate. Only then is the UI com
 - `9a228b9` audit
 - `39ed217` security Slice 0
 - `0af0a39` benchmark report regeneration / green verify
+- `e396f3e` truthful data foundation, Slice 1
 
 **Slice 0 is complete:** permission-specific route guards, actor-scoped reads, appointment
 assignee enforcement, a real-Postgres authz integration harness, a dedicated E2E port,
