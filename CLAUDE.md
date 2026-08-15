@@ -195,7 +195,12 @@ deterministic demo reset, and a green `verify`.
 `Tenant.timezone`); the DB→canonical adapter at `apps/web/src/lib/mentor/adapter.ts`;
 school-local civil time in `packages/domain/src/academic/timezone.ts` with a required
 `timeZone` on `withinOperationalHours`; a 24-mentor seed with behavioural diversity; all
-fabricated mentor values and the `matchScore: 50` fallback removed.
+fabricated mentor values and the `matchScore: 50` fallback removed. The facility demo seed
+also carries real operational state: an APPROVED R04 request + confirmed booking, an R09
+maintenance block, and an active PENDING_APPROVAL soft hold on R16. Their identities and
+relationships are deterministic; their operational timestamps intentionally move relative
+to seed time so the demo never rots. Two consecutive `db:demo:reset` runs were manually
+compared and produced identical structural counts/IDs/links.
 
 Known deliberate trade-offs:
 

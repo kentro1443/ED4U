@@ -443,6 +443,32 @@ rather than reordering it, that different hard constraints reject different
 mentors for different reasons, and that an unservable request returns
 `noFeasibleMatch` instead of a relaxed answer.
 
+### Facility fixture closure
+
+The original Slice 1 plan also required operational room state so future
+Facility integration has real constraints to consume. The seed now includes:
+
+- **R04 auditorium:** one APPROVED RoomRequest and linked confirmed RoomBooking;
+  the request is 16:00–18:00 school-local and the stored occupied interval is
+  15:45–18:15 including setup/cleanup.
+- **R09 science lab:** a 13:00–17:00 RoomBlock with reason "Bảo trì hệ thống
+  thiết bị phòng thí nghiệm".
+- **R16 auditorium:** one PENDING_APPROVAL RoomRequest with an active soft hold
+  created two hours before seed time and no confirmed booking.
+
+These dates are deliberately relative to seed time and constructed in the demo
+school's explicit `Asia/Ho_Chi_Minh` civil time, not host-local time. IDs, room
+relationships and statuses stay deterministic; only operational timestamps move
+so a later demo reset still produces upcoming/live state. Two consecutive
+`npm run db:demo:reset` executions produced identical structural snapshots: 1
+tenant, 182 users, 24 mentors, 24 rooms, 75 room-feature rows, 240 timetable
+entries, 1 block, 1 confirmed booking, and exactly one APPROVED plus one
+PENDING_APPROVAL room request with identical fixture IDs/links.
+
+The real-PostgreSQL seed test proves semantics, not just counts: confirmed
+booking overlap is a hard conflict, maintenance overlap is a hard conflict, and
+the pending hold is active but remains soft-only.
+
 ### Defects found and fixed beyond the plan
 
 1. **`db:demo:reset` was broken.** `prisma migrate reset --skip-seed` is not a
@@ -479,8 +505,9 @@ engine's own rejection reasons (`UNVERIFIED`, `AVAILABILITY`, `PRICE`,
   conversion, DST, and the operational-hours defect.
 - `apps/web/tests/mentor-adapter.test.ts` — 14 assertions on identity, the three
   credential states, and the engine boundary.
-- `apps/web/tests/integration/seed-truthfulness.test.ts` — 11 assertions against
-  real PostgreSQL, including the behavioural diversity criteria above.
+- `apps/web/tests/integration/seed-truthfulness.test.ts` — 14 assertions against
+  real PostgreSQL, including behavioural mentor diversity plus hard-vs-soft
+  facility fixture semantics.
 - `apps/web/e2e/mentor-data-truth.spec.ts` — 3 browser tests: no UUID-as-name,
   distinct real scores, engine rejection reasons.
 

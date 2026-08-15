@@ -1,5 +1,11 @@
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import {
+  combineRoomOccupancy,
+  hasHardOccupancyConflict,
+  isSoftHoldActive,
+  softHoldBlocksHardLock,
+} from "@ed4u/domain";
+import {
   applyHardConstraints,
   matchMentors,
   validateMentors,
@@ -153,6 +159,99 @@ describe("matching-relevant diversity", () => {
     }
     const featureSets = new Set([...byRoom.values()].map((codes) => [...codes].sort().join("|")));
     expect(featureSets.size).toBeGreaterThanOrEqual(4);
+  });
+});
+
+describe("facility demo state has truthful hard and soft occupancy", () => {
+  it("seeds a confirmed booking that is a hard conflict", async () => {
+    const room = await db.room.findFirstOrThrow({ where: { tenantId, code: "R04" } });
+    const request = await db.roomRequest.findFirstOrThrow({
+      where: { tenantId, roomId: room.id, status: "APPROVED" },
+      include: { booking: true },
+    });
+
+    expect(request.booking).not.toBeNull();
+    if (request.booking === null) throw new Error("approved fixture is missing its booking");
+    expect(request.booking.requestId).toBe(request.id);
+    expect(request.booking.startAt.getTime()).toBe(
+      request.eventStart.getTime() - request.setupMinutes * 60_000,
+    );
+    expect(request.booking.endAt.getTime()).toBe(
+      request.eventEnd.getTime() + request.cleanupMinutes * 60_000,
+    );
+
+    const occupancy = combineRoomOccupancy({
+      roomId: room.id,
+      timetable: [],
+      confirmedBookings: [
+        {
+          startAt: request.booking.startAt,
+          endAt: request.booking.endAt,
+          label: request.booking.id,
+        },
+      ],
+      blocks: [],
+    });
+    const conflict = hasHardOccupancyConflict(
+      { startAt: request.eventStart, endAt: request.eventEnd },
+      occupancy,
+    );
+    expect(conflict?.source).toBe("CONFIRMED_BOOKING");
+  });
+
+  it("seeds a maintenance block that is a hard conflict", async () => {
+    const room = await db.room.findFirstOrThrow({ where: { tenantId, code: "R09" } });
+    const block = await db.roomBlock.findFirstOrThrow({ where: { tenantId, roomId: room.id } });
+    expect(block.reason).toBe("Bảo trì hệ thống thiết bị phòng thí nghiệm");
+
+    const occupancy = combineRoomOccupancy({
+      roomId: room.id,
+      timetable: [],
+      confirmedBookings: [],
+      blocks: [{ startAt: block.startAt, endAt: block.endAt, label: block.reason }],
+    });
+    const candidate = {
+      startAt: new Date(block.startAt.getTime() + 60 * 60_000),
+      endAt: new Date(block.startAt.getTime() + 2 * 60 * 60_000),
+    };
+    const conflict = hasHardOccupancyConflict(candidate, occupancy);
+    expect(conflict?.source).toBe("MAINTENANCE_BLOCK");
+  });
+
+  it("seeds an active pending hold that remains soft-only", async () => {
+    const room = await db.room.findFirstOrThrow({ where: { tenantId, code: "R16" } });
+    const request = await db.roomRequest.findFirstOrThrow({
+      where: { tenantId, roomId: room.id, status: "PENDING_APPROVAL" },
+      include: { booking: true },
+    });
+    expect(request.booking).toBeNull();
+
+    const now = new Date();
+    const hold = {
+      requestId: request.id,
+      roomId: request.roomId,
+      startAt: request.eventStart,
+      endAt: request.eventEnd,
+      createdAt: request.holdCreatedAt,
+    };
+    expect(request.holdCreatedAt.getTime()).toBeLessThanOrEqual(now.getTime());
+    expect(isSoftHoldActive(hold, now)).toBe(true);
+    expect(softHoldBlocksHardLock([hold])).toBe(false);
+
+    // A pending hold is deliberately absent from hard occupancy. It may later
+    // lower a planner score, but it can never become a confirmed-booking lock.
+    const hardOccupancy = combineRoomOccupancy({
+      roomId: room.id,
+      timetable: [],
+      confirmedBookings: [],
+      blocks: [],
+    });
+    expect(
+      hasHardOccupancyConflict(
+        { startAt: request.eventStart, endAt: request.eventEnd },
+        hardOccupancy,
+      ),
+    ).toBeNull();
   });
 });
 

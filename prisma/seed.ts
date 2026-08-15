@@ -34,10 +34,38 @@ function demoDateOfBirth(seed: string, minYear: number, maxYear: number): Date {
   return new Date(Date.UTC(year, month - 1, day));
 }
 
+const DEMO_VIETNAM_OFFSET_MS = 7 * 60 * 60 * 1000;
+
+/**
+ * Seed-only helper: returns the next Mon–Fri occurrence at a Vietnam school-local
+ * wall-clock time. The demo tenant is fixed to Asia/Ho_Chi_Minh (UTC+7, no DST),
+ * so doing the civil-date arithmetic on a +07:00 shifted instant is explicit and
+ * host-timezone independent. General academic civil→instant conversion belongs
+ * to the Calendar slice; do not reuse this helper as production time logic.
+ */
+function nextDemoSchoolWeekdayAt(seedNow: Date, hour: number, minute = 0): Date {
+  const vietnamNow = new Date(seedNow.getTime() + DEMO_VIETNAM_OFFSET_MS);
+  const year = vietnamNow.getUTCFullYear();
+  const month = vietnamNow.getUTCMonth();
+  const day = vietnamNow.getUTCDate();
+
+  for (let delta = 1; delta <= 7; delta += 1) {
+    const civilCandidate = new Date(Date.UTC(year, month, day + delta, hour, minute));
+    const weekday = civilCandidate.getUTCDay();
+    if (weekday >= 1 && weekday <= 5) {
+      return new Date(civilCandidate.getTime() - DEMO_VIETNAM_OFFSET_MS);
+    }
+  }
+  throw new Error("Could not find the next demo school weekday");
+}
+
 type DemoGender = "FEMALE" | "MALE" | "OTHER" | "UNDISCLOSED";
 
 async function main() {
   const hash = await argon2.hash(DEMO_PASSWORD, { type: argon2.argon2id });
+  // Operational fixtures intentionally move with seed time so they never become
+  // stale demo history. Their IDs/relationships remain deterministic.
+  const seedNow = new Date();
   const tenantId = uuid("tenant:ed4u-demo");
 
   await prisma.tenant.upsert({
@@ -1034,6 +1062,84 @@ async function main() {
       }
     }
   }
+
+  /* ------------------------------------------------------------------ */
+  /* Facility demo state                                                */
+  /* ------------------------------------------------------------------ */
+
+  // The inherited prototype had feature-rich rooms but no live operational
+  // state, so confirmed bookings, maintenance and soft holds could never bite.
+  // These fixtures are all on the next school weekday and after P1–P4, which
+  // keeps them useful for demos without contradicting the seeded timetable.
+  const confirmedEventStart = nextDemoSchoolWeekdayAt(seedNow, 16, 0);
+  const confirmedEventEnd = nextDemoSchoolWeekdayAt(seedNow, 18, 0);
+  const confirmedRequestId = uuid("roomreq:fixture:confirmed");
+  const confirmedRoomId = uuid("room:4"); // R04 · auditorium
+  const confirmedRequestData = {
+    tenantId,
+    roomId: confirmedRoomId,
+    requestedBy: president,
+    status: "APPROVED" as const,
+    eventStart: confirmedEventStart,
+    eventEnd: confirmedEventEnd,
+    setupMinutes: 15,
+    cleanupMinutes: 15,
+    holdCreatedAt: seedNow,
+    recommendation: { fixture: "confirmed-demo-booking" },
+  };
+  await prisma.roomRequest.upsert({
+    where: { id: confirmedRequestId },
+    update: confirmedRequestData,
+    create: { id: confirmedRequestId, ...confirmedRequestData },
+  });
+  const confirmedBookingData = {
+    tenantId,
+    roomId: confirmedRoomId,
+    requestId: confirmedRequestId,
+    // RoomBooking stores the occupied interval, including setup/cleanup.
+    startAt: new Date(confirmedEventStart.getTime() - 15 * 60_000),
+    endAt: new Date(confirmedEventEnd.getTime() + 15 * 60_000),
+    cancelledAt: null,
+  };
+  await prisma.roomBooking.upsert({
+    where: { requestId: confirmedRequestId },
+    update: confirmedBookingData,
+    create: { id: uuid("roombooking:fixture:confirmed"), ...confirmedBookingData },
+  });
+
+  const maintenanceBlockId = uuid("roomblock:fixture:maintenance");
+  const maintenanceBlockData = {
+    tenantId,
+    roomId: uuid("room:9"), // R09 · science lab
+    startAt: nextDemoSchoolWeekdayAt(seedNow, 13, 0),
+    endAt: nextDemoSchoolWeekdayAt(seedNow, 17, 0),
+    reason: "Bảo trì hệ thống thiết bị phòng thí nghiệm",
+  };
+  await prisma.roomBlock.upsert({
+    where: { id: maintenanceBlockId },
+    update: maintenanceBlockData,
+    create: { id: maintenanceBlockId, ...maintenanceBlockData },
+  });
+
+  const pendingRequestId = uuid("roomreq:fixture:soft-hold");
+  const pendingRequestData = {
+    tenantId,
+    roomId: uuid("room:16"), // R16 · auditorium
+    requestedBy: president,
+    status: "PENDING_APPROVAL" as const,
+    eventStart: nextDemoSchoolWeekdayAt(seedNow, 16, 0),
+    eventEnd: nextDemoSchoolWeekdayAt(seedNow, 18, 0),
+    setupMinutes: 15,
+    cleanupMinutes: 15,
+    // Intentionally relative: it must remain an active (<24h) demo soft hold.
+    holdCreatedAt: new Date(seedNow.getTime() - 2 * 60 * 60 * 1000),
+    recommendation: { fixture: "active-soft-hold" },
+  };
+  await prisma.roomRequest.upsert({
+    where: { id: pendingRequestId },
+    update: pendingRequestData,
+    create: { id: pendingRequestId, ...pendingRequestData },
+  });
 
   const clubId = uuid("club:robotics");
   await prisma.club.upsert({
