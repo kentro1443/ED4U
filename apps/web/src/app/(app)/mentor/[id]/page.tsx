@@ -3,29 +3,55 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Avatar } from "@/components/ui/DataDisplay";
-import { Alert } from "@/components/ui/Feedback";
+import { Alert, EmptyState } from "@/components/ui/Feedback";
 import { requireActor } from "@/lib/authz";
+import { can } from "@ed4u/domain";
 import { MENTOR_PROFILE_INCLUDE, toCanonicalMentor } from "@/lib/mentor/adapter";
+import { MentorBookingCard } from "@/features/mentor/MentorBookingCard";
+import { availabilityLabel, mentorSkillLabel } from "@/lib/mentor/presentation";
 
-/** Human-readable label for a credential domain we have checked. */
 function credentialLine(domain: string, present: string | null): string {
   return present === null ? `${domain}: đã kiểm tra, không có chứng chỉ` : `${domain}: ${present}`;
 }
 
-export default async function MentorProfilePage({ params }: { params: Promise<{ id: string }> }) {
+export default async function MentorProfilePage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ run?: string }>;
+}) {
   const actor = await requireActor();
   const { id } = await params;
-  const profile = await db.mentorProfile.findFirst({
-    where: { id, tenantId: actor.tenantId },
-    include: MENTOR_PROFILE_INCLUDE,
-  });
-  if (!profile) return <p className="p-6 text-sm text-[var(--muted)]">Không tìm thấy mentor.</p>;
+  const { run: runId } = await searchParams;
+
+  const [profile, tenant] = await Promise.all([
+    db.mentorProfile.findFirst({
+      where: { id, tenantId: actor.tenantId },
+      include: MENTOR_PROFILE_INCLUDE,
+    }),
+    db.tenant.findUnique({ where: { id: actor.tenantId }, select: { timezone: true } }),
+  ]);
+
+  if (!profile) {
+    return (
+      <div className="space-y-6">
+        <PageHeader title="Hồ sơ Mentor" />
+        <EmptyState
+          title="Không tìm thấy mentor"
+          description="Hồ sơ mentor không tồn tại hoặc không thuộc trường của bạn."
+        />
+      </div>
+    );
+  }
 
   const canonical = toCanonicalMentor(profile);
+  const canBookMentor =
+    can(actor, "mentor.book") &&
+    actor.memberType === "STUDENT" &&
+    actor.membershipStatus === "ACTIVE";
   const checked = new Set(profile.credentialsCheckedDomains);
 
-  // Only domains that were actually checked are shown. An unchecked domain is
-  // absent from this list entirely.
   const credentials: string[] = [];
   if (checked.has("IELTS")) {
     credentials.push(
@@ -47,7 +73,7 @@ export default async function MentorProfilePage({ params }: { params: Promise<{ 
     <div className="space-y-6">
       <PageHeader
         title={profile.user.fullName}
-        description={profile.headline}
+        description={profile.headline ?? "Mentor cựu học sinh"}
         breadcrumbs={[{ label: "Mentor", href: "/mentor" }, { label: profile.user.fullName }]}
         badge={profile.verified ? <Badge tone="success">Đã xác minh</Badge> : undefined}
       />
@@ -58,7 +84,8 @@ export default async function MentorProfilePage({ params }: { params: Promise<{ 
         </Alert>
       ) : null}
 
-      <div className="grid gap-6 md:grid-cols-[1fr_320px]">
+      <div className="grid gap-6 md:grid-cols-[1fr_360px]">
+        {/* Profile Information */}
         <div className="space-y-6">
           <Card>
             <CardHeader className="pb-3">
@@ -108,7 +135,9 @@ export default async function MentorProfilePage({ params }: { params: Promise<{ 
                   <dt className="text-xs font-semibold uppercase tracking-wider text-[var(--muted)]">
                     Chuyên môn
                   </dt>
-                  <dd className="mt-1 font-medium">{profile.expertise.join(", ")}</dd>
+                  <dd className="mt-1 font-medium">
+                    {profile.expertise.map(mentorSkillLabel).join(", ")}
+                  </dd>
                 </div>
 
                 <div className="sm:col-span-2">
@@ -116,7 +145,7 @@ export default async function MentorProfilePage({ params }: { params: Promise<{ 
                     Lịch rảnh hằng tuần
                   </dt>
                   <dd className="mt-1 text-[var(--body)]">
-                    {profile.availability.join(", ") || "Chưa công bố"}
+                    {profile.availability.map(availabilityLabel).join(" · ") || "Chưa công bố"}
                   </dd>
                 </div>
 
@@ -146,7 +175,8 @@ export default async function MentorProfilePage({ params }: { params: Promise<{ 
           )}
         </div>
 
-        <div>
+        {/* Booking Card & Mentor Avatar Summary */}
+        <div className="space-y-6">
           <Card className="text-center p-6 space-y-4">
             <Avatar name={profile.user.fullName} size="lg" className="mx-auto h-16 w-16 text-xl" />
             <div>
@@ -157,6 +187,23 @@ export default async function MentorProfilePage({ params }: { params: Promise<{ 
               Thành viên thuộc mạng lưới Mentor cựu học sinh ED4U
             </div>
           </Card>
+
+          {/* Interactive Live Slot Booking — active students only. */}
+          {canBookMentor ? (
+            <MentorBookingCard
+              mentorId={profile.id}
+              mentorName={profile.user.fullName}
+              pricePerHour={profile.pricePerHour}
+              availability={profile.availability}
+              recommendationRunId={runId}
+              verified={profile.verified}
+              timeZone={tenant?.timezone ?? "Asia/Ho_Chi_Minh"}
+            />
+          ) : (
+            <Alert tone="info" title="Xem hồ sơ Mentor">
+              Chức năng đặt lịch chỉ dành cho học sinh đang theo học và có quyền đặt Mentor.
+            </Alert>
+          )}
         </div>
       </div>
     </div>

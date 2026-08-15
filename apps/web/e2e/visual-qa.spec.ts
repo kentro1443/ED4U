@@ -34,7 +34,7 @@ test.describe("Visual QA Passes", () => {
 
     // 3. Mentor
     await page.goto("/mentor");
-    await expect(page.getByRole("heading", { name: "Mentor" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Mentor", exact: true })).toBeVisible();
     await page.screenshot({ path: path.join(OUTPUT_DIR, "desktop-mentor.png") });
 
     // 4. Calendar
@@ -74,7 +74,7 @@ test.describe("Visual QA Passes", () => {
 
     // 3. Mentor
     await page.goto("/mentor");
-    await expect(page.getByRole("heading", { name: "Mentor" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Mentor", exact: true })).toBeVisible();
     await page.screenshot({ path: path.join(OUTPUT_DIR, "mobile-mentor.png") });
 
     // 4. Calendar

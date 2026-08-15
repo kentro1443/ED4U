@@ -6,6 +6,8 @@ import {
   radiusFromScore,
   recheckMentorBooking,
   toEngineCandidates,
+  parseSlotPattern,
+  nextSlotOccurrence,
 } from "../src/index";
 
 describe("Match Space layout", () => {
@@ -125,5 +127,17 @@ describe("mentor adapter and live booking re-check", () => {
       { tenantId: "t1", studentId: "s1", mentorId: "m1", slot: "TUE_19_00", maxPricePerHour: null },
     );
     expect(notGrad.ok).toBe(false);
+  });
+
+  it("parses slot pattern and calculates next concrete occurrence in timezone", () => {
+    const parsed = parseSlotPattern("TUE_19_00");
+    expect(parsed.weekday).toBe(2);
+    expect(parsed.hour).toBe(19);
+    expect(parsed.minute).toBe(0);
+
+    const fromDate = new Date("2026-08-16T00:00:00.000Z"); // Sunday
+    const { startAt, endAt } = nextSlotOccurrence("TUE_19_00", "Asia/Ho_Chi_Minh", fromDate);
+    expect(startAt.getTime()).toBeLessThan(endAt.getTime());
+    expect(endAt.getTime() - startAt.getTime()).toBe(60 * 60 * 1000);
   });
 });

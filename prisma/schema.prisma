@@ -584,22 +584,31 @@ model MentorMatchRequest {
 }
 
 model MentorRecommendationRun {
-  id        String             @id @default(uuid())
-  requestId String             @unique
-  request   MentorMatchRequest @relation(fields: [requestId], references: [id])
+  id            String             @id @default(uuid())
+  requestId     String             @unique
+  request       MentorMatchRequest @relation(fields: [requestId], references: [id])
   engineVersion String
-  result    Json
-  createdAt DateTime           @default(now())
+  result        Json
+  createdAt     DateTime           @default(now())
+  bookings      MentorBooking[]
 }
 
 model MentorBooking {
-  id        String   @id @default(uuid())
-  tenantId  String
-  tenant    Tenant   @relation(fields: [tenantId], references: [id])
-  studentId String
-  mentorId  String
-  slot      String
-  createdAt DateTime @default(now())
+  id                  String    @id @default(uuid())
+  tenantId            String
+  tenant              Tenant    @relation(fields: [tenantId], references: [id])
+  studentId           String
+  mentorId            String
+  slotPattern         String
+  startAt             DateTime
+  endAt               DateTime
+  cancelledAt         DateTime?
+  recommendationRunId String?
+  recommendationRun   MentorRecommendationRun? @relation(fields: [recommendationRunId], references: [id], onDelete: SetNull)
+  createdAt           DateTime  @default(now())
+
+  @@index([tenantId, mentorId, startAt])
+  @@index([studentId])
 }
 
 model RoomRequest {

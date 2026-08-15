@@ -1,167 +1,163 @@
-import {
-  applyHardConstraints,
-  matchMentors,
-  validateMentors,
-  validateStudentRequest,
-} from "@ed4u/mentor-engine";
+import Link from "next/link";
 import { db } from "@/lib/db";
-import { PageHeader } from "@/components/PageHeader";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { Badge } from "@/components/ui/Badge";
+import { LinkButton } from "@/components/ui/Button";
+import { EmptyState, ForbiddenState, Alert } from "@/components/ui/Feedback";
 import { MatchSpaceView } from "@/features/mentor/MatchSpaceView";
 import { requireActor } from "@/lib/authz";
-import { MENTOR_PROFILE_INCLUDE, toCanonicalMentors } from "@/lib/mentor/adapter";
+import { parseMentorMatchPayload, parseMentorRunSnapshot } from "@/lib/mentor/schemas";
+import { Icons } from "@/components/ui/icons";
 
-/**
- * Slice 1 scope: this page now runs the real engine over real columns. What it
- * still lacks is a student-authored request — the request below is a fixed
- * demo request, clearly labelled as such in the UI. The input flow, the
- * deterministic parser and the persisted `MentorMatchRequest` /
- * `MentorRecommendationRun` arrive in Slice 4, and the visualisation itself is
- * rebuilt in Slice 5.
- *
- * What is gone: fabricated birth years, invented IELTS bands, a hard-coded
- * rating, and the silent `matchScore: 50` that rendered whenever validation
- * failed. A failure is now shown as a failure.
- */
-
-const DEMO_REQUEST_ID = "demo-ielts-writing";
-
-export default async function MatchSpacePage() {
+export default async function MatchSpacePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ run?: string }>;
+}) {
   const actor = await requireActor();
+  const { run: runId } = await searchParams;
 
-  const profiles = await db.mentorProfile.findMany({
-    where: { tenantId: actor.tenantId },
-    include: MENTOR_PROFILE_INCLUDE,
-    orderBy: { id: "asc" },
-  });
+  let runRecord = null;
+  let isLatestFallback = false;
 
-  const { mentors: candidates, failures } = toCanonicalMentors(profiles);
-  const nameById = new Map(profiles.map((p) => [p.id, p.user.fullName]));
+  if (runId) {
+    runRecord = await db.mentorRecommendationRun.findUnique({
+      where: { id: runId },
+      include: { request: true },
+    });
 
-  const requestResult = validateStudentRequest({
-    requestId: DEMO_REQUEST_ID,
-    goal: { domain: "IELTS", focusSkills: ["IELTS.WRITING"] },
-    hardConstraints: {
-      verifiedOnly: true,
-      maxPricePerHour: 500_000,
-      requiredExpertise: [],
-      requireAllAvailability: false,
-    },
-    // A student who can study on most weekday evenings. Narrow availability is
-    // a legitimate result (the engine rejects on AVAILABILITY), but a demo
-    // request that leaves one survivor out of 24 shows nothing.
-    availability: ["MON_17_30", "MON_18_00", "TUE_19_00", "TUE_20_00", "WED_17_00", "THU_18_30"],
-    softPreferences: { teachingStyles: ["STRUCTURED"], languages: ["VI"] },
-    additionalPreferences: [],
-  });
-  const mentorResult = validateMentors(candidates);
+    if (
+      runRecord &&
+      (runRecord.request.tenantId !== actor.tenantId ||
+        runRecord.request.studentId !== actor.userId)
+    ) {
+      return (
+        <div className="space-y-6">
+          <PageHeader title="Mentor Match Space" />
+          <ForbiddenState
+            title="Không thể truy cập kết quả gợi ý"
+            description="Lượt gợi ý này thuộc về tài khoản khác hoặc không thuộc trường của bạn."
+          />
+        </div>
+      );
+    }
+  } else {
+    // Invariant 6: If no run param, load the latest owned run or show an empty state
+    runRecord = await db.mentorRecommendationRun.findFirst({
+      where: {
+        request: {
+          studentId: actor.userId,
+          tenantId: actor.tenantId,
+        },
+      },
+      include: { request: true },
+      orderBy: { createdAt: "desc" },
+    });
+    if (runRecord) {
+      isLatestFallback = true;
+    }
+  }
 
-  // Validation failures are surfaced, never papered over with a placeholder
-  // score. If the engine cannot run, the page says so and names the reason.
-  const errors: string[] = [];
-  if (!requestResult.ok) {
-    errors.push(
-      ...requestResult.issues.map((issue) => `Yêu cầu · ${issue.path}: ${issue.message}`),
+  if (!runRecord) {
+    return (
+      <div className="space-y-6">
+        <PageHeader
+          title="Mentor Match Space"
+          description="Khám phá không gian xếp hạng mentor từ Mentor Intelligence Engine."
+        />
+        <EmptyState
+          title="Chưa có kết quả gợi ý nào"
+          description="Bạn chưa thực hiện lượt tìm kiếm mentor nào. Hãy nhập nhu cầu học tập để Mentor Engine phân tích và xếp hạng."
+          action={
+            <LinkButton href="/mentor" variant="primary" size="md">
+              <Icons.search className="h-4 w-4 mr-1.5" />
+              Tìm mentor ngay
+            </LinkButton>
+          }
+        />
+      </div>
     );
   }
-  if (!mentorResult.ok) {
-    errors.push(...mentorResult.issues.map((issue) => `Mentor · ${issue.path}: ${issue.message}`));
+
+  // Parse immutable versioned JSON snapshots with Zod
+  const snapshot = parseMentorRunSnapshot(runRecord.result);
+  const payload = parseMentorMatchPayload(runRecord.request.payload);
+
+  if (!snapshot || !payload) {
+    return (
+      <div className="space-y-6">
+        <PageHeader title="Mentor Match Space" />
+        <Alert tone="danger" title="Dữ liệu kết quả không hợp lệ">
+          Không thể giải mã bản ghi kết quả gợi ý theo hợp đồng dữ liệu version 1.
+        </Alert>
+      </div>
+    );
   }
 
-  const result =
-    requestResult.ok && mentorResult.ok
-      ? matchMentors({ request: requestResult.value, mentors: mentorResult.value, topK: 8 })
-      : null;
-
-  // Why each excluded mentor was excluded, taken from the engine's own hard
-  // constraint pass rather than described in prose by this page.
-  const rejectionsById = new Map<string, string[]>(
-    requestResult.ok && mentorResult.ok
-      ? applyHardConstraints(requestResult.value, mentorResult.value).rejected.map((r) => [
-          r.mentorId,
-          r.reasons,
-        ])
-      : [],
-  );
-
-  const recommendedIds = new Set(result?.recommendations.map((r) => r.mentorId) ?? []);
-  const nodes =
-    result && mentorResult.ok
-      ? [
-          ...result.recommendations.map((r) => ({
-            mentorId: r.mentorId,
-            displayName: nameById.get(r.mentorId) ?? r.mentorId,
-            matchScore: r.matchScore,
-            eligible: true,
-            rejectionReasons: [] as string[],
-            clusterKey: "IELTS",
-          })),
-          ...mentorResult.value
-            .filter((m) => !recommendedIds.has(m.id))
-            .map((m) => ({
-              mentorId: m.id,
-              displayName: nameById.get(m.id) ?? m.id,
-              matchScore: 0,
-              eligible: false,
-              // An eligible mentor that simply missed Top-K has no rejection
-              // reason, and saying otherwise would be a small lie.
-              rejectionReasons: rejectionsById.get(m.id) ?? ["Nằm ngoài Top-K"],
-              clusterKey: "IELTS",
-            })),
-        ]
-      : [];
+  const reqSummary = payload.parsedSummary;
+  const tenant = await db.tenant.findUnique({
+    where: { id: actor.tenantId },
+    select: { timezone: true },
+  });
+  const timeZone = tenant?.timezone ?? "Asia/Ho_Chi_Minh";
 
   return (
-    <div>
+    <div className="space-y-6">
       <PageHeader
         title="Mentor Match Space"
-        description="Khoảng cách = hàm đơn điệu của (1 − matchScore). Gần hơn = phù hợp hơn."
+        description="Biểu đồ trực quan hóa kết quả xếp hạng và khoảng cách phù hợp từ Mentor Intelligence Engine."
+        actions={
+          <LinkButton href="/mentor" variant="secondary" size="md">
+            <Icons.search className="h-4 w-4 mr-1.5" />
+            Tạo yêu cầu mới
+          </LinkButton>
+        }
       />
 
-      <p className="mb-4 rounded-lg border border-[var(--line)] bg-[var(--card)] p-3 text-sm text-[var(--muted)]">
-        Đang dùng một yêu cầu mẫu cố định (IELTS Writing, tối đa 500.000 đ/giờ, chỉ mentor đã xác
-        minh). Ô nhập yêu cầu của học sinh sẽ có ở giai đoạn sau.
-      </p>
-
-      {errors.length > 0 ? (
-        <div
-          role="alert"
-          className="mb-4 rounded-lg border border-[var(--clay)] bg-[var(--card)] p-4 text-sm"
-        >
-          <p className="font-medium">Không chạy được Mentor Engine.</p>
-          <p className="mt-1 text-[var(--muted)]">
-            Dữ liệu không hợp lệ theo hợp đồng của engine. Không có kết quả thay thế nào được hiển
-            thị.
-          </p>
-          <ul className="mt-2 list-disc pl-5">
-            {errors.map((message) => (
-              <li key={message}>{message}</li>
-            ))}
-          </ul>
+      {isLatestFallback && (
+        <div className="rounded-lg border border-[var(--hairline)] bg-[var(--surface-soft)] p-3 text-xs text-[var(--muted)] flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Icons.matchSpace className="h-4 w-4 text-[var(--primary)]" />
+            <span>Hiển thị kết quả từ lần tìm kiếm gần nhất của bạn.</span>
+          </div>
+          <Link href="/mentor" className="text-[var(--primary)] font-semibold hover:underline">
+            Tạo lượt tìm kiếm mới →
+          </Link>
         </div>
-      ) : null}
+      )}
 
-      {failures.length > 0 ? (
-        <div className="mb-4 rounded-lg border border-[var(--line)] bg-[var(--card)] p-4 text-sm">
-          <p className="font-medium">
-            {failures.length} hồ sơ mentor bị loại khỏi lượt chạy vì thiếu dữ liệu bắt buộc.
-          </p>
-          <ul className="mt-2 list-disc pl-5 text-[var(--muted)]">
-            {failures.map((failure) => (
-              <li key={failure.mentorId}>
-                {failure.displayName} — {failure.reasons.join(" ")}
-              </li>
+      {/* Request Summary Card */}
+      {reqSummary && (
+        <div className="rounded-xl border border-[var(--hairline)] bg-[var(--canvas)] p-4 flex flex-wrap items-center justify-between gap-3 text-xs shadow-xs">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="font-semibold text-[var(--ink)]">Yêu cầu đã phân tích:</span>
+            <Badge tone="brand" size="sm">
+              {reqSummary.domain}
+            </Badge>
+            {reqSummary.focusSkills.map((sk) => (
+              <Badge key={sk} tone="neutral" size="sm">
+                {sk.replace(`${reqSummary.domain}.`, "")}
+              </Badge>
             ))}
-          </ul>
+            {reqSummary.maxPricePerHour && (
+              <Badge tone="neutral" size="sm">
+                Tối đa {reqSummary.maxPricePerHour.toLocaleString("vi-VN")} đ/h
+              </Badge>
+            )}
+            {reqSummary.verifiedOnly && (
+              <Badge tone="success" size="sm">
+                Chỉ mentor xác minh
+              </Badge>
+            )}
+          </div>
+          <span className="text-[11px] text-[var(--muted)]">
+            Thời gian: {new Date(payload.createdAt).toLocaleString("vi-VN", { timeZone })}
+          </span>
         </div>
-      ) : null}
+      )}
 
-      {result ? (
-        <MatchSpaceView
-          requestId={DEMO_REQUEST_ID}
-          engineVersion={result.engineVersion}
-          mentors={nodes}
-        />
-      ) : null}
+      {/* Main Match Space View */}
+      <MatchSpaceView runId={runRecord.id} snapshot={snapshot} timeZone={timeZone} />
     </div>
   );
 }
