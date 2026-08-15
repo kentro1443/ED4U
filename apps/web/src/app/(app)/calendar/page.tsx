@@ -1,143 +1,403 @@
-import { filterVisible, projectCalendar, type RawCalendarSource } from "@ed4u/domain";
+import Link from "next/link";
+import {
+  addCivilDays,
+  civilDateKey,
+  civilDateTimeToInstant,
+  civilInZone,
+  filterVisible,
+  periodOccurrence,
+  schoolWeekMonday,
+  type RawCalendarSource,
+} from "@ed4u/domain";
 import { db } from "@/lib/db";
-import { PageHeader } from "@/components/ui/PageHeader";
-import { NavPillTabs } from "@/components/ui/Tabs";
-import { Card } from "@/components/ui/Card";
-import { Badge } from "@/components/ui/Badge";
-import { EmptyState } from "@/components/ui/Feedback";
 import { requireActor } from "@/lib/authz";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { EmptyState } from "@/components/ui/Feedback";
+import {
+  CalendarLegend,
+  DayCalendar,
+  MonthCalendar,
+  WeekCalendar,
+  type CalendarViewItem,
+} from "@/features/calendar/CalendarViews";
+
+const VIEW_LABEL = { day: "Ngày", week: "Tuần", month: "Tháng" } as const;
+type View = keyof typeof VIEW_LABEL;
+
+function parseView(value: string | undefined): View {
+  return value === "day" || value === "month" ? value : "week";
+}
+
+function parseLocalDate(
+  value: string | undefined,
+): { year: number; month: number; day: number } | null {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value ?? "");
+  if (!match) return null;
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  const day = Number(match[3]);
+  const check = new Date(Date.UTC(year, month - 1, day, 12));
+  if (
+    check.getUTCFullYear() !== year ||
+    check.getUTCMonth() + 1 !== month ||
+    check.getUTCDate() !== day
+  )
+    return null;
+  return { year, month, day };
+}
+
+function anchorFromQuery(date: string | undefined, timeZone: string): Date {
+  const parsed = parseLocalDate(date);
+  if (!parsed) return new Date();
+  return civilDateTimeToInstant({ ...parsed, hour: 12, minute: 0 }, timeZone);
+}
+
+function viewRange(view: View, anchor: Date, timeZone: string): { start: Date; end: Date } {
+  const local = civilInZone(anchor, timeZone);
+  if (view === "day") {
+    const date = { year: local.year, month: local.month, day: local.day };
+    const next = addCivilDays(date, 1);
+    return {
+      start: civilDateTimeToInstant({ ...date, hour: 0, minute: 0 }, timeZone),
+      end: civilDateTimeToInstant({ ...next, hour: 0, minute: 0 }, timeZone),
+    };
+  }
+  if (view === "week") {
+    const monday = schoolWeekMonday(anchor, timeZone);
+    const next = addCivilDays(monday, 7);
+    return {
+      start: civilDateTimeToInstant({ ...monday, hour: 0, minute: 0 }, timeZone),
+      end: civilDateTimeToInstant({ ...next, hour: 0, minute: 0 }, timeZone),
+    };
+  }
+  const first = { year: local.year, month: local.month, day: 1 };
+  const nextMonth =
+    local.month === 12
+      ? { year: local.year + 1, month: 1, day: 1 }
+      : { year: local.year, month: local.month + 1, day: 1 };
+  return {
+    start: civilDateTimeToInstant({ ...first, hour: 0, minute: 0 }, timeZone),
+    end: civilDateTimeToInstant({ ...nextMonth, hour: 0, minute: 0 }, timeZone),
+  };
+}
+
+function shiftAnchor(anchor: Date, view: View, amount: number, timeZone: string): string {
+  const local = civilInZone(anchor, timeZone);
+  if (view === "month") {
+    const monthIndex = local.year * 12 + (local.month - 1) + amount;
+    const year = Math.floor(monthIndex / 12);
+    const month = (monthIndex % 12) + 1;
+    return civilDateKey({ year, month, day: 1 });
+  }
+  const date = addCivilDays(local, amount * (view === "week" ? 7 : 1));
+  return civilDateKey(date);
+}
+
+function titleForAnchor(view: View, anchor: Date, timeZone: string): string {
+  if (view === "month") {
+    return new Intl.DateTimeFormat("vi-VN", { timeZone, month: "long", year: "numeric" }).format(
+      anchor,
+    );
+  }
+  if (view === "day") {
+    return new Intl.DateTimeFormat("vi-VN", {
+      timeZone,
+      weekday: "long",
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    }).format(anchor);
+  }
+  const monday = schoolWeekMonday(anchor, timeZone);
+  const sunday = addCivilDays(monday, 6);
+  return `${String(monday.day).padStart(2, "0")}/${String(monday.month).padStart(2, "0")} – ${String(sunday.day).padStart(2, "0")}/${String(sunday.month).padStart(2, "0")}/${sunday.year}`;
+}
 
 export default async function CalendarPage({
   searchParams,
 }: {
-  searchParams: Promise<{ view?: string }>;
+  searchParams: Promise<{ view?: string; date?: string }>;
 }) {
   const actor = await requireActor();
-  const rawView = (await searchParams).view ?? "week";
-  const view = rawView.toLowerCase();
+  const params = await searchParams;
+  const view = parseView(params.view);
+  const tenant = await db.tenant.findUniqueOrThrow({
+    where: { id: actor.tenantId },
+    select: { timezone: true },
+  });
+  const timeZone = tenant.timezone;
+  const anchor = anchorFromQuery(params.date, timeZone);
+  const range = viewRange(view, anchor, timeZone);
 
-  const [entries, events, appointments, bookings] = await Promise.all([
-    db.timetableEntry.findMany({
-      where: { tenantId: actor.tenantId },
-      include: { subject: true, period: true, class: true },
-      take: 40,
+  const [clubMemberships, mentorProfile, semesters] = await Promise.all([
+    db.clubMembership.findMany({
+      where: { userId: actor.userId, status: "ACTIVE", club: { tenantId: actor.tenantId } },
+      select: { clubId: true },
     }),
-    db.schoolEvent.findMany({ where: { tenantId: actor.tenantId } }),
-    db.appointment.findMany({
-      where: { tenantId: actor.tenantId, status: "ACCEPTED" },
+    db.mentorProfile.findFirst({
+      where: { tenantId: actor.tenantId, userId: actor.userId },
+      select: { id: true },
     }),
-    db.roomBooking.findMany({ where: { tenantId: actor.tenantId, cancelledAt: null }, take: 20 }),
+    db.semester.findMany({ where: { year: { tenantId: actor.tenantId } } }),
   ]);
+  const clubIds = clubMemberships.map((membership) => membership.clubId);
 
-  const sources: RawCalendarSource[] = [
-    ...entries.map((e) => ({
-      id: e.id,
-      source: "TIMETABLE" as const,
-      title: `${e.subject.name} · ${e.class.code}`,
-      startAt: new Date(),
-      endAt: new Date(),
-      visibility: "CLASS" as const,
-      classId: e.classId,
-      persistedEventRow: false,
-    })),
-    ...events.map((e) => ({
-      id: e.id,
-      source: "SCHOOL_EVENT" as const,
-      title: e.title,
-      startAt: e.startAt,
-      endAt: e.endAt,
-      visibility: e.visibility,
-      classId: e.classId,
-      grade: e.grade,
-      clubId: e.clubId,
-      persistedEventRow: true,
-    })),
-    ...appointments.map((a) => ({
-      id: a.id,
-      source: "APPOINTMENT" as const,
-      title: a.title,
-      startAt: a.startAt,
-      endAt: a.endAt,
-      visibility: "PRIVATE" as const,
-      studentId: a.studentId,
-      teacherId: a.teacherId,
-      persistedEventRow: false,
-    })),
-    ...bookings.map((b) => ({
-      id: b.id,
-      source: "ROOM_BOOKING" as const,
-      title: "Đặt phòng",
-      startAt: b.startAt,
-      endAt: b.endAt,
-      visibility: "SCHOOL" as const,
-      roomId: b.roomId,
-      persistedEventRow: false,
-    })),
+  const timetableWhere =
+    actor.roles.includes("SCHOOL_ADMIN") || actor.roles.includes("ADMIN_IT")
+      ? { tenantId: actor.tenantId }
+      : actor.memberType === "TEACHER"
+        ? { tenantId: actor.tenantId, teacherId: actor.userId }
+        : actor.classId
+          ? { tenantId: actor.tenantId, classId: actor.classId }
+          : { tenantId: actor.tenantId, id: "__none__" };
+
+  const mentorBookingOr = [
+    { studentId: actor.userId },
+    ...(mentorProfile ? [{ mentorId: mentorProfile.id }] : []),
   ];
 
-  const items = filterVisible(sources, {
+  const [entries, schoolEvents, appointments, roomBookings, mentorBookings, clubEvents] =
+    await Promise.all([
+      db.timetableEntry.findMany({
+        where: timetableWhere,
+        include: { subject: true, period: true, class: true, room: true },
+        orderBy: [{ weekday: "asc" }, { period: { sortOrder: "asc" } }],
+      }),
+      db.schoolEvent.findMany({
+        where: { tenantId: actor.tenantId, startAt: { lt: range.end }, endAt: { gt: range.start } },
+        orderBy: { startAt: "asc" },
+      }),
+      db.appointment.findMany({
+        where: {
+          tenantId: actor.tenantId,
+          status: "ACCEPTED",
+          OR: [{ studentId: actor.userId }, { teacherId: actor.userId }],
+          startAt: { lt: range.end },
+          endAt: { gt: range.start },
+        },
+        orderBy: { startAt: "asc" },
+      }),
+      db.roomBooking.findMany({
+        where: {
+          tenantId: actor.tenantId,
+          cancelledAt: null,
+          startAt: { lt: range.end },
+          endAt: { gt: range.start },
+        },
+        include: { room: true },
+        orderBy: { startAt: "asc" },
+      }),
+      db.mentorBooking.findMany({
+        where: {
+          tenantId: actor.tenantId,
+          cancelledAt: null,
+          OR: mentorBookingOr,
+          startAt: { lt: range.end },
+          endAt: { gt: range.start },
+        },
+        orderBy: { startAt: "asc" },
+      }),
+      db.clubEvent.findMany({
+        where: {
+          club: { tenantId: actor.tenantId },
+          startAt: { lt: range.end },
+          endAt: { gt: range.start },
+        },
+        include: { club: true },
+        orderBy: { startAt: "asc" },
+      }),
+    ]);
+
+  const semesterById = new Map(semesters.map((semester) => [semester.id, semester]));
+  const sources: RawCalendarSource[] = [];
+  const viewMonday = schoolWeekMonday(range.start, timeZone);
+  for (let offset = 0; offset < 42; offset += 7) {
+    const weekDate = addCivilDays(viewMonday, offset);
+    const weekAnchor = civilDateTimeToInstant({ ...weekDate, hour: 12, minute: 0 }, timeZone);
+    if (weekAnchor >= range.end) break;
+    for (const entry of entries) {
+      const occurrence = periodOccurrence({
+        anchor: weekAnchor,
+        weekday: entry.weekday,
+        startTime: entry.period.startTime,
+        endTime: entry.period.endTime,
+        timeZone,
+      });
+      const semester = semesterById.get(entry.semesterId);
+      if (
+        semester &&
+        (occurrence.startAt < semester.startsOn || occurrence.startAt > semester.endsOn)
+      )
+        continue;
+      if (occurrence.startAt >= range.end || occurrence.endAt <= range.start) continue;
+      sources.push({
+        id: `${entry.id}:${occurrence.localDate}`,
+        source: "TIMETABLE",
+        title: `${entry.subject.name} · ${entry.class.code}`,
+        startAt: occurrence.startAt,
+        endAt: occurrence.endAt,
+        visibility: "CLASS",
+        classId: entry.classId,
+        teacherId: entry.teacherId,
+        roomId: entry.roomId,
+        persistedEventRow: false,
+      });
+    }
+  }
+
+  sources.push(
+    ...schoolEvents.map((event) => ({
+      id: event.id,
+      source: "SCHOOL_EVENT" as const,
+      title: event.title,
+      startAt: event.startAt,
+      endAt: event.endAt,
+      visibility: event.visibility,
+      classId: event.classId,
+      grade: event.grade,
+      clubId: event.clubId,
+      persistedEventRow: true,
+    })),
+    ...appointments.map((appointment) => ({
+      id: appointment.id,
+      source: "APPOINTMENT" as const,
+      title: appointment.title,
+      startAt: appointment.startAt,
+      endAt: appointment.endAt,
+      visibility: "PRIVATE" as const,
+      studentId: appointment.studentId,
+      teacherId: appointment.teacherId,
+      persistedEventRow: false,
+    })),
+    ...roomBookings.map((booking) => ({
+      id: booking.id,
+      source: "ROOM_BOOKING" as const,
+      title: `Đặt phòng · ${booking.room.code}`,
+      startAt: booking.startAt,
+      endAt: booking.endAt,
+      visibility: "SCHOOL" as const,
+      roomId: booking.roomId,
+      persistedEventRow: false,
+    })),
+    ...mentorBookings.map((booking) => ({
+      id: booking.id,
+      source: "MENTOR_BOOKING" as const,
+      title: "Lịch mentoring",
+      startAt: booking.startAt,
+      endAt: booking.endAt,
+      visibility: "PRIVATE" as const,
+      studentId: booking.studentId,
+      ownerUserId: mentorProfile?.id === booking.mentorId ? actor.userId : null,
+      persistedEventRow: false,
+    })),
+    ...clubEvents.map((event) => ({
+      id: event.id,
+      source: "CLUB_EVENT" as const,
+      title: `${event.title} · ${event.club.name}`,
+      startAt: event.startAt,
+      endAt: event.endAt,
+      visibility: event.visibility,
+      clubId: event.clubId,
+      persistedEventRow: false,
+    })),
+  );
+
+  const projected = filterVisible(sources, {
     userId: actor.userId,
     roles: actor.roles,
     classId: actor.classId,
     grade: actor.grade,
-    clubIds: [],
-  });
-  const projected = projectCalendar(items);
+    clubIds,
+  }).sort((a, b) => a.startAt.getTime() - b.startAt.getTime());
 
-  const viewTabs = [
-    { label: "Ngày (Day)", href: "/calendar?view=day", active: view === "day" },
-    { label: "Tuần (Week)", href: "/calendar?view=week", active: view === "week" },
-    { label: "Tháng (Month)", href: "/calendar?view=month", active: view === "month" },
-  ];
+  const roomCodeById = new Map(roomBookings.map((booking) => [booking.roomId, booking.room.code]));
+  for (const entry of entries) roomCodeById.set(entry.roomId, entry.room.code);
+  const items: CalendarViewItem[] = projected.map((item) => ({
+    id: item.id,
+    source: item.source,
+    title: item.title,
+    startAt: item.startAt,
+    endAt: item.endAt,
+    roomLabel: item.roomId ? (roomCodeById.get(item.roomId) ?? null) : null,
+  }));
 
-  const sourceTones: Record<string, "brand" | "neutral" | "success" | "warning"> = {
-    TIMETABLE: "neutral",
-    SCHOOL_EVENT: "brand",
-    APPOINTMENT: "warning",
-    ROOM_BOOKING: "success",
-  };
+  const todayKey = civilDateKey(civilInZone(new Date(), timeZone));
+  const prev = shiftAnchor(anchor, view, -1, timeZone);
+  const next = shiftAnchor(anchor, view, 1, timeZone);
+  const anchorKey = civilDateKey(civilInZone(anchor, timeZone));
 
   return (
     <div className="space-y-6">
       <PageHeader
         title="Lịch"
-        description="Chiếu trực tiếp từ Thời khóa biểu, Lịch hẹn, Mentor, Sự kiện trường và Đặt phòng. Thời khóa biểu không bị nhân bản thành dòng sự kiện tĩnh."
-        actions={<NavPillTabs items={viewTabs} />}
+        description={`Lịch thống nhất theo múi giờ trường (${timeZone}), chiếu trực tiếp từ TKB, lịch hẹn, mentoring, sự kiện và đặt phòng.`}
       />
 
-      <div className="rounded-lg border border-[var(--hairline)] bg-[var(--surface-soft)] p-3 text-xs text-[var(--muted)]">
-        <span className="font-semibold text-[var(--ink)]">Khung nhìn hiện tại:</span>{" "}
-        {view.toUpperCase()} · Hiển thị nguồn dữ liệu hợp lệ theo quyền người dùng. Mô hình lưới
-        thời gian chi tiết theo khung giờ học sẽ được triển khai ở phân đoạn Lịch.
+      <div className="flex flex-col gap-3 rounded-xl border border-[var(--hairline)] bg-[var(--canvas)] p-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-wrap items-center gap-2">
+          {(Object.keys(VIEW_LABEL) as View[]).map((candidate) => (
+            <Link
+              key={candidate}
+              href={`/calendar?view=${candidate}&date=${anchorKey}`}
+              className={`rounded-md px-3 py-1.5 text-xs font-semibold transition-colors ${view === candidate ? "bg-[var(--primary)] text-[var(--on-primary)]" : "border border-[var(--hairline)] text-[var(--body)] hover:bg-[var(--surface-soft)]"}`}
+            >
+              {VIEW_LABEL[candidate]}
+            </Link>
+          ))}
+        </div>
+        <div className="flex items-center gap-2">
+          <Link
+            href={`/calendar?view=${view}&date=${prev}`}
+            className="rounded-md border border-[var(--hairline)] px-2.5 py-1.5 text-xs"
+            aria-label={`${VIEW_LABEL[view]} trước`}
+          >
+            ←
+          </Link>
+          <Link
+            href={`/calendar?view=${view}&date=${todayKey}`}
+            className="rounded-md border border-[var(--hairline)] px-3 py-1.5 text-xs font-medium"
+          >
+            Hôm nay
+          </Link>
+          <Link
+            href={`/calendar?view=${view}&date=${next}`}
+            className="rounded-md border border-[var(--hairline)] px-2.5 py-1.5 text-xs"
+            aria-label={`${VIEW_LABEL[view]} sau`}
+          >
+            →
+          </Link>
+        </div>
       </div>
 
-      {projected.length === 0 ? (
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-wider text-[var(--muted)]">
+            {VIEW_LABEL[view]}
+          </p>
+          <h2 className="text-lg font-bold text-[var(--ink)]">
+            {titleForAnchor(view, anchor, timeZone)}
+          </h2>
+        </div>
+        <CalendarLegend />
+      </div>
+
+      {items.length === 0 ? (
         <EmptyState
-          title="Không có sự kiện"
-          description="Chưa có mục lịch nào được chiếu cho tài khoản của bạn trong khoảng thời gian này."
+          title="Không có lịch trong khoảng này"
+          description="Thử chuyển sang ngày/tuần khác hoặc kiểm tra các nguồn lịch của tài khoản."
         />
+      ) : view === "day" ? (
+        <DayCalendar items={items} anchor={anchor} timeZone={timeZone} />
+      ) : view === "month" ? (
+        <MonthCalendar items={items} anchor={anchor} timeZone={timeZone} />
       ) : (
-        <Card className="p-0 overflow-hidden">
-          <ul className="divide-y divide-[var(--hairline-soft)] text-sm">
-            {projected.map((item) => (
-              <li
-                key={`${item.source}-${item.id}`}
-                className="p-4 flex items-center justify-between gap-3 hover:bg-[var(--surface-soft)]/50 transition-colors"
-              >
-                <div className="flex items-center gap-3">
-                  <Badge tone={sourceTones[item.source] ?? "neutral"} size="sm">
-                    {item.source}
-                  </Badge>
-                  <span className="font-medium text-[var(--ink)]">{item.title}</span>
-                </div>
-                <span className="text-xs text-[var(--muted)] font-mono">
-                  {item.source === "TIMETABLE" ? "Tiết học TKB" : "Sự kiện / Lịch hẹn"}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </Card>
+        <WeekCalendar items={items} anchor={anchor} timeZone={timeZone} />
       )}
+
+      <p className="text-[11px] text-[var(--muted)]">
+        Thời khóa biểu được chiếu động từ lịch học định kỳ; không tạo bản sao CalendarEvent. Lịch
+        riêng tư chỉ hiển thị cho người tham gia.
+      </p>
     </div>
   );
 }

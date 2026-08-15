@@ -70,6 +70,17 @@ export function timetableDuplicatedAsEvents(items: readonly CalendarProjectionIt
 }
 
 export function isVisibleTo(item: RawCalendarSource, viewer: CalendarViewer): boolean {
+  // A direct participant always sees their own projected item. This matters for
+  // a teacher's CLASS-scoped timetable entry: the teacher is not a member of the
+  // class, but is still one of the people the event belongs to.
+  if (
+    item.ownerUserId === viewer.userId ||
+    item.teacherId === viewer.userId ||
+    item.studentId === viewer.userId
+  ) {
+    return true;
+  }
+
   if (viewer.roles.includes("SCHOOL_ADMIN") || viewer.roles.includes("ADMIN_IT")) {
     if (item.visibility === "PRIVATE") {
       return (

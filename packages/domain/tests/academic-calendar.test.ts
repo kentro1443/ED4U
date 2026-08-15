@@ -146,4 +146,27 @@ describe("calendar projection", () => {
     });
     expect(owner).toHaveLength(1);
   });
+  it("shows a CLASS timetable occurrence to its assigned teacher", () => {
+    const sources: RawCalendarSource[] = [
+      {
+        id: "tt-teacher",
+        source: "TIMETABLE",
+        title: "Toán · 10A1",
+        startAt: new Date("2026-08-17T00:30:00Z"),
+        endAt: new Date("2026-08-17T01:15:00Z"),
+        visibility: "CLASS",
+        classId: "10A1",
+        teacherId: "teacher-1",
+        persistedEventRow: false,
+      },
+    ];
+    const teacherView = filterVisible(sources, {
+      userId: "teacher-1",
+      roles: ["TEACHER"],
+      classId: null,
+      grade: null,
+      clubIds: [],
+    });
+    expect(teacherView).toHaveLength(1);
+  });
 });

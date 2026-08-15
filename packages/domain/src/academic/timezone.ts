@@ -131,3 +131,132 @@ export function minutesFromClockTime(clock: string): number {
   }
   return Number(match[1]) * 60 + Number(match[2]);
 }
+
+export interface CivilDate {
+  year: number;
+  month: number;
+  day: number;
+}
+
+/** Add whole calendar days without ever consulting the host machine timezone. */
+export function addCivilDays(date: CivilDate, days: number): CivilDate {
+  const shifted = new Date(Date.UTC(date.year, date.month - 1, date.day + days, 12, 0, 0));
+  return {
+    year: shifted.getUTCFullYear(),
+    month: shifted.getUTCMonth() + 1,
+    day: shifted.getUTCDate(),
+  };
+}
+
+/** Stable YYYY-MM-DD key for school-local dates. */
+export function civilDateKey(date: CivilDate): string {
+  const pad = (value: number) => String(value).padStart(2, "0");
+  return `${date.year}-${pad(date.month)}-${pad(date.day)}`;
+}
+
+/**
+ * Converts a school-local wall-clock date/time into an instant.
+ *
+ * The conversion is intentionally independent from the host timezone. It uses
+ * the IANA rules behind `Intl` and verifies the round trip, so a civil time that
+ * does not exist (for example a DST spring-forward gap) fails loudly instead of
+ * drifting to another hour.
+ */
+export function civilDateTimeToInstant(
+  civil: Omit<CivilDateTime, "weekday">,
+  timeZone: string,
+): Date {
+  const targetAsUtc = Date.UTC(
+    civil.year,
+    civil.month - 1,
+    civil.day,
+    civil.hour,
+    civil.minute,
+    0,
+    0,
+  );
+  let guess = new Date(targetAsUtc);
+
+  for (let attempt = 0; attempt < 4; attempt += 1) {
+    const observed = civilInZone(guess, timeZone);
+    const observedAsUtc = Date.UTC(
+      observed.year,
+      observed.month - 1,
+      observed.day,
+      observed.hour,
+      observed.minute,
+      0,
+      0,
+    );
+    const delta = observedAsUtc - targetAsUtc;
+    if (delta === 0) break;
+    guess = new Date(guess.getTime() - delta);
+  }
+
+  const roundTrip = civilInZone(guess, timeZone);
+  if (
+    roundTrip.year !== civil.year ||
+    roundTrip.month !== civil.month ||
+    roundTrip.day !== civil.day ||
+    roundTrip.hour !== civil.hour ||
+    roundTrip.minute !== civil.minute
+  ) {
+    throw new RangeError(
+      `Civil time ${civilDateKey(civil)} ${String(civil.hour).padStart(2, "0")}:${String(civil.minute).padStart(2, "0")} does not exist in ${timeZone}`,
+    );
+  }
+  return guess;
+}
+
+const ACADEMIC_WEEKDAY_INDEX: Record<string, number> = {
+  MON: 1,
+  TUE: 2,
+  WED: 3,
+  THU: 4,
+  FRI: 5,
+};
+
+/** School-local Monday containing the supplied instant. */
+export function schoolWeekMonday(anchor: Date, timeZone: string): CivilDate {
+  const civil = civilInZone(anchor, timeZone);
+  const distanceFromMonday = civil.weekday === 0 ? 6 : civil.weekday - 1;
+  return addCivilDays(civil, -distanceFromMonday);
+}
+
+/**
+ * Resolve one recurring timetable entry into the concrete occurrence in the
+ * school week containing `anchor`.
+ */
+export function periodOccurrence(input: {
+  anchor: Date;
+  weekday: "MON" | "TUE" | "WED" | "THU" | "FRI";
+  startTime: string;
+  endTime: string;
+  timeZone: string;
+}): { startAt: Date; endAt: Date; localDate: string } {
+  const monday = schoolWeekMonday(input.anchor, input.timeZone);
+  const weekday = ACADEMIC_WEEKDAY_INDEX[input.weekday];
+  if (weekday === undefined) throw new Error(`Unsupported academic weekday ${input.weekday}`);
+  const date = addCivilDays(monday, weekday - 1);
+  const startMinutes = minutesFromClockTime(input.startTime);
+  const endMinutes = minutesFromClockTime(input.endTime);
+  if (endMinutes <= startMinutes) throw new Error("Academic period end must be after start");
+
+  const startAt = civilDateTimeToInstant(
+    {
+      ...date,
+      hour: Math.floor(startMinutes / 60),
+      minute: startMinutes % 60,
+    },
+    input.timeZone,
+  );
+  const endAt = civilDateTimeToInstant(
+    {
+      ...date,
+      hour: Math.floor(endMinutes / 60),
+      minute: endMinutes % 60,
+    },
+    input.timeZone,
+  );
+  return { startAt, endAt, localDate: civilDateKey(date) };
+}
