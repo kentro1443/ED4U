@@ -170,6 +170,7 @@ model Tenant {
   notifications        Notification[]
   approvals            Approval[]
   mentorProfiles       MentorProfile[]
+  teacherProfiles      TeacherProfile[]
   matchRequests        MentorMatchRequest[]
   mentorBookings       MentorBooking[]
   roomRequests         RoomRequest[]
@@ -201,6 +202,7 @@ model User {
   sessions         Session[]
   credentialExport CredentialExport?
   mentorProfile    MentorProfile?
+  teacherProfile   TeacherProfile?
 
   @@index([tenantId])
 }
@@ -416,8 +418,10 @@ model Application {
   classifiedCategory      String?
   currentTeacherId        String
   pendingTransferTo       String?
+  transferReason          String?
   status                  ApplicationStatus
   description             String?
+  reviewNote              String?
   latestSubmissionVersion Int?
   createdAt               DateTime            @default(now())
   updatedAt               DateTime            @updatedAt
@@ -445,9 +449,12 @@ model Appointment {
   title      String
   startAt    DateTime
   endAt      DateTime
-  status     AppointmentStatus
-  applicationId String?
-  conversation Conversation?
+  status          AppointmentStatus
+  applicationId   String?
+  proposedStartAt DateTime?
+  proposedEndAt   DateTime?
+  responseNote    String?
+  conversation    Conversation?
 }
 
 model Conversation {
@@ -515,6 +522,31 @@ model Approval {
 /// adapter in `apps/web/src/lib/mentor/adapter.ts` translates rows into that
 /// contract explicitly, and columns that exist only for the UI (`headline`,
 /// `ratingCount`, `graduationYear`) must never reach it.
+model TeacherProfile {
+  id               String   @id @default(uuid())
+  tenantId         String
+  tenant           Tenant   @relation(fields: [tenantId], references: [id])
+  userId           String   @unique
+  user             User     @relation(fields: [userId], references: [id])
+  responsibilities String[] @default([])
+  officeHours      String[] @default([])
+  bio              String?
+  blocks           TeacherBlock[]
+
+  @@index([tenantId])
+}
+
+model TeacherBlock {
+  id               String         @id @default(uuid())
+  teacherProfileId String
+  teacherProfile   TeacherProfile @relation(fields: [teacherProfileId], references: [id], onDelete: Cascade)
+  startAt          DateTime
+  endAt            DateTime
+  reason           String
+
+  @@index([teacherProfileId, startAt])
+}
+
 model MentorProfile {
   id       String @id @default(uuid())
   tenantId String

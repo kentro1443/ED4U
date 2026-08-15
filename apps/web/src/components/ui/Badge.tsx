@@ -62,33 +62,44 @@ export function Badge({
 
 export function StatusBadge({ status, className }: { status: string; className?: string }) {
   const s = status.toUpperCase();
-  let tone: BadgeTone = "neutral";
-  let label = status;
-
-  if (["ACTIVE", "ACCEPTED", "APPROVED", "VERIFIED", "SUCCESS", "CONFIRMED"].includes(s)) {
-    tone = "success";
-    label =
-      s === "ACTIVE"
-        ? "Hoạt động"
-        : s === "APPROVED"
-          ? "Đã duyệt"
-          : s === "ACCEPTED"
-            ? "Đã chấp nhận"
-            : status;
-  } else if (["PENDING", "PENDING_APPROVAL", "WARNING", "WAITING"].includes(s)) {
-    tone = "warning";
-    label = s.includes("PENDING") ? "Chờ duyệt" : status;
-  } else if (["REJECTED", "CANCELLED", "ERROR", "BLOCKED", "INACTIVE"].includes(s)) {
-    tone = "danger";
-    label = s === "REJECTED" ? "Từ chối" : s === "CANCELLED" ? "Đã hủy" : status;
-  } else if (["STUDENT", "TEACHER", "SCHOOL_ADMIN", "ADMIN_IT"].includes(s)) {
-    tone = s === "ADMIN_IT" ? "dark" : s === "SCHOOL_ADMIN" ? "brand" : "neutral";
-    label = status;
-  }
-
+  const map: Record<string, { tone: BadgeTone; label: string }> = {
+    ACTIVE: { tone: "success", label: "Hoạt động" },
+    ACCEPTED: { tone: "success", label: "Đã chấp nhận" },
+    APPROVED: { tone: "success", label: "Đã duyệt" },
+    VERIFIED: { tone: "success", label: "Đã xác minh" },
+    SUCCESS: { tone: "success", label: "Thành công" },
+    CONFIRMED: { tone: "success", label: "Đã xác nhận" },
+    COMPLETED: { tone: "success", label: "Hoàn thành" },
+    PENDING: { tone: "warning", label: "Đang chờ" },
+    PENDING_APPROVAL: { tone: "warning", label: "Chờ duyệt" },
+    REQUESTED: { tone: "warning", label: "Chờ phản hồi" },
+    SUBMITTED: { tone: "brand", label: "Đã nộp" },
+    IN_REVIEW: { tone: "warning", label: "Đang review" },
+    NEEDS_MORE_INFO: { tone: "warning", label: "Cần bổ sung" },
+    RESCHEDULE_PROPOSED: { tone: "warning", label: "Đề xuất đổi giờ" },
+    CHANGES_REQUESTED: { tone: "warning", label: "Cần chỉnh sửa" },
+    PROPOSED: { tone: "warning", label: "Đang đề xuất" },
+    WARNING: { tone: "warning", label: "Cảnh báo" },
+    WAITING: { tone: "warning", label: "Đang chờ" },
+    REJECTED: { tone: "danger", label: "Từ chối" },
+    DECLINED: { tone: "danger", label: "Đã từ chối" },
+    CANCELLED: { tone: "danger", label: "Đã hủy" },
+    ERROR: { tone: "danger", label: "Lỗi" },
+    BLOCKED: { tone: "danger", label: "Bị chặn" },
+    INACTIVE: { tone: "danger", label: "Không hoạt động" },
+    SUSPENDED: { tone: "danger", label: "Tạm ngưng" },
+    DRAFT: { tone: "neutral", label: "Bản nháp" },
+    VOIDED: { tone: "neutral", label: "Đã vô hiệu" },
+    ARCHIVED: { tone: "neutral", label: "Lưu trữ" },
+    STUDENT: { tone: "neutral", label: status },
+    TEACHER: { tone: "neutral", label: status },
+    SCHOOL_ADMIN: { tone: "brand", label: status },
+    ADMIN_IT: { tone: "dark", label: status },
+  };
+  const item = map[s] ?? { tone: "neutral" as BadgeTone, label: status };
   return (
-    <Badge tone={tone} dot className={className}>
-      {label}
+    <Badge tone={item.tone} dot className={className}>
+      {item.label}
     </Badge>
   );
 }

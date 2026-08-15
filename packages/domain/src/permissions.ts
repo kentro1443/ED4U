@@ -17,6 +17,7 @@ export type Permission =
   | "application.create"
   | "application.review"
   | "appointment.create"
+  | "appointment.respond"
   | "appointment.accept"
   | "mentor.match"
   | "mentor.book"
@@ -56,6 +57,7 @@ const ROLE_PERMS: Record<string, readonly Permission[]> = {
   STUDENT: [
     "application.create",
     "appointment.create",
+    "appointment.respond",
     "mentor.match",
     "mentor.book",
     "room.request",
@@ -74,6 +76,7 @@ export function permissionsFor(actor: Actor): Set<Permission> {
   if (isGraduated(actor)) {
     set.delete("application.create");
     set.delete("appointment.create");
+    set.delete("appointment.respond");
     set.delete("room.request");
     set.delete("club.propose");
     set.delete("discussion.write");

@@ -40,6 +40,7 @@ import {
   MoreVertical,
   KeyRound,
   HelpCircle,
+  Download,
   type LucideProps,
 } from "lucide-react";
 
@@ -85,6 +86,7 @@ export const Icons = {
   moreVertical: MoreVertical,
   key: KeyRound,
   help: HelpCircle,
+  download: Download,
 };
 
 export type IconType = keyof typeof Icons;

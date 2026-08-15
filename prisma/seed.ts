@@ -391,6 +391,56 @@ async function main() {
       gender: bulkGender(code),
     });
   }
+
+  // Teacher routing data is deliberately explicit. The routing layer is not an
+  // "AI engine": it classifies a student need into a responsibility, filters
+  // eligible teachers, then ranks by workload/office-hour availability.
+  const TEACHER_RESPONSIBILITY_ROTATION = [
+    ["ACADEMIC", "COMPETITION"],
+    ["DOCUMENTS", "ADMINISTRATION"],
+    ["WELLBEING", "COUNSELLING"],
+    ["SCHOLARSHIP", "STUDY_ABROAD"],
+    ["EXTRACURRICULAR", "CLUBS"],
+    ["CAREER", "UNIVERSITY"],
+  ] as const;
+  const TEACHER_OFFICE_HOURS = [
+    ["MON_15_30", "WED_15_30"],
+    ["TUE_16_00", "THU_16_00"],
+    ["MON_16_30", "FRI_15_30"],
+    ["WED_16_00", "FRI_16_00"],
+  ] as const;
+  for (let i = 1; i <= 24; i++) {
+    const code = `GV${String(i).padStart(6, "0")}`;
+    const userId = uuid(`user:${code}`);
+    const profileId = uuid(`teacher-profile:${code}`);
+    const responsibilities = [
+      ...TEACHER_RESPONSIBILITY_ROTATION[(i - 1) % TEACHER_RESPONSIBILITY_ROTATION.length]!,
+    ];
+    const officeHours = [...TEACHER_OFFICE_HOURS[(i - 1) % TEACHER_OFFICE_HOURS.length]!];
+    await prisma.teacherProfile.upsert({
+      where: { userId },
+      update: { responsibilities, officeHours },
+      create: {
+        id: profileId,
+        tenantId,
+        userId,
+        responsibilities,
+        officeHours,
+        bio: `Phụ trách ${responsibilities.join(", ").toLowerCase()} cho học sinh ED4U.`,
+      },
+    });
+  }
+  await prisma.teacherBlock.upsert({
+    where: { id: uuid("teacher-block:GV000001:demo") },
+    update: {},
+    create: {
+      id: uuid("teacher-block:GV000001:demo"),
+      teacherProfileId: uuid("teacher-profile:GV000001"),
+      startAt: nextDemoSchoolWeekdayAt(seedNow, 15, 0),
+      endAt: nextDemoSchoolWeekdayAt(seedNow, 17, 0),
+      reason: "Họp chuyên môn",
+    },
+  });
   for (let i = 2; i <= 120; i++) {
     if (i === 10) continue;
     const code = `HS${String(i).padStart(6, "0")}`;
