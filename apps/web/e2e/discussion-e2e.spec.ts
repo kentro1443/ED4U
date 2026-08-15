@@ -76,9 +76,10 @@ test.describe("Discussion Hub real workflow", () => {
     await page.locator(`textarea[id^="reply-"]`).fill(REPLY);
     await page.getByRole("button", { name: "Gửi phản hồi" }).click();
     await expect(page.getByText(REPLY)).toBeVisible();
-    await original.getByText("Báo cáo").click();
+    await original.getByText("Báo cáo", { exact: true }).click();
     await original.getByLabel("Lý do báo cáo").selectOption("misinformation");
     await original.getByRole("button", { name: "Gửi báo cáo" }).click();
+    await expect(original.getByText("Đã gửi báo cáo tới School Admin.")).toBeVisible();
 
     await page.context().clearCookies();
     await login(page, "AD000001");

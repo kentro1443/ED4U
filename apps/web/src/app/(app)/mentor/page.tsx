@@ -215,11 +215,13 @@ export default async function MentorPage({
               name="q"
               defaultValue={q}
               placeholder="Tìm theo tên, chuyên môn..."
+              aria-label="Tìm mentor theo tên hoặc chuyên môn"
               className="rounded-lg border border-[var(--hairline)] bg-[var(--surface-soft)] px-3 py-1.5 text-xs text-[var(--ink)] placeholder:text-[var(--muted)] focus:bg-[var(--canvas)] focus:outline-none focus:border-[var(--primary)]"
             />
             <select
               name="domain"
               defaultValue={domain ?? "ALL"}
+              aria-label="Môn hoặc chứng chỉ"
               className="rounded-lg border border-[var(--hairline)] bg-[var(--surface-soft)] px-2.5 py-1.5 text-xs text-[var(--ink)] focus:bg-[var(--canvas)] focus:outline-none"
             >
               <option value="ALL">Tất cả môn</option>

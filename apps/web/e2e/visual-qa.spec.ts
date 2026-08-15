@@ -39,7 +39,7 @@ test.describe("Visual QA Passes", () => {
 
     // 4. Calendar
     await page.goto("/calendar");
-    await expect(page.getByRole("heading", { name: "Lịch" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Lịch", exact: true })).toBeVisible();
     await page.screenshot({ path: path.join(OUTPUT_DIR, "desktop-calendar.png") });
 
     // 5. Rooms
@@ -79,7 +79,7 @@ test.describe("Visual QA Passes", () => {
 
     // 4. Calendar
     await page.goto("/calendar");
-    await expect(page.getByRole("heading", { name: "Lịch" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Lịch", exact: true })).toBeVisible();
     await page.screenshot({ path: path.join(OUTPUT_DIR, "mobile-calendar.png") });
 
     // 5. Rooms

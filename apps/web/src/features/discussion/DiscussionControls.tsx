@@ -150,6 +150,7 @@ export function PostActions({
 }) {
   const { isPending, error, run } = useFeedback();
   const [category, setCategory] = useState("spam");
+  const [reported, setReported] = useState(false);
   return (
     <div className="mt-3 flex flex-wrap items-center gap-2">
       <Button
@@ -190,12 +191,22 @@ export function PostActions({
               type="button"
               variant="danger"
               size="sm"
-              disabled={isPending}
-              onClick={() => run(() => reportPostAction(postId, category))}
+              disabled={isPending || reported}
+              onClick={() =>
+                run(
+                  () => reportPostAction(postId, category),
+                  () => setReported(true),
+                )
+              }
             >
-              Gửi báo cáo
+              {reported ? "Đã gửi báo cáo" : "Gửi báo cáo"}
             </Button>
           </div>
+          {reported ? (
+            <p role="status" className="mt-1 text-xs font-medium text-[var(--success)]">
+              Đã gửi báo cáo tới School Admin.
+            </p>
+          ) : null}
         </details>
       ) : null}
       {error ? <p className="w-full text-xs text-[var(--danger)]">{error}</p> : null}
