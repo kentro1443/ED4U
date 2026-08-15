@@ -19,3 +19,7 @@ apps/web/next-env.d.ts
 packages/mentor-engine/playground.ts.save
 .playwright-mcp
 *.png
+
+# Claude Code ephemeral session state
+.claude/worktrees/
+.claude/RESUME.md
