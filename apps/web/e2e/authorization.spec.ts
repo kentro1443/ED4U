@@ -94,3 +94,38 @@ test("a student sees only their own appointments", async ({ page }) => {
   await expect(page.getByRole("heading", { level: 1 })).toContainText("Lịch hẹn");
   await expect(page.locator("body")).not.toContainText("Hẹn của B");
 });
+
+test("a mentor has strict navigation isolation and cannot read or leak discussion data", async ({
+  page,
+}) => {
+  // Login as real mentor HS990002 (Trần Minh Khôi)
+  await loginAs(page, "HS990002");
+
+  // 1. Navigation verification: Discussion Hub and operational routes are hidden from sidebar
+  const sidebar = page.locator("aside");
+  await expect(sidebar).toBeVisible();
+  await expect(sidebar.getByRole("link", { name: "Discussion Hub" })).toHaveCount(0);
+  await expect(sidebar.getByRole("link", { name: "Applications" })).toHaveCount(0);
+  await expect(sidebar.getByRole("link", { name: "Appointments" })).toHaveCount(0);
+  await expect(sidebar.getByRole("link", { name: "Rooms", exact: true })).toHaveCount(0);
+  await expect(sidebar.getByRole("link", { name: "Clubs" })).toHaveCount(0);
+
+  // Permitted items are visible
+  await expect(sidebar.getByRole("link", { name: "Dashboard" })).toBeVisible();
+  await expect(sidebar.getByRole("link", { name: "Mentor", exact: true })).toBeVisible();
+  await expect(sidebar.getByRole("link", { name: "Match Space" })).toBeVisible();
+
+  // 2. Direct URL access to /discussion must be strictly blocked and leak NO data
+  await page.goto("/discussion");
+  await expect(page.getByText("Không có quyền truy cập diễn đàn")).toBeVisible();
+  await expect(
+    page.getByText("Tài khoản Mentor cựu học sinh không tham gia diễn đàn"),
+  ).toBeVisible();
+
+  // Verify that forum categories, cards and thread lists are NOT in DOM/HTML
+  const bodyHtml = await page.locator("main").innerHTML();
+  expect(bodyHtml).not.toContain("chủ đề");
+  expect(bodyHtml).not.toContain("phản hồi");
+  expect(bodyHtml).not.toContain("Học tập");
+  expect(bodyHtml).not.toContain("CLB");
+});

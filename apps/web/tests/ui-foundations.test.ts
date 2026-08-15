@@ -10,9 +10,20 @@ import type { Actor } from "@ed4u/domain";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "../../..");
 
 describe("Slice 2 UI Foundation - Tokens and Assets", () => {
-  it("exports complete design tokens from @ed4u/ui matching DESIGN.md", () => {
+  it("aligns TypeScript tokens reference with CSS custom properties in globals.css", () => {
+    const globalsCss = readFileSync(join(ROOT, "apps/web/src/app/globals.css"), "utf8");
+
+    // CSS custom properties in globals.css are the canonical runtime source of truth
+    expect(globalsCss).toContain("--canvas: #ffffff;");
+    expect(globalsCss).toContain("--primary: #111111;");
+    expect(globalsCss).toContain("--surface-soft: #f9fafb;");
+    expect(globalsCss).toContain("--hairline: #e5e7eb;");
+    expect(globalsCss).toContain("--brand-accent: #3b82f6;");
+
+    // ed4uTokens reference matches
     expect(ed4uTokens.colors.primary).toBe("#111111");
     expect(ed4uTokens.colors.canvas).toBe("#ffffff");
+    expect(ed4uTokens.colors.surfaceSoft).toBe("#f9fafb");
     expect(ed4uTokens.colors.hairline).toBe("#e5e7eb");
     expect(ed4uTokens.colors.brandAccent).toBe("#3b82f6");
     expect(ed4uTokens.radius.md).toBe("8px");
@@ -49,7 +60,7 @@ describe("Slice 2 UI Foundation - Tokens and Assets", () => {
     expect(getInitials("")).toBe("U");
   });
 
-  it("maintains role-aware navigation consistency for all primary roles", () => {
+  it("maintains role-aware navigation consistency for all primary roles including Mentor", () => {
     const student: Actor = {
       userId: "s1",
       tenantId: "t1",
@@ -94,20 +105,37 @@ describe("Slice 2 UI Foundation - Tokens and Assets", () => {
       grade: null,
     };
 
+    const mentor: Actor = {
+      userId: "m1",
+      tenantId: "t1",
+      schoolMemberCode: "HS990002",
+      memberType: "STUDENT",
+      membershipStatus: "GRADUATED",
+      roles: ["MENTOR"],
+      classId: null,
+      grade: null,
+    };
+
     const studentHrefs = visibleNav(student).flatMap((g) => g.items.map((i) => i.href));
     const teacherHrefs = visibleNav(teacher).flatMap((g) => g.items.map((i) => i.href));
     const schoolAdminHrefs = visibleNav(schoolAdmin).flatMap((g) => g.items.map((i) => i.href));
     const itAdminHrefs = visibleNav(itAdmin).flatMap((g) => g.items.map((i) => i.href));
+    const mentorHrefs = visibleNav(mentor).flatMap((g) => g.items.map((i) => i.href));
 
     // Student checks
     expect(studentHrefs).toContain("/dashboard");
     expect(studentHrefs).toContain("/mentor");
     expect(studentHrefs).toContain("/mentor/match-space");
+    expect(studentHrefs).toContain("/applications");
+    expect(studentHrefs).toContain("/discussion");
     expect(studentHrefs).not.toContain("/admin/members");
     expect(studentHrefs).not.toContain("/admin/approvals");
 
     // Teacher checks
     expect(teacherHrefs).toContain("/dashboard");
+    expect(teacherHrefs).toContain("/applications");
+    expect(teacherHrefs).toContain("/appointments");
+    expect(teacherHrefs).toContain("/discussion");
     expect(teacherHrefs).not.toContain("/mentor");
     expect(teacherHrefs).not.toContain("/admin/members");
 
@@ -120,5 +148,20 @@ describe("Slice 2 UI Foundation - Tokens and Assets", () => {
     expect(itAdminHrefs).toContain("/admin/members");
     expect(itAdminHrefs).toContain("/admin/settings");
     expect(itAdminHrefs).not.toContain("/admin/approvals");
+
+    // Mentor checks: strict isolation from school operational and discussion routes
+    expect(mentorHrefs).toContain("/dashboard");
+    expect(mentorHrefs).toContain("/mentor");
+    expect(mentorHrefs).toContain("/mentor/match-space");
+    expect(mentorHrefs).toContain("/profile");
+    expect(mentorHrefs).toContain("/security");
+
+    expect(mentorHrefs).not.toContain("/discussion");
+    expect(mentorHrefs).not.toContain("/applications");
+    expect(mentorHrefs).not.toContain("/appointments");
+    expect(mentorHrefs).not.toContain("/rooms");
+    expect(mentorHrefs).not.toContain("/clubs");
+    expect(mentorHrefs).not.toContain("/admin/members");
+    expect(mentorHrefs).not.toContain("/admin/approvals");
   });
 });

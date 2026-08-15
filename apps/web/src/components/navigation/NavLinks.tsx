@@ -4,14 +4,14 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/cn";
 import { Icons, type IconType } from "@/components/ui/icons";
-import type { NavGroup } from "@/lib/nav";
+import type { PermittedNavGroup } from "@/lib/nav";
 
 export function NavLinks({
   groups,
   onNavigate,
   className,
 }: {
-  groups: NavGroup[];
+  groups: PermittedNavGroup[];
   onNavigate?: () => void;
   className?: string;
 }) {

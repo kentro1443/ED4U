@@ -89,16 +89,19 @@ export default async function RoomsPage() {
           )}
         </div>
 
-        {/* Manual Request Form */}
+        {/* Manual Request Form Preview */}
         <div>
           <Card>
-            <CardHeader className="pb-3">
+            <CardHeader className="pb-3 flex flex-row items-center justify-between">
               <CardTitle>Đặt phòng thủ công</CardTitle>
+              <Badge tone="neutral" size="sm">
+                Xem trước (Preview)
+              </Badge>
             </CardHeader>
             <CardContent>
               <form className="space-y-4">
-                <Field id="room" label="Chọn phòng" required>
-                  <Select name="room">
+                <Field id="room" label="Chọn phòng" description="Phòng cần mượn sử dụng" required>
+                  <Select name="room" disabled>
                     {rooms.map((r) => (
                       <option key={r.id} value={r.id}>
                         {r.code} · {r.name} ({r.roomType.name}, sức chứa {r.capacity})
@@ -108,15 +111,21 @@ export default async function RoomsPage() {
                 </Field>
 
                 <Field id="date" label="Ngày sử dụng" required>
-                  <Input type="date" name="date" required />
+                  <Input type="date" name="date" disabled defaultValue="2026-08-21" />
                 </Field>
 
                 <Field id="time" label="Khung giờ" required>
-                  <Input type="time" name="time" required />
+                  <Input type="time" name="time" disabled defaultValue="14:00" />
                 </Field>
 
-                <Button type="submit" variant="primary" size="md" className="w-full mt-2">
-                  Gửi yêu cầu đặt phòng
+                <Button
+                  type="button"
+                  variant="secondary"
+                  size="md"
+                  disabled
+                  className="w-full mt-2 cursor-not-allowed opacity-75"
+                >
+                  Gửi yêu cầu (Sẽ được bật ở Facility E2E)
                 </Button>
               </form>
             </CardContent>

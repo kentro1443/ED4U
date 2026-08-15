@@ -7,9 +7,9 @@ import { IconButton } from "@/components/ui/Button";
 import { Icons } from "@/components/ui/icons";
 import { NavLinks } from "./NavLinks";
 import { UserProfileCard, type UserSummary } from "./UserMenu";
-import type { NavGroup } from "@/lib/nav";
+import type { PermittedNavGroup } from "@/lib/nav";
 
-export function MobileHeader({ groups, user }: { groups: NavGroup[]; user: UserSummary }) {
+export function MobileHeader({ groups, user }: { groups: PermittedNavGroup[]; user: UserSummary }) {
   const [open, setOpen] = useState(false);
 
   return (

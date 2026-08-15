@@ -1,10 +1,12 @@
 import { chromium } from "playwright";
 import { mkdirSync } from "node:fs";
-import { join } from "node:path";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 const DEMO_PASSWORD = "TempPass1!";
 const BASE_URL = process.env.BASE_URL || "http://localhost:3000";
-const OUTPUT_DIR = join(process.cwd(), "apps/web/test-results/visual-qa");
+const THIS_DIR = path.dirname(fileURLToPath(import.meta.url));
+const OUTPUT_DIR = path.resolve(THIS_DIR, "../test-results/visual-qa");
 
 mkdirSync(OUTPUT_DIR, { recursive: true });
 
@@ -21,7 +23,7 @@ async function runVisualQA() {
 
   // Login page
   await desktopPage.goto(`${BASE_URL}/login`);
-  await desktopPage.screenshot({ path: join(OUTPUT_DIR, "desktop-login.png") });
+  await desktopPage.screenshot({ path: path.join(OUTPUT_DIR, "desktop-login.png") });
   console.log("Captured: desktop-login.png");
 
   // Login as student
@@ -29,22 +31,22 @@ async function runVisualQA() {
   await desktopPage.fill('input[name="password"]', DEMO_PASSWORD);
   await desktopPage.click('button[type="submit"]');
   await desktopPage.waitForURL(`${BASE_URL}/dashboard`);
-  await desktopPage.screenshot({ path: join(OUTPUT_DIR, "desktop-dashboard.png") });
+  await desktopPage.screenshot({ path: path.join(OUTPUT_DIR, "desktop-dashboard.png") });
   console.log("Captured: desktop-dashboard.png");
 
   // Mentor page
   await desktopPage.goto(`${BASE_URL}/mentor`);
-  await desktopPage.screenshot({ path: join(OUTPUT_DIR, "desktop-mentor.png") });
+  await desktopPage.screenshot({ path: path.join(OUTPUT_DIR, "desktop-mentor.png") });
   console.log("Captured: desktop-mentor.png");
 
   // Calendar page
   await desktopPage.goto(`${BASE_URL}/calendar`);
-  await desktopPage.screenshot({ path: join(OUTPUT_DIR, "desktop-calendar.png") });
+  await desktopPage.screenshot({ path: path.join(OUTPUT_DIR, "desktop-calendar.png") });
   console.log("Captured: desktop-calendar.png");
 
   // Rooms page
   await desktopPage.goto(`${BASE_URL}/rooms`);
-  await desktopPage.screenshot({ path: join(OUTPUT_DIR, "desktop-rooms.png") });
+  await desktopPage.screenshot({ path: path.join(OUTPUT_DIR, "desktop-rooms.png") });
   console.log("Captured: desktop-rooms.png");
 
   // Admin Members (switch user to IT admin)
@@ -55,7 +57,7 @@ async function runVisualQA() {
   await adminPage.click('button[type="submit"]');
   await adminPage.waitForURL(`${BASE_URL}/dashboard`);
   await adminPage.goto(`${BASE_URL}/admin/members`);
-  await adminPage.screenshot({ path: join(OUTPUT_DIR, "desktop-admin-members.png") });
+  await adminPage.screenshot({ path: path.join(OUTPUT_DIR, "desktop-admin-members.png") });
   console.log("Captured: desktop-admin-members.png");
 
   // 2. Mobile 390px
@@ -72,29 +74,29 @@ async function runVisualQA() {
   await mobilePage.fill('input[name="password"]', DEMO_PASSWORD);
   await mobilePage.click('button[type="submit"]');
   await mobilePage.waitForURL(`${BASE_URL}/dashboard`);
-  await mobilePage.screenshot({ path: join(OUTPUT_DIR, "mobile-dashboard.png") });
+  await mobilePage.screenshot({ path: path.join(OUTPUT_DIR, "mobile-dashboard.png") });
   console.log("Captured: mobile-dashboard.png");
 
   // Mobile Drawer
   await mobilePage.getByRole("button", { name: "Mở menu điều hướng" }).click();
   await mobilePage.getByRole("dialog").waitFor();
-  await mobilePage.screenshot({ path: join(OUTPUT_DIR, "mobile-drawer.png") });
+  await mobilePage.screenshot({ path: path.join(OUTPUT_DIR, "mobile-drawer.png") });
   console.log("Captured: mobile-drawer.png");
   await mobilePage.keyboard.press("Escape");
 
   // Mobile Mentor
   await mobilePage.goto(`${BASE_URL}/mentor`);
-  await mobilePage.screenshot({ path: join(OUTPUT_DIR, "mobile-mentor.png") });
+  await mobilePage.screenshot({ path: path.join(OUTPUT_DIR, "mobile-mentor.png") });
   console.log("Captured: mobile-mentor.png");
 
   // Mobile Calendar
   await mobilePage.goto(`${BASE_URL}/calendar`);
-  await mobilePage.screenshot({ path: join(OUTPUT_DIR, "mobile-calendar.png") });
+  await mobilePage.screenshot({ path: path.join(OUTPUT_DIR, "mobile-calendar.png") });
   console.log("Captured: mobile-calendar.png");
 
   // Mobile Rooms
   await mobilePage.goto(`${BASE_URL}/rooms`);
-  await mobilePage.screenshot({ path: join(OUTPUT_DIR, "mobile-rooms.png") });
+  await mobilePage.screenshot({ path: path.join(OUTPUT_DIR, "mobile-rooms.png") });
   console.log("Captured: mobile-rooms.png");
 
   await browser.close();

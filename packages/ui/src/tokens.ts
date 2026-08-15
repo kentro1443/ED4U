@@ -1,7 +1,15 @@
+/**
+ * ED4U Design Tokens (Reference & Static Types).
+ *
+ * NOTE: The canonical runtime source of truth for the web application is
+ * the CSS Custom Properties declared in `apps/web/src/app/globals.css`.
+ * This file serves as a TypeScript reference and static definition.
+ */
 export const ed4uTokens = {
   colors: {
     primary: "#111111",
-    primaryActive: "#242424",
+    primaryHover: "#242424",
+    primaryActive: "#000000",
     primaryDisabled: "#e5e7eb",
     ink: "#111111",
     body: "#374151",
@@ -10,7 +18,7 @@ export const ed4uTokens = {
     hairline: "#e5e7eb",
     hairlineSoft: "#f3f4f6",
     canvas: "#ffffff",
-    surfaceSoft: "#f8f9fa",
+    surfaceSoft: "#f9fafb",
     surfaceCard: "#f5f5f5",
     surfaceStrong: "#e5e7eb",
     surfaceDark: "#101010",
@@ -19,9 +27,16 @@ export const ed4uTokens = {
     onDark: "#ffffff",
     onDarkSoft: "#a1a1aa",
     brandAccent: "#3b82f6",
+    brandAccentSoft: "#eff6ff",
     success: "#10b981",
+    successSoft: "#ecfdf5",
+    successText: "#065f46",
     warning: "#f59e0b",
+    warningSoft: "#fffbeb",
+    warningText: "#92400e",
     error: "#ef4444",
+    errorSoft: "#fef2f2",
+    errorText: "#991b1b",
     badgeOrange: "#fb923c",
     badgePink: "#ec4899",
     badgeViolet: "#8b5cf6",

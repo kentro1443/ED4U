@@ -63,7 +63,7 @@ const ROLE_PERMS: Record<string, readonly Permission[]> = {
     "discussion.write",
     "discussion.read",
   ],
-  MENTOR: ["discussion.read", "mentor.match"],
+  MENTOR: ["mentor.match"],
 };
 
 export function permissionsFor(actor: Actor): Set<Permission> {
@@ -77,7 +77,16 @@ export function permissionsFor(actor: Actor): Set<Permission> {
     set.delete("room.request");
     set.delete("club.propose");
     set.delete("discussion.write");
-    set.add("discussion.read");
+    // Alumnus who is not a Mentor can read discussion. Mentor is forbidden in V1.
+    if (
+      !actor.roles.includes("MENTOR") ||
+      actor.roles.includes("TEACHER") ||
+      actor.roles.includes("SCHOOL_ADMIN")
+    ) {
+      set.add("discussion.read");
+    } else {
+      set.delete("discussion.read");
+    }
     set.add("mentor.match");
   }
   if (!isActiveStudent(actor) && actor.roles.includes("STUDENT") && !isGraduated(actor)) {

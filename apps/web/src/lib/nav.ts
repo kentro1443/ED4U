@@ -1,5 +1,5 @@
 import type { Actor, Permission } from "@ed4u/domain";
-import { can } from "@ed4u/domain";
+import { can, canReadDiscussion } from "@ed4u/domain";
 import { ROUTE_PERMISSIONS } from "@/lib/routePermissions";
 import type { IconType } from "@/components/ui/icons";
 
@@ -8,12 +8,26 @@ export interface NavItem {
   label: string;
   icon?: IconType;
   permission?: Permission;
+  anyPermissions?: readonly Permission[];
+  predicate?: (actor: Actor) => boolean;
 }
 
 export interface NavGroup {
   id: string;
   label: string;
   items: NavItem[];
+}
+
+export interface PermittedNavItem {
+  href: string;
+  label: string;
+  icon?: IconType;
+}
+
+export interface PermittedNavGroup {
+  id: string;
+  label: string;
+  items: PermittedNavItem[];
 }
 
 export const NAV_GROUPS: NavGroup[] = [
@@ -39,18 +53,62 @@ export const NAV_GROUPS: NavGroup[] = [
     id: "ops",
     label: "VẬN HÀNH",
     items: [
-      { href: "/calendar", label: "Calendar", icon: "calendar" },
-      { href: "/applications", label: "Applications", icon: "applications" },
-      { href: "/appointments", label: "Appointments", icon: "appointments" },
-      { href: "/rooms", label: "Rooms", icon: "rooms" },
-      { href: "/events", label: "School Events", icon: "events" },
-      { href: "/clubs", label: "Clubs", icon: "clubs" },
+      {
+        href: "/calendar",
+        label: "Calendar",
+        icon: "calendar",
+        anyPermissions: [
+          "timetable.edit",
+          "timetable.import",
+          "application.create",
+          "application.review",
+          "members.manage",
+        ],
+      },
+      {
+        href: "/applications",
+        label: "Applications",
+        icon: "applications",
+        anyPermissions: ["application.create", "application.review"],
+      },
+      {
+        href: "/appointments",
+        label: "Appointments",
+        icon: "appointments",
+        anyPermissions: ["appointment.create", "appointment.accept"],
+      },
+      {
+        href: "/rooms",
+        label: "Rooms",
+        icon: "rooms",
+        anyPermissions: ["room.request", "rooms.manage", "room.approve"],
+      },
+      {
+        href: "/events",
+        label: "School Events",
+        icon: "events",
+        anyPermissions: ["discussion.read", "timetable.edit", "members.manage"],
+      },
+      {
+        href: "/clubs",
+        label: "Clubs",
+        icon: "clubs",
+        anyPermissions: ["club.propose", "club.manage"],
+      },
     ],
   },
   {
     id: "community",
     label: "CỘNG ĐỒNG",
-    items: [{ href: "/discussion", label: "Discussion Hub", icon: "discussion" }],
+    items: [
+      {
+        href: "/discussion",
+        label: "Discussion Hub",
+        icon: "discussion",
+        permission: "discussion.read",
+        predicate: canReadDiscussion,
+      },
+    ],
   },
   {
     id: "tools",
@@ -118,9 +176,23 @@ export const NAV_GROUPS: NavGroup[] = [
   },
 ];
 
-export function visibleNav(actor: Actor): NavGroup[] {
+export function visibleNav(actor: Actor): PermittedNavGroup[] {
   return NAV_GROUPS.map((g) => ({
-    ...g,
-    items: g.items.filter((item) => !item.permission || can(actor, item.permission)),
+    id: g.id,
+    label: g.label,
+    items: g.items
+      .filter((item) => {
+        if (item.predicate && !item.predicate(actor)) return false;
+        if (item.permission && !can(actor, item.permission)) return false;
+        if (item.anyPermissions && !item.anyPermissions.some((p) => can(actor, p))) {
+          return false;
+        }
+        return true;
+      })
+      .map((item) => ({
+        href: item.href,
+        label: item.label,
+        icon: item.icon,
+      })),
   })).filter((g) => g.items.length > 0);
 }
