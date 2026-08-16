@@ -77,7 +77,7 @@ export default async function EventsPage() {
         ) : (
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
             {visibleEvents.map((event) => (
-              <Card key={event.id} className="p-5">
+              <Card key={event.id} data-testid="school-event-card" className="p-5">
                 <div className="flex items-start justify-between gap-3">
                   <h3 className="font-semibold text-[var(--ink)]">{event.title}</h3>
                   <Badge tone="neutral">{event.visibility}</Badge>

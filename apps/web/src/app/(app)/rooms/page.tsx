@@ -93,7 +93,7 @@ export default async function RoomsPage({
         ) : (
           <div className="grid gap-3 md:grid-cols-2">
             {recentRequests.map((request) => (
-              <Card key={request.id} className="p-4">
+              <Card key={request.id} data-testid="room-request-card" className="p-4">
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <p className="font-semibold text-[var(--ink)]">

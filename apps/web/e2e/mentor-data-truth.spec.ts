@@ -104,14 +104,20 @@ test.describe("Slice 3: Mentor E2E & Match Space 2.0 User Journey", () => {
     // 6. Match Space 2.0 UI checks
     await expect(page.getByLabel("Mentor Match Space Radar")).toBeVisible();
     await expect(page.getByTestId("constraint-lens")).toBeVisible();
+    await expect(page.getByTestId("hybrid-intelligence-explainer")).toContainText(
+      "Hybrid Neuro-Symbolic Intelligence",
+    );
+    await expect(page.getByTestId("mentor-fit-radar")).toBeVisible();
     await expect(page.getByTestId("mentor-detail")).toBeVisible();
     await expect(page.getByTestId("match-table")).toBeVisible();
 
     // Verify radar score rings: check integer label 100 or 80
-    await expect(page.locator('svg text:has-text("100")')).toBeVisible();
+    await expect(
+      page.getByLabel("Mentor Match Space Radar").getByText("100", { exact: true }),
+    ).toBeVisible();
 
     // 7. Verify factual engine reasons in detail panel for top recommended mentor
-    await expect(page.getByRole("heading", { name: /Lý do phù hợp chính/ })).toBeVisible();
+    await expect(page.getByRole("heading", { name: /Reasoning · Vì sao phù hợp/ })).toBeVisible();
 
     // 8. Open booking drawer for top recommended mentor
     await page
@@ -198,11 +204,13 @@ test.describe("Slice 3: Mentor E2E & Match Space 2.0 User Journey", () => {
 
     // Desktop 1440px
     await page.setViewportSize({ width: 1440, height: 900 });
+    await expect(page.getByTestId("mentor-fit-radar")).toBeVisible();
     await expect(page.getByTestId("mentor-detail")).toBeVisible();
     await expect(page.getByTestId("match-table")).toBeVisible();
 
     // Mobile 390px
     await page.setViewportSize({ width: 390, height: 844 });
+    await expect(page.getByTestId("mentor-fit-radar")).toBeVisible();
     await expect(page.getByTestId("mentor-detail")).toBeVisible();
     await expect(page.getByTestId("match-table")).toBeVisible();
   });

@@ -123,7 +123,10 @@ test.describe("Facility Engine live E2E", () => {
     await page.context().clearCookies();
     await login(page, "HS000002");
     await page.goto("/rooms");
-    const requestCard = page.locator("div.rounded-xl").filter({ hasText: CHANGES_PURPOSE }).first();
+    const requestCard = page
+      .getByTestId("room-request-card")
+      .filter({ hasText: CHANGES_PURPOSE })
+      .first();
     await expect(requestCard.getByText("Cần chỉnh sửa")).toBeVisible();
     await expect(requestCard.getByText(/Hãy chọn khung giờ khác/)).toBeVisible();
     await requestCard.getByRole("button", { name: "Hủy yêu cầu" }).click();
@@ -132,7 +135,7 @@ test.describe("Facility Engine live E2E", () => {
     await cancelDialog.getByRole("button", { name: "Hủy yêu cầu" }).click();
     await expect(
       page
-        .locator("div.rounded-xl")
+        .getByTestId("room-request-card")
         .filter({ hasText: CHANGES_PURPOSE })
         .first()
         .getByText("Đã hủy"),

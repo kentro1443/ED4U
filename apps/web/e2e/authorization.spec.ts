@@ -111,8 +111,8 @@ test("a mentor has strict navigation isolation and cannot read or leak discussio
   await expect(sidebar.getByRole("link", { name: "Câu lạc bộ" })).toHaveCount(0);
 
   // Permitted items are visible
-  await expect(sidebar.getByRole("link", { name: "Tổng quan" })).toBeVisible();
-  await expect(sidebar.getByRole("link", { name: "Mentor", exact: true })).toBeVisible();
+  await expect(sidebar.getByRole("link", { name: "Tổng quan", exact: true })).toBeVisible();
+  await expect(sidebar.getByRole("link", { name: "Cố vấn", exact: true })).toBeVisible();
   await expect(sidebar.getByRole("link", { name: "Không gian ghép nối" })).toBeVisible();
 
   // 2. Direct URL access to /discussion must be strictly blocked and leak NO data

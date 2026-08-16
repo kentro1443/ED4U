@@ -29,18 +29,17 @@ test.describe("Slice 2 UI Foundation E2E", () => {
     // Sidebar branding
     const sidebar = page.locator("aside");
     await expect(sidebar).toBeVisible();
-    // The wordmark is the home link; the line beneath it is the tenant's real
-    // name, which now comes from the database rather than a hardcoded string —
-    // so both assertions target their element exactly instead of matching any
-    // text containing "ED4U".
-    await expect(sidebar.getByRole("link", { name: "ED4U", exact: true })).toBeVisible();
-    await expect(sidebar.getByText("ED4U Demo High School")).toBeVisible();
+    // The supplied ED4U wordmark is the home link. The adjacent tenant label
+    // was intentionally removed so the logo has enough whitespace at 256px.
+    const desktopBrand = sidebar.getByRole("link", { name: "ED4U — về trang tổng quan" });
+    await expect(desktopBrand).toBeVisible();
+    await expect(desktopBrand.locator("img")).toHaveAttribute("src", /ed4u-logo\.png/);
 
     // User profile section in sidebar
     await expect(sidebar.getByText("HS000001")).toBeVisible();
 
     // Active route highlight on dashboard
-    const dashboardLink = sidebar.getByRole("link", { name: "Tổng quan" });
+    const dashboardLink = sidebar.getByRole("link", { name: "Tổng quan", exact: true });
     await expect(dashboardLink).toHaveAttribute("aria-current", "page");
 
     // Navigate to Mentor
@@ -62,7 +61,7 @@ test.describe("Slice 2 UI Foundation E2E", () => {
     // Mobile header visible
     const mobileHeader = page.getByRole("banner");
     await expect(mobileHeader).toBeVisible();
-    await expect(mobileHeader.getByText("ED4U")).toBeVisible();
+    await expect(mobileHeader.locator('img[src*="ed4u-logo.png"]')).toBeVisible();
 
     // Open Drawer via hamburger button
     const menuBtn = page.getByRole("button", { name: "Mở menu điều hướng" });
@@ -72,7 +71,7 @@ test.describe("Slice 2 UI Foundation E2E", () => {
     // Drawer is open
     const drawer = page.getByRole("dialog");
     await expect(drawer).toBeVisible();
-    await expect(drawer.getByRole("link", { name: "Tổng quan" })).toBeVisible();
+    await expect(drawer.getByRole("link", { name: "Tổng quan", exact: true })).toBeVisible();
     await expect(drawer.getByRole("link", { name: "Không gian ghép nối" })).toBeVisible();
 
     // Close via Escape key
@@ -98,6 +97,10 @@ test.describe("Slice 2 UI Foundation E2E", () => {
   }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
     await loginAs(page, "IT000001");
+    await expect(page.getByText("System Operations Intelligence")).toBeVisible();
+    await expect(page.getByLabel(/Biểu đồ hoạt động audit 7 ngày/)).toBeVisible();
+    await expect(page.getByText("Dữ liệu trực tiếp")).toBeVisible();
+
     await page.goto("/admin/members");
 
     await expect(page.getByRole("heading", { name: "Quản lý thành viên" })).toBeVisible();
