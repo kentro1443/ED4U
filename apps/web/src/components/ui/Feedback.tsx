@@ -47,7 +47,7 @@ export function Alert({
     <div
       role={tone === "danger" ? "alert" : "status"}
       className={cn(
-        "flex gap-3 rounded-xl border p-4 text-sm leading-relaxed",
+        "flex gap-3 rounded-2xl border p-4 text-sm leading-relaxed shadow-[var(--shadow-sm)]",
         alertStyles[tone].box,
         className,
       )}
@@ -111,11 +111,11 @@ export function EmptyState({
     <div
       role="status"
       className={cn(
-        "flex flex-col items-center justify-center rounded-xl border border-dashed border-[var(--hairline)] bg-[var(--surface-soft)]/50 px-6 py-12 text-center",
+        "flex flex-col items-center justify-center rounded-[24px] border border-dashed border-[var(--hairline)] bg-[var(--surface-soft)]/50 px-6 py-12 text-center",
         className,
       )}
     >
-      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-100 text-[var(--muted)]">
+      <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--brand-50)] text-[var(--primary)] ring-1 ring-inset ring-[var(--brand-100)]">
         {icon ?? <Icons.info className="h-6 w-6" />}
       </div>
       <h3 className="mt-3 text-sm font-semibold text-[var(--ink)]">{title}</h3>
@@ -183,7 +183,7 @@ export function Skeleton({
       role="status"
       aria-label={label}
       className={cn(
-        "block animate-pulse rounded-md bg-gray-200/80 motion-reduce:animate-none",
+        "block animate-pulse rounded-xl bg-slate-200/80 motion-reduce:animate-none",
         className,
       )}
     />

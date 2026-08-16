@@ -75,17 +75,15 @@ export function StatCard({
   return (
     <div
       className={cn(
-        "rounded-xl border border-[var(--hairline)] bg-[var(--canvas)] p-5 shadow-xs transition-shadow",
+        "rounded-2xl border border-[var(--hairline)] bg-[var(--surface-card)] p-5 shadow-[var(--shadow-sm)] transition-[border-color,box-shadow] hover:border-[var(--brand-100)] hover:shadow-[var(--shadow-md)]",
         className,
       )}
     >
       <div className="flex items-center justify-between gap-2">
-        <p className="text-xs font-semibold uppercase tracking-wider text-[var(--muted)]">
-          {title}
-        </p>
+        <p className="text-xs font-bold tracking-[-0.01em] text-[var(--muted)]">{title}</p>
         {icon && <div className="text-[var(--muted)]">{icon}</div>}
       </div>
-      <p className="mt-2 text-2xl font-semibold tracking-tight text-[var(--ink)]">{value}</p>
+      <p className="mt-2 text-2xl font-extrabold tracking-tight text-[var(--ink)]">{value}</p>
       {(description || trend) && (
         <div className="mt-1 flex items-center gap-2 text-xs text-[var(--muted)]">
           {trend && (

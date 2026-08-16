@@ -6,27 +6,27 @@ import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Field, Input } from "@/components/ui/Field";
 import { Alert } from "@/components/ui/Feedback";
+import { BrandLogo } from "@/components/BrandLogo";
 
 export default function ChangePasswordPage() {
   const [state, action, pending] = useActionState(changePasswordAction, undefined);
 
   return (
-    <main className="flex min-h-dvh items-center justify-center bg-[var(--canvas)] p-4 sm:p-6">
-      <div className="w-full max-w-md space-y-6">
-        <div className="text-center space-y-2">
-          <div className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--primary)] text-lg font-bold text-[var(--on-primary)] shadow-sm">
-            E
-          </div>
-          <h1 className="text-2xl font-bold tracking-tight text-[var(--ink)] sm:text-3xl">
+    <main className="relative flex min-h-dvh items-center justify-center overflow-hidden bg-[var(--canvas)] p-4 sm:p-6">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_10%,rgba(37,99,235,.14),transparent_28%),radial-gradient(circle_at_85%_80%,rgba(96,165,250,.12),transparent_30%)]" />
+      <div className="relative w-full max-w-md space-y-6">
+        <div className="space-y-3 text-center">
+          <BrandLogo href="/" className="mx-auto w-36" priority />
+          <h1 className="text-2xl font-extrabold tracking-[-0.04em] text-[var(--ink)] sm:text-3xl">
             Đổi mật khẩu lần đầu
           </h1>
-          <p className="text-xs sm:text-sm text-[var(--muted)] max-w-xs mx-auto">
+          <p className="mx-auto max-w-xs text-sm leading-6 text-[var(--muted)]">
             Mật khẩu tạm thời phải được đổi trước khi sử dụng hệ thống{" "}
             <span className="font-semibold text-[var(--ink)]">ED4U</span>
           </p>
         </div>
 
-        <Card className="shadow-md">
+        <Card className="rounded-[28px] p-6 shadow-[var(--shadow-lg)] sm:p-7">
           <form action={action} className="space-y-4">
             <Field id="current" label="Mật khẩu tạm hiện tại" required>
               <Input name="current" type="password" required placeholder="Nhập mật khẩu tạm thời" />
@@ -54,7 +54,7 @@ export default function ChangePasswordPage() {
               size="lg"
               loading={pending}
               loadingLabel="Đang lưu mật khẩu…"
-              className="w-full mt-2 font-semibold"
+              className="mt-2 w-full"
             >
               Lưu mật khẩu & Tiếp tục
             </Button>

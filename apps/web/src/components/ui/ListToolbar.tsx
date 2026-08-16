@@ -79,7 +79,7 @@ export function ListToolbar({
         {hasQuery && (
           <Link
             href={basePath}
-            className="inline-flex items-center gap-1 rounded-md px-2 py-1 font-medium text-[var(--body)] transition-colors hover:bg-[var(--surface-soft)] hover:text-[var(--ink)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ink)]"
+            className="inline-flex items-center gap-1 rounded-xl px-2.5 py-1.5 font-semibold text-[var(--body)] transition-colors hover:bg-[var(--brand-50)] hover:text-[var(--primary)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand-600)]"
           >
             <Icons.close className="h-3 w-3" aria-hidden="true" />
             Xóa bộ lọc
@@ -110,9 +110,9 @@ export function Pagination({
   const hasNext = params.page < pages;
 
   const linkClass =
-    "inline-flex h-9 items-center gap-1.5 rounded-md border border-[var(--hairline)] px-3 text-sm font-medium text-[var(--ink)] transition-colors hover:bg-[var(--surface-soft)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ink)]";
+    "inline-flex h-10 items-center gap-1.5 rounded-xl border border-[var(--hairline)] bg-[var(--surface-card)] px-3.5 text-sm font-semibold text-[var(--ink)] shadow-[var(--shadow-sm)] transition-[border-color,background-color,color] hover:border-[var(--brand-100)] hover:bg-[var(--brand-50)] hover:text-[var(--primary)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand-600)]";
   const disabledClass =
-    "inline-flex h-9 items-center gap-1.5 rounded-md border border-[var(--hairline-soft)] px-3 text-sm font-medium text-[var(--muted)] opacity-60";
+    "inline-flex h-10 items-center gap-1.5 rounded-xl border border-[var(--hairline-soft)] bg-[var(--surface-soft)] px-3.5 text-sm font-semibold text-[var(--muted)] opacity-60";
 
   return (
     <nav

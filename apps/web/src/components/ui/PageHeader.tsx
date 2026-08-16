@@ -24,7 +24,7 @@ export function PageHeader({
   className?: string;
 }) {
   return (
-    <header className={cn("mb-6 pb-2", className)}>
+    <header className={cn("mb-7 pb-1", className)}>
       {breadcrumbs && breadcrumbs.length > 0 && (
         <nav
           aria-label="Breadcrumb"
@@ -55,15 +55,13 @@ export function PageHeader({
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="space-y-1">
           <div className="flex items-center gap-3 flex-wrap">
-            <h1 className="text-2xl font-bold tracking-tight text-[var(--ink)] sm:text-3xl">
+            <h1 className="text-2xl font-extrabold tracking-[-0.04em] text-[var(--ink)] sm:text-3xl">
               {title}
             </h1>
             {badge}
           </div>
           {description && (
-            <p className="text-xs sm:text-sm text-[var(--muted)] leading-relaxed max-w-3xl">
-              {description}
-            </p>
+            <p className="max-w-3xl text-sm leading-6 text-[var(--muted)]">{description}</p>
           )}
         </div>
         {actions && <div className="flex items-center gap-2.5 shrink-0">{actions}</div>}
@@ -91,7 +89,7 @@ export function SectionHeader({
       )}
     >
       <div>
-        <h2 className="text-base font-semibold tracking-tight text-[var(--ink)]">{title}</h2>
+        <h2 className="text-base font-extrabold tracking-[-0.02em] text-[var(--ink)]">{title}</h2>
         {description && <p className="text-xs text-[var(--muted)] mt-0.5">{description}</p>}
       </div>
       {actions && <div className="flex items-center gap-2 shrink-0">{actions}</div>}

@@ -34,7 +34,7 @@ export function Dialog({
         <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs transition-opacity data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
         <DialogPrimitive.Content
           className={cn(
-            "fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border border-[var(--hairline)] bg-[var(--canvas)] p-6 shadow-lg duration-200 rounded-xl max-h-[90vh] overflow-y-auto",
+            "fixed left-[50%] top-[50%] z-50 grid max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] max-w-lg translate-x-[-50%] translate-y-[-50%] gap-5 overflow-y-auto rounded-[28px] border border-[var(--hairline)] bg-[var(--surface-card)] p-6 shadow-[var(--shadow-lg)] duration-200",
             "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
             className,
           )}
@@ -50,7 +50,7 @@ export function Dialog({
                 </DialogPrimitive.Description>
               )}
             </div>
-            <DialogPrimitive.Close className="rounded-md p-1.5 text-[var(--muted)] hover:text-[var(--ink)] hover:bg-[var(--surface-soft)] transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--ink)]">
+            <DialogPrimitive.Close className="rounded-xl p-2 text-[var(--muted)] transition-colors hover:bg-[var(--brand-50)] hover:text-[var(--primary)] focus:outline-none focus:ring-2 focus:ring-[var(--brand-600)]">
               <Icons.close className="h-4 w-4" />
               <span className="sr-only">Đóng</span>
             </DialogPrimitive.Close>
@@ -86,8 +86,8 @@ export function Drawer({
 }) {
   const sideClass =
     side === "left"
-      ? "left-0 data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left"
-      : "right-0 data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right";
+      ? "left-3 data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left"
+      : "right-3 data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right";
 
   return (
     <DialogPrimitive.Root open={open} onOpenChange={onOpenChange}>
@@ -96,7 +96,7 @@ export function Drawer({
         <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs transition-opacity data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
         <DialogPrimitive.Content
           className={cn(
-            "fixed inset-y-0 z-50 flex h-full w-[min(28rem,90vw)] flex-col gap-4 border-l border-[var(--hairline)] bg-[var(--canvas)] p-6 shadow-xl transition ease-in-out data-[state=open]:duration-300 data-[state=closed]:duration-200",
+            "fixed inset-y-3 z-50 flex h-auto w-[min(28rem,calc(100vw-1.5rem))] flex-col gap-4 rounded-[28px] border border-[var(--hairline)] bg-[var(--surface-card)] p-6 shadow-[var(--shadow-lg)] transition-[transform,opacity] ease-[var(--ease-drawer)] data-[state=open]:duration-300 data-[state=closed]:duration-200",
             sideClass,
             className,
           )}
@@ -112,7 +112,7 @@ export function Drawer({
                 </DialogPrimitive.Description>
               )}
             </div>
-            <DialogPrimitive.Close className="rounded-md p-1.5 text-[var(--muted)] hover:text-[var(--ink)] hover:bg-[var(--surface-soft)] transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--ink)]">
+            <DialogPrimitive.Close className="rounded-xl p-2 text-[var(--muted)] transition-colors hover:bg-[var(--brand-50)] hover:text-[var(--primary)] focus:outline-none focus:ring-2 focus:ring-[var(--brand-600)]">
               <Icons.close className="h-4 w-4" />
               <span className="sr-only">Đóng</span>
             </DialogPrimitive.Close>
@@ -151,7 +151,7 @@ export function DropdownMenu({
       <DropdownMenuPrimitive.Portal>
         <DropdownMenuPrimitive.Content
           align={align}
-          className="z-50 min-w-48 overflow-hidden rounded-lg border border-[var(--hairline)] bg-[var(--canvas)] p-1 text-[var(--ink)] shadow-md animate-in fade-in-80"
+          className="z-50 min-w-48 overflow-hidden rounded-2xl border border-[var(--hairline)] bg-[var(--surface-card)] p-1.5 text-[var(--ink)] shadow-[var(--shadow-lg)] animate-in fade-in-80"
         >
           {items.map((item, idx) => (
             <DropdownMenuPrimitive.Item
@@ -159,8 +159,8 @@ export function DropdownMenu({
               disabled={item.disabled}
               onSelect={item.onClick}
               className={cn(
-                "relative flex cursor-pointer select-none items-center gap-2 rounded-md px-3 py-2 text-sm outline-none transition-colors",
-                "focus:bg-[var(--surface-soft)] focus:text-[var(--ink)]",
+                "relative flex cursor-pointer select-none items-center gap-2 rounded-xl px-3 py-2.5 text-sm outline-none transition-colors",
+                "focus:bg-[var(--brand-50)] focus:text-[var(--primary)]",
                 item.danger && "text-red-600 focus:bg-red-50 focus:text-red-700",
                 item.disabled && "pointer-events-none opacity-50",
               )}
@@ -194,10 +194,10 @@ export function Tooltip({
         <TooltipPrimitive.Portal>
           <TooltipPrimitive.Content
             side={side}
-            className="z-50 overflow-hidden rounded-md bg-[var(--primary)] px-2.5 py-1 text-xs text-[var(--on-primary)] shadow-md animate-in fade-in-0 zoom-in-95"
+            className="z-50 overflow-hidden rounded-xl bg-[var(--surface-dark)] px-3 py-1.5 text-xs font-medium text-white shadow-[var(--shadow-md)] animate-in fade-in-0 zoom-in-95"
           >
             {content}
-            <TooltipPrimitive.Arrow className="fill-[var(--primary)]" />
+            <TooltipPrimitive.Arrow className="fill-[var(--surface-dark)]" />
           </TooltipPrimitive.Content>
         </TooltipPrimitive.Portal>
       </TooltipPrimitive.Root>
@@ -240,7 +240,7 @@ export function ToastRegion({
         <div
           key={m.id}
           className={cn(
-            "pointer-events-auto flex items-center justify-between gap-3 rounded-lg border px-4 py-3 text-sm font-medium shadow-md transition-all",
+            "pointer-events-auto flex items-center justify-between gap-3 rounded-2xl border px-4 py-3 text-sm font-semibold shadow-[var(--shadow-md)] transition-[opacity,transform]",
             toneClass[m.tone],
           )}
         >
@@ -249,7 +249,7 @@ export function ToastRegion({
             <button
               type="button"
               onClick={() => onDismiss(m.id)}
-              className="rounded p-1 hover:bg-black/5 opacity-70 hover:opacity-100"
+              className="rounded-xl p-1.5 opacity-70 transition-[background-color,opacity] hover:bg-black/5 hover:opacity-100"
               aria-label="Đóng thông báo"
             >
               <Icons.close className="h-3.5 w-3.5" />

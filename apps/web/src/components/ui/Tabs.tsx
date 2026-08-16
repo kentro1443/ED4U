@@ -24,17 +24,17 @@ export function NavPillTabs({
     <div
       role="tablist"
       className={cn(
-        "inline-flex items-center gap-1 rounded-lg bg-[var(--surface-card)] p-1 border border-[var(--hairline)]",
+        "inline-flex items-center gap-1 rounded-2xl border border-[var(--hairline)] bg-[var(--surface-card)] p-1.5 shadow-[var(--shadow-sm)]",
         className,
       )}
     >
       {items.map((item) => {
         const isActive = activeValue ? item.value === activeValue : item.active;
         const baseClass = cn(
-          "inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold tracking-tight transition-all duration-150 select-none",
+          "inline-flex items-center gap-1.5 rounded-xl px-3.5 py-2 text-xs font-bold tracking-tight transition-[background-color,color,box-shadow] duration-150 select-none",
           isActive
-            ? "bg-[var(--canvas)] text-[var(--ink)] shadow-xs font-semibold"
-            : "text-[var(--muted)] hover:text-[var(--ink)] hover:bg-black/5",
+            ? "bg-[var(--brand-50)] text-[var(--primary)] shadow-[var(--shadow-sm)]"
+            : "text-[var(--muted)] hover:bg-[var(--surface-soft)] hover:text-[var(--ink)]",
         );
 
         if (item.href) {
@@ -50,8 +50,10 @@ export function NavPillTabs({
               {typeof item.count === "number" && (
                 <span
                   className={cn(
-                    "rounded-full px-1.5 py-0.2 text-[10px]",
-                    isActive ? "bg-gray-100 text-gray-800" : "bg-gray-200/60 text-gray-600",
+                    "rounded-lg px-1.5 py-0.5 text-[10px]",
+                    isActive
+                      ? "bg-white text-[var(--primary)]"
+                      : "bg-[var(--surface-strong)]/70 text-[var(--muted)]",
                   )}
                 >
                   {item.count}
@@ -74,8 +76,10 @@ export function NavPillTabs({
             {typeof item.count === "number" && (
               <span
                 className={cn(
-                  "rounded-full px-1.5 py-0.2 text-[10px]",
-                  isActive ? "bg-gray-100 text-gray-800" : "bg-gray-200/60 text-gray-600",
+                  "rounded-lg px-1.5 py-0.5 text-[10px]",
+                  isActive
+                    ? "bg-white text-[var(--primary)]"
+                    : "bg-[var(--surface-strong)]/70 text-[var(--muted)]",
                 )}
               >
                 {item.count}
@@ -118,7 +122,7 @@ export function UnderlineTabs({
           >
             <span>{item.label}</span>
             {typeof item.count === "number" && (
-              <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-600">
+              <span className="rounded-lg bg-[var(--surface-soft)] px-2 py-0.5 text-xs text-[var(--muted)]">
                 {item.count}
               </span>
             )}

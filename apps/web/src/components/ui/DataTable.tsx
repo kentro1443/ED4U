@@ -11,7 +11,7 @@ export const Table = forwardRef<HTMLTableElement, HTMLAttributes<HTMLTableElemen
   ref,
 ) {
   return (
-    <div className="relative w-full overflow-x-auto rounded-xl border border-[var(--hairline)] bg-[var(--canvas)] shadow-xs">
+    <div className="relative w-full overflow-x-auto rounded-[20px] border border-[var(--hairline)] bg-[var(--surface-card)] shadow-[var(--shadow-sm)]">
       <table
         ref={ref}
         className={cn("w-full caption-bottom text-left text-sm", className)}
@@ -29,7 +29,7 @@ export const TableHeader = forwardRef<
     <thead
       ref={ref}
       className={cn(
-        "border-b border-[var(--hairline)] bg-[var(--surface-soft)] text-xs font-semibold uppercase tracking-wider text-[var(--muted)]",
+        "border-b border-[var(--hairline)] bg-[var(--surface-soft)] text-xs font-bold tracking-[-0.01em] text-[var(--muted)]",
         className,
       )}
       {...props}
@@ -44,7 +44,7 @@ export const TableBody = forwardRef<
   return (
     <tbody
       ref={ref}
-      className={cn("divide-y divide-[var(--hairline-soft)] bg-[var(--canvas)]", className)}
+      className={cn("divide-y divide-[var(--hairline-soft)] bg-[var(--surface-card)]", className)}
       {...props}
     />
   );
@@ -56,7 +56,7 @@ export const TableRow = forwardRef<HTMLTableRowElement, HTMLAttributes<HTMLTable
       <tr
         ref={ref}
         className={cn(
-          "transition-colors hover:bg-[var(--surface-soft)]/80 data-[state=selected]:bg-[var(--surface-soft)]",
+          "transition-colors duration-150 hover:bg-[var(--brand-50)]/55 data-[state=selected]:bg-[var(--brand-50)]",
           className,
         )}
         {...props}
@@ -71,7 +71,7 @@ export const TableHead = forwardRef<HTMLTableCellElement, ThHTMLAttributes<HTMLT
       <th
         ref={ref}
         className={cn(
-          "h-10 px-4 text-left align-middle font-semibold text-[var(--muted)] select-none",
+          "h-11 px-4 text-left align-middle font-bold text-[var(--muted)] select-none",
           className,
         )}
         {...props}

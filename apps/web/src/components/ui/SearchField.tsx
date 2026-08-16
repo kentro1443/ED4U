@@ -52,7 +52,7 @@ export function SearchField({
         value={value}
         onChange={(event) => setValue(event.target.value)}
         placeholder={placeholder}
-        className="h-9 w-full rounded-md border border-[var(--hairline)] bg-[var(--canvas)] pl-9 pr-9 text-sm text-[var(--ink)] placeholder:text-[var(--muted)] transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ink)]"
+        className="h-10 w-full rounded-xl border border-[var(--hairline)] bg-[var(--surface-card)] pl-9 pr-9 text-sm text-[var(--ink)] shadow-[var(--shadow-sm)] placeholder:text-[var(--muted)] transition-[border-color,box-shadow] focus:border-[var(--brand-100)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand-600)]"
       />
       {pending && (
         <Icons.spinner
@@ -101,7 +101,7 @@ export function FacetSelect({
           })}`;
           startTransition(() => router.push(href));
         }}
-        className="h-9 w-full cursor-pointer appearance-none rounded-md border border-[var(--hairline)] bg-[var(--canvas)] py-0 pl-3 pr-8 text-sm text-[var(--ink)] transition-colors hover:bg-[var(--surface-soft)] disabled:opacity-60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ink)] sm:w-48"
+        className="h-10 w-full cursor-pointer appearance-none rounded-xl border border-[var(--hairline)] bg-[var(--surface-card)] py-0 pl-3 pr-8 text-sm font-medium text-[var(--ink)] shadow-[var(--shadow-sm)] transition-[border-color,background-color] hover:border-[var(--brand-100)] hover:bg-[var(--brand-50)] disabled:opacity-60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand-600)] sm:w-48"
       >
         <option value="ALL">{label}: tất cả</option>
         {options.map((option) => (

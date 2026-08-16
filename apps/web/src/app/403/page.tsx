@@ -1,6 +1,6 @@
-import Link from "next/link";
 import { LinkButton } from "@/components/ui/Button";
 import { ForbiddenState } from "@/components/ui/Feedback";
+import { BrandLogo } from "@/components/BrandLogo";
 
 export const metadata = {
   // The root layout template already appends "· ED4U".
@@ -11,7 +11,8 @@ export const metadata = {
 export default function ForbiddenPage() {
   return (
     <main className="flex min-h-dvh items-center justify-center bg-[var(--canvas)] p-6">
-      <div className="w-full max-w-md">
+      <div className="w-full max-w-md space-y-6">
+        <BrandLogo href="/" className="mx-auto w-32" />
         <ForbiddenState
           title="Không đủ quyền truy cập (403)"
           description="Tài khoản của bạn không có quyền mở trang này. Nếu bạn cho rằng đây là nhầm lẫn, hãy liên hệ quản trị viên nhà trường."
