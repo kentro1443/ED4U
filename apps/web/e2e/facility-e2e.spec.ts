@@ -65,6 +65,9 @@ test.describe("Facility Engine live E2E", () => {
     await page.getByRole("button", { name: "Tìm phương án khả thi" }).click();
     await expect(page.getByRole("heading", { name: "Kết quả lập kế hoạch" })).toBeVisible();
     await expect(page.getByText(/khoảng bận cứng/)).toBeVisible();
+    await expect(page.getByTestId("facility-room-map")).toBeVisible();
+    await expect(page.getByTestId("facility-fit-radar")).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Reasoning minh bạch" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "R04" })).toHaveCount(0);
     await expect(page.getByText(/soft hold/i).first()).toBeVisible();
 

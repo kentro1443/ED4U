@@ -7,6 +7,7 @@ import { planRooms, type PlanningRequest } from "@ed4u/facility-engine";
 import { db } from "@/lib/db";
 import { requireActor } from "@/lib/authz";
 import { buildFacilitySchoolState, facilityCivilIsoToInstant } from "@/lib/facility/state";
+import { buildFacilityRoomMap } from "@/lib/facility/room-map";
 import { nextFacilityDateForDay, parseFacilityPrompt } from "@/lib/facility/parser";
 
 const FacilityPlanInputSchema = z.object({
@@ -86,6 +87,7 @@ export async function planFacilityAction(rawInput: FacilityPlanInput) {
       ok: true as const,
       result,
       request,
+      roomMap: buildFacilityRoomMap(context.state, request, result),
       stateSummary: {
         rooms: context.state.rooms.length,
         hardOccupancy: context.state.occupancy.length,
