@@ -39,7 +39,7 @@ export default async function SettingsPage() {
     <div className="space-y-6">
       <PageHeader
         title="Cài đặt hệ thống"
-        description="Cấu hình cấp trường do ADMIN_IT quản lý. Mọi thay đổi ở đây được ghi vào nhật ký hệ thống."
+        description="Cấu hình cấp trường do Quản trị hệ thống quản lý. Mọi thay đổi ở đây được ghi vào nhật ký hệ thống."
         badge={<Badge tone="dark">system.settings</Badge>}
       />
 

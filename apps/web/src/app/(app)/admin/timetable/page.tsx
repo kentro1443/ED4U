@@ -155,7 +155,7 @@ export default async function TimetableAdminPage({
             title="Không có tiết học nào khớp"
             description={
               total === 0
-                ? "Thời khóa biểu trống. ADMIN_IT có thể nhập từ tệp CSV ở trang Import TKB."
+                ? "Thời khóa biểu trống. Quản trị hệ thống có thể nhập từ tệp CSV ở trang Nhập thời khóa biểu."
                 : "Thử bỏ bớt bộ lọc hoặc tìm bằng từ khóa khác."
             }
           />

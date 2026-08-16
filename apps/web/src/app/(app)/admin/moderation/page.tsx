@@ -39,7 +39,7 @@ export default async function ModerationPage() {
       <PageHeader
         title="Kiểm duyệt diễn đàn"
         description="Reactive human moderation — moderator không chỉnh sửa nội dung người dùng. Mọi quyết định đều cần lý do và được audit."
-        badge={<Badge tone="warning">SCHOOL_ADMIN</Badge>}
+        badge={<Badge tone="warning">Quản trị trường</Badge>}
       />
       {reports.length === 0 ? (
         <EmptyState

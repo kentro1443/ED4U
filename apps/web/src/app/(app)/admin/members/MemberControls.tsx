@@ -75,9 +75,6 @@ export function RosterImportCard({ classCount }: { classCount: number }) {
             Nhập là một giao dịch — chỉ cần một dòng sai, toàn bộ tệp bị từ chối và không có thay
             đổi nào được ghi. Xuất từ Excel bằng “Save As → CSV UTF-8”.
           </p>
-          <label htmlFor="roster-file" className="sr-only">
-            Chọn tệp CSV danh sách thành viên
-          </label>
           <input
             ref={inputRef}
             id="roster-file"
@@ -86,8 +83,20 @@ export function RosterImportCard({ classCount }: { classCount: number }) {
             accept=".csv,text/csv"
             required
             onChange={(event) => setFileName(event.target.files?.[0]?.name ?? null)}
-            className="w-full cursor-pointer text-xs text-[var(--muted)] file:mr-3 file:cursor-pointer file:rounded-md file:border file:border-[var(--hairline)] file:bg-[var(--canvas)] file:px-3 file:py-1.5 file:text-xs file:font-semibold hover:file:bg-[var(--surface-soft)]"
+            className="peer sr-only"
           />
+          <div className="flex flex-wrap items-center gap-2 pt-1">
+            <label
+              htmlFor="roster-file"
+              className="inline-flex h-10 cursor-pointer items-center gap-2 rounded-xl border border-[var(--hairline)] bg-[var(--surface-card)] px-3.5 text-xs font-bold text-[var(--body)] shadow-[var(--shadow-sm)] transition-[border-color,background-color,color] hover:border-[var(--brand-100)] hover:bg-[var(--brand-50)] hover:text-[var(--primary)] peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-[var(--brand-600)]"
+            >
+              <Icons.applications className="h-3.5 w-3.5" aria-hidden="true" />
+              Chọn tệp CSV
+            </label>
+            <span className="max-w-full truncate text-xs text-[var(--muted)]" aria-live="polite">
+              {fileName ?? "Chưa chọn tệp"}
+            </span>
+          </div>
         </div>
         <Button type="submit" loading={pending} disabled={!fileName} className="shrink-0">
           Kiểm tra & nhập

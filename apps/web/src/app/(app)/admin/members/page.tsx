@@ -116,7 +116,7 @@ export default async function MembersPage({
       <PageHeader
         title="Quản lý thành viên"
         description="Mã thành viên (school_member_code) là tên đăng nhập duy nhất trong trường và không thể thay đổi. ID nội bộ là UUID ngẫu nhiên và không bao giờ hiển thị cho người dùng."
-        badge={<Badge tone="dark">ADMIN_IT</Badge>}
+        badge={<Badge tone="dark">Quản trị hệ thống</Badge>}
         actions={<CreateMemberButton classes={classOptions} />}
       />
 
@@ -170,13 +170,7 @@ export default async function MembersPage({
                   <TableCell className="hidden lg:table-cell">
                     <div className="flex flex-wrap gap-1">
                       {member.user.roles.map((role) => (
-                        <Badge
-                          key={role.role}
-                          tone={role.role.includes("ADMIN") ? "dark" : "neutral"}
-                          size="sm"
-                        >
-                          {role.role}
-                        </Badge>
+                        <StatusBadge key={role.role} status={role.role} />
                       ))}
                     </div>
                   </TableCell>
