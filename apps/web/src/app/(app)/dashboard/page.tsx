@@ -83,6 +83,9 @@ export default async function DashboardPage() {
     unreadCount,
     memberCount,
     pendingApplications,
+    memberTypeGroups,
+    membershipStatusGroups,
+    recentAuditEvents,
   ] = await Promise.all([
     timetableScope
       ? db.timetableEntry.findMany({
@@ -137,6 +140,30 @@ export default async function DashboardPage() {
       // is how `assignedTeacherId` reached the browser as a runtime failure.
       where: applicationScope(actor.tenantId, actor.userId, isTeacher),
     }),
+    isIt
+      ? db.schoolMembership.groupBy({
+          by: ["memberType"],
+          where: { tenantId: actor.tenantId },
+          _count: { _all: true },
+        })
+      : Promise.resolve([]),
+    isIt
+      ? db.schoolMembership.groupBy({
+          by: ["membershipStatus"],
+          where: { tenantId: actor.tenantId },
+          _count: { _all: true },
+        })
+      : Promise.resolve([]),
+    isIt
+      ? db.auditEvent.findMany({
+          where: {
+            tenantId: actor.tenantId,
+            timestamp: { gte: new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000) },
+          },
+          select: { timestamp: true },
+          orderBy: { timestamp: "asc" },
+        })
+      : Promise.resolve([]),
   ]);
 
   const todayEntries = entries.filter((entry) => entry.weekday === today);
@@ -238,6 +265,22 @@ export default async function DashboardPage() {
             )}
           </div>
         </section>
+      )}
+
+      {isIt && (
+        <AdminOperationsAnalytics
+          totalMembers={memberTypeGroups.reduce((sum, group) => sum + group._count._all, 0)}
+          memberTypes={memberTypeGroups.map((group) => ({
+            key: group.memberType,
+            count: group._count._all,
+          }))}
+          membershipStatuses={membershipStatusGroups.map((group) => ({
+            key: group.membershipStatus,
+            count: group._count._all,
+          }))}
+          auditTimestamps={recentAuditEvents.map((event) => event.timestamp)}
+          timeZone={tenant.timezone}
+        />
       )}
 
       {/* Summary strip: what needs attention, before any detail. */}
@@ -585,4 +628,230 @@ function Widget({
 
 function Empty({ children }: { children: React.ReactNode }) {
   return <p className="text-sm text-[var(--muted)]">{children}</p>;
+}
+
+function AdminOperationsAnalytics({
+  totalMembers,
+  memberTypes,
+  membershipStatuses,
+  auditTimestamps,
+  timeZone,
+}: {
+  totalMembers: number;
+  memberTypes: Array<{ key: string; count: number }>;
+  membershipStatuses: Array<{ key: string; count: number }>;
+  auditTimestamps: Date[];
+  timeZone: string;
+}) {
+  const dayKeyFormatter = new Intl.DateTimeFormat("en-CA", {
+    timeZone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  });
+  const dayLabelFormatter = new Intl.DateTimeFormat("vi-VN", { timeZone, weekday: "short" });
+  const days = Array.from({ length: 7 }, (_, index) => {
+    const date = new Date(Date.now() - (6 - index) * 24 * 60 * 60 * 1000);
+    const key = dayKeyFormatter.format(date);
+    return {
+      key,
+      label: dayLabelFormatter.format(date).replace("Th ", "T"),
+      count: auditTimestamps.filter((timestamp) => dayKeyFormatter.format(timestamp) === key)
+        .length,
+    };
+  });
+  const maxAuditCount = Math.max(1, ...days.map((day) => day.count));
+  const chartPoints = days.map((day, index) => ({
+    x: 20 + index * 56.5,
+    y: 118 - (day.count / maxAuditCount) * 88,
+  }));
+  const linePoints = chartPoints.map((point) => `${point.x},${point.y}`).join(" ");
+  const areaLine = chartPoints.map((point) => `${point.x} ${point.y}`).join(" L ");
+  const areaPath = `M ${chartPoints[0]?.x ?? 20} 118 L ${areaLine} L ${chartPoints.at(-1)?.x ?? 359} 118 Z`;
+  const typeLabels: Record<string, string> = {
+    STUDENT: "Học sinh",
+    TEACHER: "Giáo viên",
+    STAFF: "Nhân viên",
+  };
+  const statusLabels: Record<string, string> = {
+    ACTIVE: "Hoạt động",
+    GRADUATED: "Tốt nghiệp",
+    SUSPENDED: "Tạm ngưng",
+    LEFT_SCHOOL: "Rời trường",
+  };
+  const activeCount = membershipStatuses.find((status) => status.key === "ACTIVE")?.count ?? 0;
+  const activeRatio = totalMembers > 0 ? activeCount / totalMembers : 0;
+  const donutRadius = 44;
+  const donutCircumference = 2 * Math.PI * donutRadius;
+
+  return (
+    <section className="rounded-[28px] border border-[var(--hairline)] bg-[var(--surface-card)] p-5 shadow-[var(--shadow-md)] sm:p-6">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <p className="text-xs font-extrabold uppercase tracking-[0.14em] text-[var(--primary)]">
+            System Operations Intelligence
+          </p>
+          <h2 className="mt-2 text-xl font-extrabold tracking-[-0.035em] text-[var(--ink)] sm:text-2xl">
+            Toàn cảnh vận hành tài khoản
+          </h2>
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-[var(--muted)]">
+            Phân bổ thành viên, trạng thái tài khoản và hoạt động audit trong 7 ngày gần nhất—đều
+            lấy trực tiếp từ dữ liệu của trường.
+          </p>
+        </div>
+        <Badge tone="dark">Dữ liệu trực tiếp</Badge>
+      </div>
+
+      <div className="mt-6 grid gap-4 xl:grid-cols-[1.25fr_.75fr]">
+        <article className="overflow-hidden rounded-[22px] bg-[var(--surface-dark)] p-5 text-white sm:p-6">
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <p className="text-xs font-extrabold text-white">Hoạt động audit · 7 ngày</p>
+              <p className="mt-1 text-[11px] text-slate-400">
+                {auditTimestamps.length} sự kiện được ghi nhận
+              </p>
+            </div>
+            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-500/20 text-blue-200 ring-1 ring-inset ring-blue-300/20">
+              <Icons.adminAudit className="h-4 w-4" />
+            </span>
+          </div>
+          <svg
+            viewBox="0 0 380 155"
+            className="mt-5 h-44 w-full overflow-visible"
+            role="img"
+            aria-label={`Biểu đồ hoạt động audit 7 ngày, tổng ${auditTimestamps.length} sự kiện`}
+          >
+            {[30, 74, 118].map((y) => (
+              <line
+                key={y}
+                x1="20"
+                x2="359"
+                y1={y}
+                y2={y}
+                stroke="rgba(148,163,184,.18)"
+                strokeDasharray="4 5"
+              />
+            ))}
+            <path d={areaPath} fill="rgba(59,130,246,.16)" />
+            <polyline
+              points={linePoints}
+              fill="none"
+              stroke="#60a5fa"
+              strokeWidth="3"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            {chartPoints.map((point, index) => (
+              <g key={days[index]?.key}>
+                <circle
+                  cx={point.x}
+                  cy={point.y}
+                  r="4.5"
+                  fill="#0b1220"
+                  stroke="#93c5fd"
+                  strokeWidth="2.5"
+                />
+                <text
+                  x={point.x}
+                  y="143"
+                  textAnchor="middle"
+                  fontSize="9"
+                  fontWeight="700"
+                  fill="#94a3b8"
+                >
+                  {days[index]?.label}
+                </text>
+              </g>
+            ))}
+          </svg>
+        </article>
+
+        <article className="rounded-[22px] border border-[var(--hairline)] bg-[var(--canvas)] p-5">
+          <div className="grid gap-5 sm:grid-cols-[auto_1fr] sm:items-center xl:grid-cols-1">
+            <div className="relative mx-auto h-32 w-32">
+              <svg
+                viewBox="0 0 112 112"
+                className="h-full w-full -rotate-90"
+                role="img"
+                aria-label={`${activeCount} trên ${totalMembers} thành viên đang hoạt động`}
+              >
+                <circle
+                  cx="56"
+                  cy="56"
+                  r={donutRadius}
+                  fill="none"
+                  stroke="var(--surface-strong)"
+                  strokeWidth="12"
+                />
+                <circle
+                  cx="56"
+                  cy="56"
+                  r={donutRadius}
+                  fill="none"
+                  stroke="var(--primary)"
+                  strokeWidth="12"
+                  strokeLinecap="round"
+                  strokeDasharray={`${donutCircumference * activeRatio} ${donutCircumference}`}
+                />
+              </svg>
+              <div className="absolute inset-0 flex flex-col items-center justify-center">
+                <span className="text-2xl font-extrabold tabular-nums text-[var(--ink)]">
+                  {activeCount}
+                </span>
+                <span className="text-[9px] font-bold text-[var(--muted)]">đang hoạt động</span>
+              </div>
+            </div>
+            <div>
+              <p className="text-xs font-extrabold text-[var(--ink)]">Trạng thái thành viên</p>
+              <div className="mt-3 space-y-2">
+                {membershipStatuses.map((status) => (
+                  <div
+                    key={status.key}
+                    className="flex items-center justify-between gap-3 text-[11px]"
+                  >
+                    <span className="text-[var(--muted)]">
+                      {statusLabels[status.key] ?? status.key}
+                    </span>
+                    <span className="font-extrabold tabular-nums text-[var(--ink)]">
+                      {status.count}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <div className="mt-4 grid gap-3 sm:grid-cols-3">
+        {memberTypes.map((type) => {
+          const ratio = totalMembers > 0 ? type.count / totalMembers : 0;
+          return (
+            <div
+              key={type.key}
+              className="rounded-2xl border border-[var(--hairline)] bg-[var(--canvas)] p-4"
+            >
+              <div className="flex items-end justify-between gap-3">
+                <span className="text-xs font-bold text-[var(--muted)]">
+                  {typeLabels[type.key] ?? type.key}
+                </span>
+                <span className="text-xl font-extrabold tabular-nums text-[var(--ink)]">
+                  {type.count}
+                </span>
+              </div>
+              <div className="mt-3 h-2 overflow-hidden rounded-full bg-[var(--surface-strong)]">
+                <div
+                  className="h-full rounded-full bg-[var(--primary)]"
+                  style={{ width: `${ratio * 100}%` }}
+                />
+              </div>
+              <p className="mt-2 text-[10px] text-[var(--muted)]">
+                {(ratio * 100).toFixed(1)}% tổng thành viên
+              </p>
+            </div>
+          );
+        })}
+      </div>
+    </section>
+  );
 }
