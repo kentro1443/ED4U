@@ -2,13 +2,14 @@
 
 import { randomUUID } from "node:crypto";
 import { z } from "zod";
-import { can, transitionRoomRequest } from "@ed4u/domain";
+import { can, civilDateKey, civilInZone, transitionRoomRequest } from "@ed4u/domain";
 import { planRooms, type PlanningRequest } from "@ed4u/facility-engine";
 import { db } from "@/lib/db";
 import { requireActor } from "@/lib/authz";
 import { buildFacilitySchoolState, facilityCivilIsoToInstant } from "@/lib/facility/state";
 import { buildFacilityRoomMap } from "@/lib/facility/room-map";
-import { nextFacilityDateForDay, parseFacilityPrompt } from "@/lib/facility/parser";
+import { nextFacilityDateForDay } from "@/lib/facility/parser";
+import { parseFacilityPromptWithGemini } from "@/lib/facility/gemini-parser";
 
 const FacilityPlanInputSchema = z.object({
   rawText: z.string().trim().min(3).max(1000),
@@ -33,18 +34,57 @@ export async function parseFacilityPromptAction(rawText: string) {
   if (!can(actor, "room.request") && !can(actor, "rooms.manage")) {
     return { ok: false as const, error: "Bạn không có quyền sử dụng bộ lập kế hoạch phòng." };
   }
-  const parsed = parseFacilityPrompt(rawText);
-  const tenant = await db.tenant.findUniqueOrThrow({
-    where: { id: actor.tenantId },
-    select: { timezone: true },
-  });
-  return {
-    ok: true as const,
-    data: {
-      ...parsed,
-      suggestedDate: parsed.day ? nextFacilityDateForDay(parsed.day, tenant.timezone) : null,
-    },
-  };
+  const prompt = z.string().trim().min(3).max(1000).safeParse(rawText);
+  if (!prompt.success) return { ok: false as const, error: "Mô tả phòng phải có từ 3–1000 ký tự." };
+
+  try {
+    const [tenant, roomTypes, features, buildings] = await Promise.all([
+      db.tenant.findUniqueOrThrow({
+        where: { id: actor.tenantId },
+        select: { timezone: true },
+      }),
+      db.roomType.findMany({
+        where: { tenantId: actor.tenantId },
+        select: { code: true },
+        orderBy: { code: "asc" },
+      }),
+      db.roomFeatureDefinition.findMany({
+        where: { tenantId: actor.tenantId },
+        select: { code: true },
+        orderBy: { code: "asc" },
+      }),
+      db.room.findMany({
+        where: { tenantId: actor.tenantId },
+        select: { building: true },
+        distinct: ["building"],
+        orderBy: { building: "asc" },
+      }),
+    ]);
+    const parsed = await parseFacilityPromptWithGemini({
+      rawText: prompt.data,
+      localToday: civilDateKey(civilInZone(new Date(), tenant.timezone)),
+      timeZone: tenant.timezone,
+      allowedRoomTypes: roomTypes.map((item) => item.code),
+      allowedFeatures: features.map((item) => item.code),
+      allowedBuildings: buildings.map((item) => item.building),
+    });
+    return {
+      ok: true as const,
+      data: {
+        ...parsed,
+        suggestedDate:
+          parsed.date ?? (parsed.day ? nextFacilityDateForDay(parsed.day, tenant.timezone) : null),
+      },
+    };
+  } catch (error) {
+    return {
+      ok: false as const,
+      error:
+        error instanceof Error
+          ? `${error.message} Bạn vẫn có thể nhập tiêu chí thủ công; Facility Engine chưa được chạy.`
+          : "Gemini không thể phân tích yêu cầu. Hãy nhập tiêu chí thủ công.",
+    };
+  }
 }
 
 export async function planFacilityAction(rawInput: FacilityPlanInput) {

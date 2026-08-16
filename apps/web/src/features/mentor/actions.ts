@@ -11,7 +11,8 @@ import { can } from "@ed4u/domain";
 import { db } from "@/lib/db";
 import { requireActor } from "@/lib/authz";
 import { MENTOR_PROFILE_INCLUDE, toCanonicalMentors } from "@/lib/mentor/adapter";
-import { parseMentorPrompt, type ParsedStudentRequestDTO } from "@/lib/mentor/parser";
+import type { ParsedStudentRequestDTO } from "@/lib/mentor/parser";
+import { parseMentorPromptWithGemini } from "@/lib/mentor/gemini-parser";
 import type { MentorMatchPayloadV1, MentorRunSnapshotV1 } from "@/lib/mentor/schemas";
 import type { Prisma } from "@/generated/prisma/client";
 
@@ -24,7 +25,7 @@ export async function parsePromptAction(
       return { ok: false, error: "Bạn không có quyền tìm kiếm mentor." };
     }
     const requestId = `req_${Date.now()}_${actor.userId.slice(0, 8)}`;
-    const parsed = parseMentorPrompt(prompt, requestId);
+    const parsed = await parseMentorPromptWithGemini(prompt, requestId);
     return { ok: true, data: parsed };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : "Lỗi phân tích yêu cầu." };

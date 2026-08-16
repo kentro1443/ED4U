@@ -3,6 +3,7 @@ import { parseFacilityRequest, type PlanningRequest } from "@ed4u/facility-engin
 
 export interface ParsedFacilityPrompt {
   attendees: number | null;
+  date: string | null;
   day: PlanningRequest["day"] | null;
   start: string | null;
   end: string | null;
@@ -51,6 +52,7 @@ export function parseFacilityPrompt(rawText: string): ParsedFacilityPrompt {
 
   return {
     attendees: attendees ? Number(attendees[1]) : null,
+    date: null,
     day,
     start,
     end,

@@ -472,12 +472,12 @@ export function FacilityPlanner({
             <div>
               <CardTitle>Tìm phòng bằng ngôn ngữ tự nhiên</CardTitle>
               <p className="mt-1 text-xs text-[var(--muted)]">
-                Parser chỉ đề xuất tiêu chí. Bạn xác nhận dữ liệu trước khi bộ lập kế hoạch chạy
-                trên trạng thái phòng trực tiếp.
+                Gemini chỉ đề xuất tiêu chí có cấu trúc. Bạn xác nhận dữ liệu trước khi bộ lập kế
+                hoạch chạy trên trạng thái phòng trực tiếp.
               </p>
             </div>
             <Badge tone="brand" size="sm">
-              Facility Intelligence Engine
+              Gemini → Facility Engine
             </Badge>
           </div>
         </CardHeader>

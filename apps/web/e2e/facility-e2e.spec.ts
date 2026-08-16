@@ -17,6 +17,15 @@ async function login(page: Page, code: string) {
   await page.waitForURL(/\/dashboard/);
 }
 
+async function fillFacilityCriteria(page: Page) {
+  await page.locator("#facility-date").fill("2026-08-17");
+  await page.getByLabel("Số người").fill("80");
+  await page.getByLabel("Bắt đầu").fill("13:00");
+  await page.getByLabel("Kết thúc").fill("17:00");
+  await page.locator("#facility-type").selectOption("AUDITORIUM");
+  await page.getByRole("button", { name: "PROJECTOR", exact: true }).click();
+}
+
 async function cleanup() {
   const membership = await cleanupDb.query<{ userId: string; tenantId: string }>(
     `SELECT "userId", "tenantId" FROM "SchoolMembership" WHERE "schoolMemberCode"=$1 LIMIT 1`,
@@ -57,7 +66,7 @@ test.describe("Facility Engine live E2E", () => {
     await login(page, "HS000002");
     await page.goto("/rooms");
     await page.locator("#facility-prompt").fill(PURPOSE);
-    await page.getByRole("button", { name: "Phân tích yêu cầu" }).click();
+    await fillFacilityCriteria(page);
     await expect(page.getByLabel("Số người")).toHaveValue("80");
     await expect(page.getByLabel("Bắt đầu")).toHaveValue("13:00");
     await expect(page.getByLabel("Kết thúc")).toHaveValue("17:00");
@@ -102,7 +111,7 @@ test.describe("Facility Engine live E2E", () => {
     await login(page, "HS000002");
     await page.goto("/rooms");
     await page.locator("#facility-prompt").fill(CHANGES_PURPOSE);
-    await page.getByRole("button", { name: "Phân tích yêu cầu" }).click();
+    await fillFacilityCriteria(page);
     await page.getByRole("button", { name: "Tìm phương án khả thi" }).click();
     await expect(page.getByRole("heading", { name: "Kết quả lập kế hoạch" })).toBeVisible();
     await page.getByRole("button", { name: "Gửi yêu cầu phòng này" }).first().click();

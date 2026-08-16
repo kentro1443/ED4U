@@ -11,6 +11,43 @@ async function loginAs(page: Page, code: string) {
   await page.waitForURL(/\/dashboard/);
 }
 
+async function openManualMentorCriteria(
+  page: Page,
+  options: {
+    domain?: "IELTS" | "SAT" | "HSK";
+    currentScore?: string;
+    targetScore?: string;
+    budget?: string;
+    skills?: string[];
+    days?: string[];
+    period?: "morning" | "afternoon" | "evening";
+  } = {},
+) {
+  await page.getByRole("button", { name: "Nhập thủ công", exact: true }).click();
+  await expect(page.getByText("Xác nhận & Tùy chỉnh tiêu chí tìm kiếm")).toBeVisible();
+  if (options.domain) await page.locator("select#domain").selectOption(options.domain);
+  if (options.currentScore)
+    await page.locator('input[id="currentScore"]').fill(options.currentScore);
+  if (options.targetScore) await page.locator('input[id="targetScore"]').fill(options.targetScore);
+  if (options.budget) await page.locator('input[id="maxBudget"]').fill(options.budget);
+  for (const skill of options.skills ?? [])
+    await page.getByRole("button", { name: skill, exact: true }).click();
+  for (const day of options.days ?? [])
+    await page.getByRole("button", { name: day, exact: true }).click();
+  if (options.period)
+    await page
+      .getByRole("radio", {
+        name: new RegExp(
+          options.period === "morning"
+            ? "Buổi sáng"
+            : options.period === "afternoon"
+              ? "Buổi chiều"
+              : "Buổi tối",
+        ),
+      })
+      .click();
+}
+
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 const cleanupDb = new Pool({
@@ -82,11 +119,15 @@ test.describe("Slice 3: Mentor E2E & Match Space 2.0 User Journey", () => {
       "Em IELTS khoảng 6.0, Writing yếu, muốn lên 7.0. Em rảnh tối thứ 3 và thứ 5, ngân sách khoảng 500k/giờ. Em thích mentor dạy có cấu trúc.",
     );
 
-    // 2. Click parse & tune
-    await page.getByRole("button", { name: "Tìm mentor phù hợp" }).click();
-
-    // 3. Confirmation Drawer opens
-    await expect(page.getByText("Xác nhận & Tùy chỉnh tiêu chí tìm kiếm")).toBeVisible();
+    // 2. The core journey stays deterministic by entering the same canonical
+    // criteria manually. Gemini extraction is covered by schema + opt-in live tests.
+    await openManualMentorCriteria(page, {
+      currentScore: "6",
+      targetScore: "7",
+      budget: "500000",
+      skills: ["Writing"],
+      days: ["Thứ 3", "Thứ 5"],
+    });
 
     // Verify parsed values in drawer
     await expect(page.locator("select#domain")).toHaveValue("IELTS");
@@ -164,8 +205,11 @@ test.describe("Slice 3: Mentor E2E & Match Space 2.0 User Journey", () => {
     await loginAs(page, "HS000001");
     await page.goto("/mentor");
     await page.locator("#mentor-prompt").fill("IELTS Writing tối thứ 3 ngân sách 500k/giờ");
-    await page.getByRole("button", { name: "Tìm mentor phù hợp" }).click();
-    await expect(page.getByText("Xác nhận & Tùy chỉnh tiêu chí tìm kiếm")).toBeVisible();
+    await openManualMentorCriteria(page, {
+      budget: "500000",
+      skills: ["Writing"],
+      days: ["Thứ 3"],
+    });
     await page.getByRole("button", { name: /Chạy Mentor Engine/ }).click();
     await page.waitForURL(/\/mentor\/match-space\?run=/);
     const privateRunUrl = page.url();
@@ -197,8 +241,14 @@ test.describe("Slice 3: Mentor E2E & Match Space 2.0 User Journey", () => {
     await page.goto("/mentor");
     const promptArea = page.locator("#mentor-prompt");
     await promptArea.fill("Tìm mentor SAT Math 1450 rảnh chiều T6 tối đa 500k");
-    await page.getByRole("button", { name: "Tìm mentor phù hợp" }).click();
-    await expect(page.getByText("Xác nhận & Tùy chỉnh tiêu chí tìm kiếm")).toBeVisible();
+    await openManualMentorCriteria(page, {
+      domain: "SAT",
+      targetScore: "1450",
+      budget: "500000",
+      skills: ["SAT Math"],
+      days: ["Thứ 6"],
+      period: "afternoon",
+    });
     await page.getByRole("button", { name: /Chạy Mentor Engine/ }).click();
     await page.waitForURL(/\/mentor\/match-space\?run=/);
 

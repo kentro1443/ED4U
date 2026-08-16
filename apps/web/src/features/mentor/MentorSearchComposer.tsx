@@ -101,6 +101,31 @@ export function MentorSearchComposer() {
   const [teachingStyles, setTeachingStyles] = useState<TeachingStyle[]>([]);
   const [verifiedOnly, setVerifiedOnly] = useState(false);
 
+  const openManualCriteria = () => {
+    setParsedData({
+      rawText: prompt.trim() || "Yêu cầu nhập thủ công",
+      domain: null,
+      focusSkills: [],
+      availability: [],
+      teachingStyles: [],
+      languages: ["VI"],
+      verifiedOnly: false,
+      unhandledFragments: [],
+      parserNotes: [
+        "Chế độ nhập thủ công: chỉ các tiêu chí bạn xác nhận bên dưới mới được gửi vào engine.",
+      ],
+    });
+    setDomain("IELTS");
+    setCurrentScore("");
+    setTargetScore("");
+    setFocusSkills([]);
+    setMaxBudget("");
+    setSelectedDays([]);
+    setTeachingStyles([]);
+    setVerifiedOnly(false);
+    setIsDrawerOpen(true);
+  };
+
   const handleParse = async (textToParse?: string) => {
     const query = (textToParse ?? prompt).trim();
     if (!query) {
@@ -216,7 +241,7 @@ export function MentorSearchComposer() {
               <Icons.search className="h-4 w-4 text-[var(--primary)]" />
               Bạn đang muốn cải thiện mục tiêu gì?
             </label>
-            <span className="text-xs text-[var(--muted)]">Phân tích ngôn ngữ tự nhiên V1</span>
+            <span className="text-xs text-[var(--muted)]">Gemini structured parser</span>
           </div>
 
           <textarea
@@ -229,9 +254,15 @@ export function MentorSearchComposer() {
           />
 
           {error && (
-            <Alert tone="danger" title="Không thể tìm kiếm">
-              {error}
-            </Alert>
+            <div className="space-y-2">
+              <Alert tone="danger" title="Không thể phân tích tự động">
+                {error}
+              </Alert>
+              <Button type="button" variant="secondary" size="sm" onClick={openManualCriteria}>
+                <Icons.criteria className="mr-1.5 h-4 w-4" />
+                Nhập tiêu chí thủ công
+              </Button>
+            </div>
           )}
 
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pt-1">
@@ -262,6 +293,15 @@ export function MentorSearchComposer() {
             >
               <Icons.mentor className="h-4 w-4 mr-1.5" />
               Tìm mentor phù hợp
+            </Button>
+            <Button
+              type="button"
+              variant="secondary"
+              size="md"
+              onClick={openManualCriteria}
+              className="w-full shrink-0 sm:w-auto"
+            >
+              Nhập thủ công
             </Button>
           </div>
         </div>
