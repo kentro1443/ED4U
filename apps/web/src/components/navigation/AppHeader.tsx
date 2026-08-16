@@ -6,6 +6,7 @@ import { Fragment, useState, useTransition, type FormEvent } from "react";
 import { Avatar } from "@/components/ui/DataDisplay";
 import { Badge } from "@/components/ui/Badge";
 import { Icons } from "@/components/ui/icons";
+import { Button } from "@/components/ui/Button";
 import { breadcrumbsFor } from "@/lib/routeMeta";
 import { logoutAction } from "./actions";
 import type { UserSummary } from "./UserMenu";
@@ -151,7 +152,7 @@ function HeaderUserMenu({ user }: { user: UserSummary }) {
         onBlur={() => window.setTimeout(() => setOpen(false), 150)}
         aria-expanded={open}
         aria-haspopup="menu"
-        className="flex h-9 items-center gap-2 rounded-md pl-1 pr-2 transition-colors hover:bg-[var(--surface-soft)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ink)]"
+        className="flex h-10 items-center gap-2 rounded-xl pl-1 pr-2 transition-colors hover:bg-[var(--surface-soft)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand-600)]"
       >
         <Avatar name={displayName} size="sm" />
         <span className="hidden max-w-32 truncate text-sm font-medium text-[var(--ink)] xl:block">
@@ -163,7 +164,7 @@ function HeaderUserMenu({ user }: { user: UserSummary }) {
       {open && (
         <div
           role="menu"
-          className="absolute right-0 top-11 z-50 w-64 overflow-hidden rounded-lg border border-[var(--hairline)] bg-[var(--canvas)] shadow-[var(--shadow-lg)]"
+          className="absolute right-0 top-12 z-50 w-64 overflow-hidden rounded-2xl border border-[var(--hairline)] bg-[var(--surface-card)] shadow-[var(--shadow-lg)]"
         >
           <div className="flex items-center gap-3 border-b border-[var(--hairline-soft)] p-3">
             <Avatar name={displayName} size="sm" />
@@ -210,17 +211,29 @@ function HeaderUserMenu({ user }: { user: UserSummary }) {
               <Icons.security className="h-4 w-4 text-[var(--muted)]" aria-hidden="true" />
               Bảo mật & phiên đăng nhập
             </Link>
+            <Link
+              href="/manual"
+              prefetch={false}
+              role="menuitem"
+              className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-sm text-[var(--body)] transition-colors hover:bg-[var(--surface-soft)] hover:text-[var(--ink)]"
+            >
+              <Icons.help className="h-4 w-4 text-[var(--muted)]" aria-hidden="true" />
+              Hướng dẫn sử dụng
+            </Link>
           </div>
 
           <form action={logoutAction} className="border-t border-[var(--hairline-soft)] p-1">
-            <button
+            <Button
               type="submit"
               role="menuitem"
-              className="flex w-full cursor-pointer items-center gap-2.5 rounded-md px-3 py-2 text-sm text-[var(--body)] transition-colors hover:bg-red-50 hover:text-red-700"
+              variant="ghost"
+              size="sm"
+              loadingLabel="Đang đăng xuất…"
+              className="w-full justify-start text-[var(--body)] hover:bg-red-50 hover:text-red-700"
             >
               <Icons.logout className="h-4 w-4" aria-hidden="true" />
               Đăng xuất
-            </button>
+            </Button>
           </form>
         </div>
       )}

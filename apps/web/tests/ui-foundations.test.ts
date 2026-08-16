@@ -130,6 +130,7 @@ describe("Slice 2 UI Foundation - Tokens and Assets", () => {
     expect(studentHrefs).toContain("/mentor/match-space");
     expect(studentHrefs).toContain("/applications");
     expect(studentHrefs).toContain("/discussion");
+    expect(studentHrefs).toContain("/manual");
     expect(studentHrefs).not.toContain("/admin/members");
     expect(studentHrefs).not.toContain("/admin/approvals");
 
@@ -138,6 +139,7 @@ describe("Slice 2 UI Foundation - Tokens and Assets", () => {
     expect(teacherHrefs).toContain("/applications");
     expect(teacherHrefs).toContain("/appointments");
     expect(teacherHrefs).toContain("/discussion");
+    expect(teacherHrefs).toContain("/manual");
     expect(teacherHrefs).not.toContain("/mentor");
     expect(teacherHrefs).not.toContain("/admin/members");
 
@@ -157,6 +159,7 @@ describe("Slice 2 UI Foundation - Tokens and Assets", () => {
     expect(mentorHrefs).toContain("/mentor/match-space");
     expect(mentorHrefs).toContain("/profile");
     expect(mentorHrefs).toContain("/security");
+    expect(mentorHrefs).toContain("/manual");
 
     expect(mentorHrefs).not.toContain("/discussion");
     expect(mentorHrefs).not.toContain("/applications");

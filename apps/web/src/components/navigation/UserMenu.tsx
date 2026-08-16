@@ -1,6 +1,7 @@
 import { Avatar } from "@/components/ui/DataDisplay";
 import { Badge } from "@/components/ui/Badge";
 import { Icons } from "@/components/ui/icons";
+import { Button } from "@/components/ui/Button";
 import { logoutAction } from "./actions";
 
 export interface UserSummary {
@@ -36,14 +37,17 @@ export function UserProfileCard({ user }: { user: UserSummary }) {
           )}
         </div>
         <form action={logoutAction}>
-          <button
+          <Button
             type="submit"
+            variant="ghost"
+            size="sm"
+            loadingLabel="Đang đăng xuất…"
             title="Đăng xuất"
             aria-label="Đăng xuất khỏi hệ thống"
-            className="flex h-7 w-7 items-center justify-center rounded-md text-[var(--muted)] hover:bg-black/5 hover:text-red-600 transition-colors cursor-pointer"
+            className="h-8 w-8 p-0 text-[var(--muted)] hover:bg-red-50 hover:text-red-600"
           >
             <Icons.logout className="h-3.5 w-3.5" />
-          </button>
+          </Button>
         </form>
       </div>
     </div>

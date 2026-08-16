@@ -37,6 +37,11 @@ export const ROUTE_META: Record<string, RouteMeta> = {
   "/discussion/threads": { title: "Chủ đề", section: "Cộng đồng" },
   "/notifications": { title: "Thông báo", section: "Công cụ" },
   "/search": { title: "Tìm kiếm", section: "Công cụ" },
+  "/manual": {
+    title: "Hướng dẫn sử dụng",
+    section: "Công cụ",
+    description: "Hướng dẫn đầy đủ các quy trình và vai trò trên ED4U.",
+  },
   "/profile": { title: "Hồ sơ", section: "Tài khoản" },
   "/security": { title: "Bảo mật", section: "Tài khoản" },
   "/admin/members": { title: "Thành viên", section: "Quản trị" },

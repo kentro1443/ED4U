@@ -104,16 +104,16 @@ test("a mentor has strict navigation isolation and cannot read or leak discussio
   // 1. Navigation verification: Discussion Hub and operational routes are hidden from sidebar
   const sidebar = page.locator("aside");
   await expect(sidebar).toBeVisible();
-  await expect(sidebar.getByRole("link", { name: "Discussion Hub" })).toHaveCount(0);
-  await expect(sidebar.getByRole("link", { name: "Applications" })).toHaveCount(0);
-  await expect(sidebar.getByRole("link", { name: "Appointments" })).toHaveCount(0);
-  await expect(sidebar.getByRole("link", { name: "Rooms", exact: true })).toHaveCount(0);
-  await expect(sidebar.getByRole("link", { name: "Clubs" })).toHaveCount(0);
+  await expect(sidebar.getByRole("link", { name: "Diễn đàn" })).toHaveCount(0);
+  await expect(sidebar.getByRole("link", { name: "Đơn từ" })).toHaveCount(0);
+  await expect(sidebar.getByRole("link", { name: "Lịch hẹn" })).toHaveCount(0);
+  await expect(sidebar.getByRole("link", { name: "Phòng học", exact: true })).toHaveCount(0);
+  await expect(sidebar.getByRole("link", { name: "Câu lạc bộ" })).toHaveCount(0);
 
   // Permitted items are visible
-  await expect(sidebar.getByRole("link", { name: "Dashboard" })).toBeVisible();
+  await expect(sidebar.getByRole("link", { name: "Tổng quan" })).toBeVisible();
   await expect(sidebar.getByRole("link", { name: "Mentor", exact: true })).toBeVisible();
-  await expect(sidebar.getByRole("link", { name: "Match Space" })).toBeVisible();
+  await expect(sidebar.getByRole("link", { name: "Không gian ghép nối" })).toBeVisible();
 
   // 2. Direct URL access to /discussion must be strictly blocked and leak NO data
   await page.goto("/discussion");

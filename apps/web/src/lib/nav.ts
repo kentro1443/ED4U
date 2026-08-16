@@ -34,16 +34,16 @@ export const NAV_GROUPS: NavGroup[] = [
   {
     id: "overview",
     label: "TỔNG QUAN",
-    items: [{ href: "/dashboard", label: "Dashboard", icon: "dashboard" }],
+    items: [{ href: "/dashboard", label: "Tổng quan", icon: "dashboard" }],
   },
   {
     id: "learn",
     label: "HỌC TẬP & HỖ TRỢ",
     items: [
-      { href: "/mentor", label: "Mentor", icon: "mentor", permission: "mentor.match" },
+      { href: "/mentor", label: "Cố vấn", icon: "mentor", permission: "mentor.match" },
       {
         href: "/mentor/match-space",
-        label: "Match Space",
+        label: "Không gian ghép nối",
         icon: "matchSpace",
         permission: "mentor.match",
       },
@@ -55,7 +55,7 @@ export const NAV_GROUPS: NavGroup[] = [
     items: [
       {
         href: "/calendar",
-        label: "Calendar",
+        label: "Lịch",
         icon: "calendar",
         anyPermissions: [
           "timetable.edit",
@@ -67,31 +67,31 @@ export const NAV_GROUPS: NavGroup[] = [
       },
       {
         href: "/applications",
-        label: "Applications",
+        label: "Đơn từ",
         icon: "applications",
         anyPermissions: ["application.create", "application.review"],
       },
       {
         href: "/appointments",
-        label: "Appointments",
+        label: "Lịch hẹn",
         icon: "appointments",
         anyPermissions: ["appointment.create", "appointment.accept"],
       },
       {
         href: "/rooms",
-        label: "Rooms",
+        label: "Phòng học",
         icon: "rooms",
         anyPermissions: ["room.request", "rooms.manage", "room.approve"],
       },
       {
         href: "/events",
-        label: "School Events",
+        label: "Sự kiện trường",
         icon: "events",
         anyPermissions: ["discussion.read", "timetable.edit", "members.manage"],
       },
       {
         href: "/clubs",
-        label: "Clubs",
+        label: "Câu lạc bộ",
         icon: "clubs",
         anyPermissions: ["club.propose", "club.manage"],
       },
@@ -103,7 +103,7 @@ export const NAV_GROUPS: NavGroup[] = [
     items: [
       {
         href: "/discussion",
-        label: "Discussion Hub",
+        label: "Diễn đàn",
         icon: "discussion",
         permission: "discussion.read",
         predicate: canReadDiscussion,
@@ -114,16 +114,17 @@ export const NAV_GROUPS: NavGroup[] = [
     id: "tools",
     label: "CÔNG CỤ",
     items: [
-      { href: "/notifications", label: "Notifications", icon: "notifications" },
-      { href: "/search", label: "Search", icon: "search" },
+      { href: "/notifications", label: "Thông báo", icon: "notifications" },
+      { href: "/search", label: "Tìm kiếm", icon: "search" },
+      { href: "/manual", label: "Hướng dẫn sử dụng", icon: "help" },
     ],
   },
   {
     id: "account",
     label: "TÀI KHOẢN",
     items: [
-      { href: "/profile", label: "Profile", icon: "profile" },
-      { href: "/security", label: "Security", icon: "security" },
+      { href: "/profile", label: "Hồ sơ", icon: "profile" },
+      { href: "/security", label: "Bảo mật", icon: "security" },
     ],
   },
   {
@@ -132,49 +133,49 @@ export const NAV_GROUPS: NavGroup[] = [
     items: [
       {
         href: "/admin/members",
-        label: "Members",
+        label: "Thành viên",
         icon: "adminMembers",
         permission: ROUTE_PERMISSIONS["/admin/members"],
       },
       {
         href: "/admin/timetable",
-        label: "Timetable",
+        label: "Thời khóa biểu",
         icon: "adminTimetable",
         permission: ROUTE_PERMISSIONS["/admin/timetable"],
       },
       {
         href: "/admin/timetable/import",
-        label: "Import TKB",
+        label: "Nhập thời khóa biểu",
         icon: "adminTimetable",
         permission: ROUTE_PERMISSIONS["/admin/timetable/import"],
       },
       {
         href: "/admin/rooms",
-        label: "Rooms & Features",
+        label: "Phòng & tiện ích",
         icon: "adminRooms",
         permission: ROUTE_PERMISSIONS["/admin/rooms"],
       },
       {
         href: "/admin/approvals",
-        label: "Approvals",
+        label: "Phê duyệt",
         icon: "adminApprovals",
         permission: ROUTE_PERMISSIONS["/admin/approvals"],
       },
       {
         href: "/admin/moderation",
-        label: "Forum Moderation",
+        label: "Kiểm duyệt diễn đàn",
         icon: "adminModeration",
         permission: ROUTE_PERMISSIONS["/admin/moderation"],
       },
       {
         href: "/admin/audit",
-        label: "Audit",
+        label: "Nhật ký hệ thống",
         icon: "adminAudit",
         permission: ROUTE_PERMISSIONS["/admin/audit"],
       },
       {
         href: "/admin/settings",
-        label: "System Settings",
+        label: "Cài đặt hệ thống",
         icon: "adminSettings",
         permission: ROUTE_PERMISSIONS["/admin/settings"],
       },

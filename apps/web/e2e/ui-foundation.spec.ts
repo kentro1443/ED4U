@@ -40,11 +40,11 @@ test.describe("Slice 2 UI Foundation E2E", () => {
     await expect(sidebar.getByText("HS000001")).toBeVisible();
 
     // Active route highlight on dashboard
-    const dashboardLink = sidebar.getByRole("link", { name: "Dashboard" });
+    const dashboardLink = sidebar.getByRole("link", { name: "Tổng quan" });
     await expect(dashboardLink).toHaveAttribute("aria-current", "page");
 
     // Navigate to Mentor
-    const mentorLink = sidebar.getByRole("link", { name: "Mentor", exact: true });
+    const mentorLink = sidebar.getByRole("link", { name: "Cố vấn", exact: true });
     await mentorLink.click();
     await page.waitForURL(/\/mentor$/);
     await expect(mentorLink).toHaveAttribute("aria-current", "page");
@@ -72,8 +72,8 @@ test.describe("Slice 2 UI Foundation E2E", () => {
     // Drawer is open
     const drawer = page.getByRole("dialog");
     await expect(drawer).toBeVisible();
-    await expect(drawer.getByRole("link", { name: "Dashboard" })).toBeVisible();
-    await expect(drawer.getByRole("link", { name: "Match Space" })).toBeVisible();
+    await expect(drawer.getByRole("link", { name: "Tổng quan" })).toBeVisible();
+    await expect(drawer.getByRole("link", { name: "Không gian ghép nối" })).toBeVisible();
 
     // Close via Escape key
     await page.keyboard.press("Escape");
