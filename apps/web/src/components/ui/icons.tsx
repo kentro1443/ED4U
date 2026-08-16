@@ -60,6 +60,10 @@ import {
   Gauge,
   Projector,
   MonitorCog,
+  Minus,
+  RotateCcw,
+  Target,
+  UserRoundCheck,
   type LucideProps,
 } from "lucide-react";
 
@@ -125,6 +129,10 @@ export const Icons = {
   gauge: Gauge,
   projector: Projector,
   computer: MonitorCog,
+  minus: Minus,
+  reset: RotateCcw,
+  target: Target,
+  eligibleMentor: UserRoundCheck,
 };
 
 export type IconType = keyof typeof Icons;

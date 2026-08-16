@@ -220,8 +220,8 @@ export function MatchSpaceView({
         </div>
         <div className="grid gap-2 bg-white/[0.035] p-4 sm:grid-cols-3 sm:p-5 lg:items-stretch">
           {[
-            ["01", "AI hiểu ý định", "Ngôn ngữ tự nhiên → tiêu chí có cấu trúc", "search"],
-            ["02", "Symbolic validation", "Ràng buộc cứng → tập mentor hợp lệ", "cpu"],
+            ["01", "AI hiểu ý định", "Ngôn ngữ tự nhiên → tiêu chí có cấu trúc", "aiBrain"],
+            ["02", "Symbolic validation", "Ràng buộc cứng → tập mentor hợp lệ", "criteria"],
             ["03", "Ranking + reasoning", "Điểm thành phần → lý do và đánh đổi", "network"],
           ].map(([number, title, detail, icon]) => {
             const Icon = Icons[icon as IconType];
@@ -231,10 +231,12 @@ export function MatchSpaceView({
                 className="rounded-2xl bg-white/[0.06] p-4 ring-1 ring-inset ring-white/10"
               >
                 <div className="flex items-center justify-between gap-3">
+                  <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-500/15 text-blue-200 ring-1 ring-inset ring-blue-300/15">
+                    <Icon className="h-5 w-5" strokeWidth={1.8} />
+                  </span>
                   <span className="text-[10px] font-extrabold text-blue-300">{number}</span>
-                  <Icon className="h-4 w-4 text-blue-200" />
                 </div>
-                <p className="mt-5 text-xs font-extrabold text-white">{title}</p>
+                <p className="mt-4 text-xs font-extrabold text-white">{title}</p>
                 <p className="mt-2 text-[11px] leading-5 text-slate-400">{detail}</p>
               </div>
             );
@@ -256,14 +258,20 @@ export function MatchSpaceView({
         <div className="flex items-center gap-1.5 shrink-0" data-testid="constraint-lens">
           {(
             [
-              { key: "Recommended", label: `Đề xuất (${snapshot.result.recommendations.length})` },
+              {
+                key: "Recommended",
+                label: `Đề xuất (${snapshot.result.recommendations.length})`,
+                icon: "sparkles",
+              },
               {
                 key: "Eligible",
                 label: `Đủ điều kiện (${snapshot.hardConstraintSnapshot.eligible.length})`,
+                icon: "eligibleMentor",
               },
               {
                 key: "Filtered",
                 label: `Bị lọc (${snapshot.hardConstraintSnapshot.rejected.length})`,
+                icon: "filter",
               },
             ] as const
           ).map((item) => (
@@ -277,6 +285,10 @@ export function MatchSpaceView({
                   : "border-[var(--hairline)] bg-[var(--surface-card)] text-[var(--body)] hover:border-[var(--brand-100)] hover:bg-[var(--brand-50)]"
               }`}
             >
+              {(() => {
+                const Icon = Icons[item.icon];
+                return <Icon className="mr-1.5 inline h-3.5 w-3.5" aria-hidden="true" />;
+              })()}
               {item.label}
             </button>
           ))}
@@ -294,18 +306,20 @@ export function MatchSpaceView({
               <button
                 type="button"
                 onClick={() => setZoom((z) => Math.min(2.5, z + 0.2))}
-                className="rounded border border-[var(--hairline)] bg-[var(--canvas)] px-2 py-1 hover:bg-[var(--surface-soft)] cursor-pointer font-bold"
+                className="inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg border border-[var(--hairline)] bg-[var(--canvas)] text-[var(--body)] hover:bg-[var(--surface-soft)]"
                 title="Phóng to"
+                aria-label="Phóng to Match Space"
               >
-                +
+                <Icons.plus className="h-3.5 w-3.5" aria-hidden="true" />
               </button>
               <button
                 type="button"
                 onClick={() => setZoom((z) => Math.max(0.6, z - 0.2))}
-                className="rounded border border-[var(--hairline)] bg-[var(--canvas)] px-2 py-1 hover:bg-[var(--surface-soft)] cursor-pointer font-bold"
+                className="inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg border border-[var(--hairline)] bg-[var(--canvas)] text-[var(--body)] hover:bg-[var(--surface-soft)]"
                 title="Thu nhỏ"
+                aria-label="Thu nhỏ Match Space"
               >
-                −
+                <Icons.minus className="h-3.5 w-3.5" aria-hidden="true" />
               </button>
               <button
                 type="button"
@@ -313,8 +327,9 @@ export function MatchSpaceView({
                   setZoom(1);
                   setPan({ x: 0, y: 0 });
                 }}
-                className="rounded border border-[var(--hairline)] bg-[var(--canvas)] px-2 py-1 hover:bg-[var(--surface-soft)] cursor-pointer"
+                className="inline-flex h-8 cursor-pointer items-center gap-1.5 rounded-lg border border-[var(--hairline)] bg-[var(--canvas)] px-2.5 text-[11px] font-bold text-[var(--body)] hover:bg-[var(--surface-soft)]"
               >
+                <Icons.reset className="h-3.5 w-3.5" aria-hidden="true" />
                 Đặt lại
               </button>
             </div>
@@ -355,10 +370,19 @@ export function MatchSpaceView({
                   </g>
                 ))}
 
-                {/* Center Student Node */}
-                <circle r="7" fill="var(--primary)" />
-                <text y="16" textAnchor="middle" fontSize="6.5" fontWeight="bold" fill="var(--ink)">
-                  Bạn (Mục tiêu)
+                {/* Center Student Goal */}
+                <circle r="12" fill="var(--brand-50)" stroke="var(--brand-600)" strokeWidth="1" />
+                <circle r="7.5" fill="var(--primary)" />
+                <circle cy="-2" r="2" fill="white" />
+                <path
+                  d="M -3.5 4 C -3.1 0.8, 3.1 0.8, 3.5 4"
+                  fill="none"
+                  stroke="white"
+                  strokeWidth="1.4"
+                  strokeLinecap="round"
+                />
+                <text y="19" textAnchor="middle" fontSize="6.5" fontWeight="bold" fill="var(--ink)">
+                  Bạn · Mục tiêu
                 </text>
 
                 {/* Mentor Nodes */}
@@ -397,7 +421,7 @@ export function MatchSpaceView({
                         />
                       )}
                       <circle
-                        r={n.eligible ? (isSelected ? 7 : 5.5) : 4}
+                        r={n.eligible ? (isSelected ? 8 : 6.5) : 5.5}
                         fill={
                           n.eligible
                             ? isSelected
@@ -409,6 +433,42 @@ export function MatchSpaceView({
                         stroke="var(--canvas)"
                         strokeWidth="1.5"
                       />
+                      <circle
+                        cy="-1.7"
+                        r={n.eligible ? 1.7 : 1.4}
+                        fill={n.eligible ? "white" : "var(--surface-soft)"}
+                        opacity={n.eligible ? 1 : 0.8}
+                      />
+                      <path
+                        d={
+                          n.eligible
+                            ? "M -3.2 3.8 C -2.8 0.9, 2.8 0.9, 3.2 3.8"
+                            : "M -2.7 3.1 C -2.3 1, 2.3 1, 2.7 3.1"
+                        }
+                        fill="none"
+                        stroke={n.eligible ? "white" : "var(--surface-soft)"}
+                        strokeWidth="1.1"
+                        strokeLinecap="round"
+                        opacity={n.eligible ? 1 : 0.8}
+                      />
+                      {n.eligible ? (
+                        <g transform="translate(5 -5)">
+                          <circle r="3" fill="var(--success)" stroke="white" strokeWidth="0.8" />
+                          <path
+                            d="M -1.25 0 L -0.2 1.1 L 1.5 -1.15"
+                            fill="none"
+                            stroke="white"
+                            strokeWidth="0.8"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </g>
+                      ) : (
+                        <g transform="translate(4.5 -4.5)">
+                          <circle r="2.7" fill="var(--muted)" stroke="white" strokeWidth="0.8" />
+                          <path d="M -1 0 L 1 0" stroke="white" strokeWidth="0.8" />
+                        </g>
+                      )}
 
                       <text
                         y={n.eligible ? 12 : 10}
@@ -449,15 +509,19 @@ export function MatchSpaceView({
             </svg>
           </div>
 
-          <div className="mt-3 flex items-center justify-between text-xs text-[var(--muted)] pt-2 border-t border-[var(--hairline-soft)]">
-            <div className="flex items-center gap-4">
-              <span className="flex items-center gap-1.5">
-                <span className="h-3 w-3 rounded-full bg-[var(--primary)] inline-block" />
-                Đủ điều kiện & Xếp hạng
+          <div className="mt-3 flex flex-col gap-3 border-t border-[var(--hairline-soft)] pt-3 text-xs text-[var(--muted)] sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="inline-flex items-center gap-1.5 rounded-lg bg-[var(--brand-50)] px-2 py-1 font-semibold text-[var(--primary)]">
+                <Icons.target className="h-3.5 w-3.5" aria-hidden="true" />
+                Bạn / mục tiêu
               </span>
-              <span className="flex items-center gap-1.5">
-                <span className="h-2.5 w-2.5 rounded-full bg-gray-400 opacity-50 inline-block" />
-                Bị loại (Ràng buộc cứng)
+              <span className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-50 px-2 py-1 font-semibold text-emerald-800">
+                <Icons.eligibleMentor className="h-3.5 w-3.5" aria-hidden="true" />
+                Mentor đủ điều kiện
+              </span>
+              <span className="inline-flex items-center gap-1.5 rounded-lg bg-[var(--surface-soft)] px-2 py-1 font-semibold text-[var(--body)]">
+                <Icons.filter className="h-3.5 w-3.5" aria-hidden="true" />
+                Bị lọc bởi ràng buộc
               </span>
             </div>
             <span>{layout.nodes.length} hồ sơ hiển thị</span>
@@ -545,7 +609,9 @@ export function MatchSpaceView({
                     <ul className="space-y-1.5 text-xs text-[var(--body)] leading-relaxed pl-1">
                       {selectedRec.reasons.map((r, i) => (
                         <li key={i} className="flex items-start gap-2">
-                          <span className="text-emerald-600 font-bold">•</span>
+                          <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-md bg-emerald-50 text-emerald-700">
+                            <Icons.check className="h-2.5 w-2.5" aria-hidden="true" />
+                          </span>
                           <span>{localizeEngineEvidence(r, mentorMap)}</span>
                         </li>
                       ))}
@@ -563,7 +629,9 @@ export function MatchSpaceView({
                     <ul className="space-y-1 text-xs text-[var(--muted)] leading-relaxed pl-1">
                       {selectedRec.tradeoffs.map((t, i) => (
                         <li key={i} className="flex items-start gap-2">
-                          <span className="text-amber-600 font-bold">•</span>
+                          <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-md bg-amber-50 text-amber-700">
+                            <Icons.alertTriangle className="h-2.5 w-2.5" aria-hidden="true" />
+                          </span>
                           <span>{localizeEngineEvidence(t, mentorMap)}</span>
                         </li>
                       ))}
