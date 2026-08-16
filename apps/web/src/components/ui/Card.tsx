@@ -10,17 +10,17 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(function Card(
   ref,
 ) {
   const variantStyles = {
-    default: "bg-[var(--canvas)] border border-[var(--hairline)] shadow-[var(--shadow-sm)]",
+    default: "bg-[var(--surface-card)] border border-[var(--hairline)] shadow-[var(--shadow-sm)]",
     soft: "bg-[var(--surface-soft)] border border-[var(--hairline-soft)]",
     flat: "bg-[var(--surface-card)] border-none",
     interactive:
-      "bg-[var(--canvas)] border border-[var(--hairline)] hover:border-gray-300 hover:shadow-md transition-all duration-150 cursor-pointer",
+      "bg-[var(--surface-card)] border border-[var(--hairline)] hover:-translate-y-0.5 hover:border-[var(--brand-100)] hover:shadow-[var(--shadow-md)] transition-[transform,border-color,box-shadow] duration-200 cursor-pointer motion-reduce:transform-none",
   }[variant];
 
   return (
     <div
       ref={ref}
-      className={cn("rounded-xl p-5 md:p-6 text-[var(--ink)]", variantStyles, className)}
+      className={cn("rounded-2xl p-5 md:p-6 text-[var(--ink)]", variantStyles, className)}
       {...props}
     >
       {children}

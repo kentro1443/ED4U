@@ -1,5 +1,8 @@
+"use client";
+
 import Link from "next/link";
 import { forwardRef, type ButtonHTMLAttributes } from "react";
+import { useFormStatus } from "react-dom";
 import { cn } from "@/lib/cn";
 import { Icons } from "./icons";
 
@@ -7,19 +10,20 @@ export type ButtonVariant = "primary" | "secondary" | "outline" | "ghost" | "dan
 export type ButtonSize = "sm" | "md" | "lg";
 
 const baseStyles =
-  "inline-flex items-center justify-center gap-2 rounded-md font-medium text-sm transition-colors duration-150 " +
+  "inline-flex items-center justify-center gap-2 rounded-xl font-semibold text-sm transition-[color,background-color,border-color,box-shadow,transform] duration-200 " +
   "disabled:opacity-50 disabled:pointer-events-none cursor-pointer " +
-  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ink)] select-none";
+  "hover:-translate-y-px active:translate-y-0 active:scale-[0.985] motion-reduce:transform-none " +
+  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand-600)] select-none";
 
 const variantStyles: Record<ButtonVariant, string> = {
   primary:
-    "bg-[var(--primary)] text-[var(--on-primary)] hover:bg-[var(--primary-hover)] active:bg-[var(--primary-active)] shadow-sm",
+    "bg-[var(--primary)] text-[var(--on-primary)] hover:bg-[var(--primary-hover)] active:bg-[var(--primary-active)] shadow-[var(--shadow-brand)]",
   secondary:
-    "bg-[var(--canvas)] text-[var(--ink)] border border-[var(--hairline)] hover:bg-[var(--surface-soft)] active:bg-[var(--surface-card)] shadow-xs",
+    "bg-[var(--surface-card)] text-[var(--ink)] border border-[var(--hairline)] hover:border-[var(--brand-100)] hover:bg-[var(--brand-50)] active:bg-[var(--surface-soft)] shadow-[var(--shadow-sm)]",
   outline:
     "bg-transparent text-[var(--body)] border border-[var(--hairline)] hover:bg-[var(--surface-soft)] hover:text-[var(--ink)]",
   ghost: "bg-transparent text-[var(--body)] hover:bg-[var(--surface-soft)] hover:text-[var(--ink)]",
-  danger: "bg-[var(--error)] text-white hover:bg-red-600 active:bg-red-700 shadow-sm",
+  danger: "bg-[var(--error)] text-white hover:bg-red-700 active:bg-red-800 shadow-sm",
 };
 
 const sizeStyles: Record<ButtonSize, string> = {
@@ -49,22 +53,25 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
   },
   ref,
 ) {
+  const formStatus = useFormStatus();
+  const isLoading = loading || (type === "submit" && formStatus.pending);
+
   return (
     <button
       ref={ref}
       type={type}
       className={cn(baseStyles, variantStyles[variant], sizeStyles[size], className)}
-      disabled={disabled || loading}
-      aria-busy={loading || undefined}
+      disabled={disabled || isLoading}
+      aria-busy={isLoading || undefined}
       {...props}
     >
-      {loading ? (
+      {isLoading ? (
         <>
           <Icons.spinner
             className="h-4 w-4 animate-spin motion-reduce:animate-none"
             aria-hidden="true"
           />
-          <span>{loadingLabel ?? children}</span>
+          <span>{loadingLabel ?? "Đang xử lý…"}</span>
         </>
       ) : (
         children

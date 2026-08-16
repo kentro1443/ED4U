@@ -32,7 +32,7 @@ export function AppHeader({
   const crumbs = breadcrumbsFor(pathname);
 
   return (
-    <header className="sticky top-0 z-30 hidden h-14 shrink-0 items-center gap-4 border-b border-[var(--hairline)] bg-[var(--canvas)]/90 px-6 backdrop-blur-md md:flex">
+    <header className="sticky top-0 z-30 hidden h-16 shrink-0 items-center gap-4 border-b border-[var(--hairline)] bg-[var(--canvas)]/88 px-8 backdrop-blur-xl md:flex">
       <nav aria-label="Breadcrumb" className="min-w-0 flex-1">
         <ol className="flex items-center gap-1.5 text-sm">
           {crumbs.length === 0 ? (
@@ -84,7 +84,7 @@ export function AppHeader({
         aria-label={
           unreadCount > 0 ? `Thông báo, ${unreadCount} chưa đọc` : "Thông báo, không có mục mới"
         }
-        className="relative flex h-9 w-9 items-center justify-center rounded-md text-[var(--body)] transition-colors hover:bg-[var(--surface-soft)] hover:text-[var(--ink)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ink)]"
+        className="relative flex h-10 w-10 items-center justify-center rounded-xl border border-transparent text-[var(--body)] transition-colors hover:border-[var(--hairline)] hover:bg-[var(--surface-card)] hover:text-[var(--ink)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand-600)]"
       >
         <Icons.notifications className="h-[18px] w-[18px]" aria-hidden="true" />
         {unreadCount > 0 && (
@@ -126,7 +126,7 @@ function HeaderSearch() {
         value={value}
         onChange={(event) => setValue(event.target.value)}
         placeholder="Tìm phòng, lớp, CLB, chủ đề…"
-        className="h-9 w-full rounded-md border border-[var(--hairline)] bg-[var(--surface-soft)] pl-9 pr-3 text-sm text-[var(--ink)] placeholder:text-[var(--muted)] transition-colors focus:bg-[var(--canvas)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ink)]"
+        className="h-10 w-full rounded-xl border border-[var(--hairline)] bg-[var(--surface-card)] pl-9 pr-3 text-sm text-[var(--ink)] shadow-[var(--shadow-sm)] placeholder:text-[var(--muted)] transition-colors focus:border-[var(--brand-100)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand-600)]"
       />
       {pending && (
         <Icons.spinner

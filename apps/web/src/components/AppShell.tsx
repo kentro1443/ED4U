@@ -1,4 +1,3 @@
-import Link from "next/link";
 import type { Actor } from "@ed4u/domain";
 import { visibleNav } from "@/lib/nav";
 import { db } from "@/lib/db";
@@ -7,6 +6,7 @@ import { NavLinks } from "./navigation/NavLinks";
 import { UserProfileCard, type UserSummary } from "./navigation/UserMenu";
 import { MobileHeader } from "./navigation/MobileHeader";
 import { AppHeader } from "./navigation/AppHeader";
+import { BrandLogo } from "./BrandLogo";
 
 export async function AppShell({ actor, children }: { actor: Actor; children: React.ReactNode }) {
   const [groups, user, tenant, unreadCount] = await Promise.all([
@@ -46,20 +46,16 @@ export async function AppShell({ actor, children }: { actor: Actor; children: Re
         {/* Desktop sidebar (>= 768px). The nav scrolls inside a flex child with
             `min-h-0` rather than a hand-computed max-height, so admin routes can
             never fall below the fold on a short viewport. */}
-        <aside className="sticky top-0 hidden h-dvh w-64 shrink-0 flex-col border-r border-[var(--hairline)] bg-[var(--canvas)] md:flex">
-          <div className="flex items-center gap-3 px-6 py-4">
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--primary)] text-sm font-bold text-[var(--on-primary)] shadow-xs">
-              E
-            </span>
+        <aside className="sticky top-3 ml-3 hidden h-[calc(100dvh-1.5rem)] w-64 shrink-0 flex-col overflow-hidden rounded-[28px] border border-[var(--hairline)] bg-[var(--surface-card)] shadow-[var(--shadow-md)] md:flex">
+          <div className="flex items-center gap-3 px-5 pb-4 pt-5">
+            <BrandLogo href="/dashboard" className="w-[6.75rem]" priority />
             <div className="min-w-0">
-              <Link
-                href="/dashboard"
-                prefetch={false}
-                className="block rounded text-base font-bold tracking-tight text-[var(--ink)] transition-opacity hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ink)]"
-              >
-                ED4U
-              </Link>
-              <p className="truncate text-[11px] font-medium text-[var(--muted)]">{schoolName}</p>
+              <p className="truncate text-[10px] font-semibold uppercase tracking-[0.08em] text-[var(--muted)]">
+                Không gian trường học
+              </p>
+              <p className="mt-0.5 truncate text-[11px] font-medium text-[var(--body)]">
+                {schoolName}
+              </p>
             </div>
           </div>
 
@@ -69,13 +65,13 @@ export async function AppShell({ actor, children }: { actor: Actor; children: Re
               row into the footer, and `scrollbar-gutter` keeps the track from
               shifting the labels when it appears. */}
           <div
-            className="ed4u-nav-scroll min-h-0 flex-1 overflow-y-auto px-4 pb-6"
+            className="ed4u-nav-scroll min-h-0 flex-1 overflow-y-auto px-3 pb-6"
             style={{ scrollbarGutter: "stable" }}
           >
             <NavLinks groups={groups} />
           </div>
 
-          <div className="border-t border-[var(--hairline-soft)] p-3">
+          <div className="m-3 mt-0 rounded-2xl bg-[var(--surface-soft)] p-2">
             <UserProfileCard user={userSummary} />
           </div>
         </aside>
@@ -84,8 +80,8 @@ export async function AppShell({ actor, children }: { actor: Actor; children: Re
           <MobileHeader groups={groups} user={userSummary} unreadCount={unreadCount} />
           <AppHeader user={userSummary} unreadCount={unreadCount} schoolName={schoolName} />
 
-          <main id="main-content" className="flex-1 px-4 py-6 md:px-8 md:py-8">
-            <div className="mx-auto w-full max-w-6xl">{children}</div>
+          <main id="main-content" className="flex-1 px-4 py-6 md:px-8 md:py-8 lg:px-10">
+            <div className="mx-auto w-full max-w-[84rem]">{children}</div>
           </main>
         </div>
       </div>

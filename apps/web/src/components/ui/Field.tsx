@@ -11,9 +11,9 @@ import {
 import { cn } from "@/lib/cn";
 
 export const inputBaseClass =
-  "w-full rounded-md border border-[var(--hairline)] bg-[var(--canvas)] px-3.5 py-2 text-sm text-[var(--ink)] " +
-  "placeholder:text-[var(--muted-soft)] transition-colors duration-150 " +
-  "focus:border-[var(--ink)] focus:outline-none focus:ring-2 focus:ring-gray-950/10 " +
+  "w-full rounded-xl border border-[var(--hairline)] bg-[var(--surface-card)] px-3.5 py-2 text-sm text-[var(--ink)] shadow-[inset_0_1px_0_rgba(15,23,42,0.02)] " +
+  "placeholder:text-[var(--muted-soft)] transition-[border-color,box-shadow,background-color] duration-200 " +
+  "hover:border-[var(--brand-100)] focus:border-[var(--brand-600)] focus:outline-none focus:ring-4 focus:ring-blue-500/10 " +
   "disabled:cursor-not-allowed disabled:bg-[var(--surface-soft)] disabled:text-[var(--muted)] " +
   "aria-[invalid=true]:border-[var(--error)] aria-[invalid=true]:focus:ring-red-500/20";
 

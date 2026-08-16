@@ -24,7 +24,7 @@ accessibility, colour, typography or interaction rules in that standard.
 
 - Typeface: `Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif`.
 - Grid: 8px base; common spacing 8/12/16/24/32/48px.
-- Radius: controls 8px; cards 10px; dialogs 12px.
+- Radius: nested controls 10–12px; cards 20–24px; dialogs and major panels 24–32px.
 - Borders: 1px solid `--border`; white cards have a single restrained elevation only when needed.
 - Motion: 150–220ms for controls, 220–280ms for surfaces. Honour reduced motion.
 
@@ -35,5 +35,7 @@ accessibility, colour, typography or interaction rules in that standard.
 - Primary buttons are blue (`--brand-700`) with white text. Orange is not an ED4U CTA colour.
 - Maintain 4.5:1 contrast for normal text, always supply visible `:focus-visible`, and use SVG
   icons from one family.
+- Rounded shapes must preserve hierarchy: controls are tighter than cards; cards are tighter than
+  major marketing/authentication panels. Avoid turning ordinary labels into pills.
 - No hero-marketing layouts inside authenticated product screens. Show information, evidence and
   the next authorised action.

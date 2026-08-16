@@ -14,30 +14,32 @@ describe("Slice 2 UI Foundation - Tokens and Assets", () => {
     const globalsCss = readFileSync(join(ROOT, "apps/web/src/app/globals.css"), "utf8");
 
     // CSS custom properties in globals.css are the canonical runtime source of truth
-    expect(globalsCss).toContain("--canvas: #ffffff;");
-    expect(globalsCss).toContain("--primary: #111111;");
-    expect(globalsCss).toContain("--surface-soft: #f9fafb;");
-    expect(globalsCss).toContain("--hairline: #e5e7eb;");
-    expect(globalsCss).toContain("--brand-accent: #3b82f6;");
+    expect(globalsCss).toContain("--canvas: #f8fafc;");
+    expect(globalsCss).toContain("--brand-700: #1749c8;");
+    expect(globalsCss).toContain("--surface-soft: #f1f5f9;");
+    expect(globalsCss).toContain("--hairline: #e2e8f0;");
+    expect(globalsCss).toContain("--brand-600: #2563eb;");
 
     // ed4uTokens reference matches
-    expect(ed4uTokens.colors.primary).toBe("#111111");
-    expect(ed4uTokens.colors.canvas).toBe("#ffffff");
-    expect(ed4uTokens.colors.surfaceSoft).toBe("#f9fafb");
-    expect(ed4uTokens.colors.hairline).toBe("#e5e7eb");
-    expect(ed4uTokens.colors.brandAccent).toBe("#3b82f6");
-    expect(ed4uTokens.radius.md).toBe("8px");
-    expect(ed4uTokens.radius.lg).toBe("12px");
+    expect(ed4uTokens.colors.primary).toBe("#1749c8");
+    expect(ed4uTokens.colors.canvas).toBe("#f8fafc");
+    expect(ed4uTokens.colors.surfaceSoft).toBe("#f1f5f9");
+    expect(ed4uTokens.colors.hairline).toBe("#e2e8f0");
+    expect(ed4uTokens.colors.brandAccent).toBe("#2563eb");
+    expect(ed4uTokens.radius.md).toBe("12px");
+    expect(ed4uTokens.radius.lg).toBe("16px");
   });
 
   it("provides valid brand icon and favicon files without EduSync references", () => {
     const iconSvgPath = join(ROOT, "apps/web/public/icon.svg");
     const faviconPath = join(ROOT, "apps/web/public/favicon.ico");
     const appIconSvgPath = join(ROOT, "apps/web/src/app/icon.svg");
+    const logoPath = join(ROOT, "apps/web/public/brand/ed4u-logo.png");
 
     expect(existsSync(iconSvgPath)).toBe(true);
     expect(existsSync(faviconPath)).toBe(true);
     expect(existsSync(appIconSvgPath)).toBe(true);
+    expect(existsSync(logoPath)).toBe(true);
 
     const iconContent = readFileSync(iconSvgPath, "utf8");
     expect(iconContent).not.toMatch(/EduSync/i);

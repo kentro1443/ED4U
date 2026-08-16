@@ -8,6 +8,7 @@ import { Icons } from "@/components/ui/icons";
 import { NavLinks } from "./NavLinks";
 import { UserProfileCard, type UserSummary } from "./UserMenu";
 import type { PermittedNavGroup } from "@/lib/nav";
+import { BrandLogo } from "@/components/BrandLogo";
 
 export function MobileHeader({
   groups,
@@ -22,14 +23,9 @@ export function MobileHeader({
 
   return (
     <>
-      <header className="sticky top-0 z-40 flex h-14 w-full items-center justify-between border-b border-[var(--hairline)] bg-[var(--canvas)]/95 px-4 backdrop-blur-md md:hidden">
+      <header className="sticky top-0 z-40 flex h-16 w-full items-center justify-between border-b border-[var(--hairline)] bg-[var(--surface-card)]/95 px-4 backdrop-blur-xl md:hidden">
         <div className="flex items-center gap-2.5">
-          <Link href="/dashboard" prefetch={false} className="flex items-center gap-2">
-            <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-[var(--primary)] text-xs font-bold text-[var(--on-primary)] shadow-xs">
-              E
-            </span>
-            <span className="text-base font-bold tracking-tight text-[var(--ink)]">ED4U</span>
-          </Link>
+          <BrandLogo href="/dashboard" className="w-[6.75rem]" priority />
         </div>
 
         <div className="flex items-center gap-1">
@@ -39,7 +35,7 @@ export function MobileHeader({
             aria-label={
               unreadCount > 0 ? `Thông báo, ${unreadCount} chưa đọc` : "Thông báo, không có mục mới"
             }
-            className="relative flex h-11 w-11 items-center justify-center rounded-md text-[var(--body)] transition-colors hover:bg-[var(--surface-soft)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ink)]"
+            className="relative flex h-11 w-11 items-center justify-center rounded-xl text-[var(--body)] transition-colors hover:bg-[var(--surface-soft)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand-600)]"
           >
             <Icons.notifications className="h-5 w-5" aria-hidden="true" />
             {unreadCount > 0 && (

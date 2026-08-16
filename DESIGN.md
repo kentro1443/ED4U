@@ -16,11 +16,11 @@ the same idea: education first, intelligence as a useful supporting layer. Cobal
 recognisable brand signal; deep navy gives the product authority; neutral surfaces let complex
 school work remain legible.
 
-**Character:** trusted, considered, modern, calm, capable.
+**Character:** trusted, considered, modern, calm, capable, distinctly rounded.
 
 **Never:** rainbow AI gradients, glowing orbs, decorative data visuals, heavy glass effects,
-oversized pills, excessive shadows, stock-illustration hero panels, or blue used for every
-surface.
+indiscriminate pill shapes, excessive shadows, stock-illustration hero panels, or blue used for
+every surface. ED4U is a rounded system, but radius still communicates hierarchy.
 
 ## Colour system
 
@@ -70,8 +70,9 @@ except compact, familiar codes such as room or class IDs.
 - Mobile: 390px inspection target; 16px gutters; use agenda/card alternatives for dense tables.
 - Page rhythm: 8px base unit. Common gaps are 8, 12, 16, 24, 32 and 48px.
 - Separate major page regions with 32px, not decorative bands.
-- Cards use 10px radius, 1px `--border` outline, white surface and at most a subtle 1–2px
-  elevation. Reserve larger shadows for dialogs and menus.
+- Cards use 20–24px radius, 1px `--border` outline, white surface and at most a subtle 1–2px
+  elevation. Controls use 12px; nested items use 10–12px; prominent marketing/authentication
+  panels use 28–32px. Reserve larger shadows for dialogs and menus.
 - Prefer one responsive grid over nested card grids. A dashboard card must answer a real
   question or expose an immediate action.
 
@@ -90,7 +91,7 @@ except compact, familiar codes such as room or class IDs.
 
 ### Buttons
 
-- Primary: `--brand-700` background, white label, 40px standard height, 8px radius.
+- Primary: `--brand-700` background, white label, 40px standard height, 12px radius.
 - Secondary: white background, `--border` border, `--ink` label.
 - Tertiary: transparent, `--brand-700` label; use for inline or less-important actions.
 - Destructive: white or subtle red surface until final confirmation; do not style ordinary
@@ -100,7 +101,7 @@ except compact, familiar codes such as room or class IDs.
 
 ### Forms and data
 
-- Inputs are 40px minimum height, white, 1px border, 8px radius. Labels remain visible above
+- Inputs are 40px minimum height, white, 1px border, 12px radius. Labels remain visible above
   inputs; placeholders are examples, never labels.
 - Show validation next to the field with an explicit recovery action.
 - Tables prioritise scanability: sticky header where necessary, 44px minimum row height, numerical
