@@ -23,7 +23,13 @@ export function RouteProgress() {
       const anchor = target.closest("a[href]");
       if (!(anchor instanceof HTMLAnchorElement)) return;
       const next = new URL(anchor.href, window.location.href);
-      if (next.origin !== window.location.origin || next.href === window.location.href) return;
+      const current = new URL(window.location.href);
+      if (
+        next.origin !== current.origin ||
+        (next.pathname === current.pathname && next.search === current.search)
+      ) {
+        return;
+      }
       delayRef.current = window.setTimeout(() => setVisible(true), 100);
     }
 
