@@ -41,6 +41,11 @@ import {
   KeyRound,
   HelpCircle,
   Download,
+  BrainCircuit,
+  Cpu,
+  Network,
+  Sparkles,
+  Workflow,
   type LucideProps,
 } from "lucide-react";
 
@@ -87,6 +92,11 @@ export const Icons = {
   key: KeyRound,
   help: HelpCircle,
   download: Download,
+  aiBrain: BrainCircuit,
+  cpu: Cpu,
+  network: Network,
+  sparkles: Sparkles,
+  workflow: Workflow,
 };
 
 export type IconType = keyof typeof Icons;

@@ -2,12 +2,13 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { currentActor } from "@/lib/auth";
 import { BrandLogo } from "@/components/BrandLogo";
+import { LandingMotion } from "@/components/LandingMotion";
 import { Icons, type IconType } from "@/components/ui/icons";
 
 export const metadata: Metadata = {
-  title: "Nền tảng vận hành trường học",
+  title: "Hybrid Neuro-Symbolic Intelligence cho vận hành trường học",
   description:
-    "ED4U kết nối vận hành nhà trường, hỗ trợ học sinh, cố vấn và quản trị trong một nền tảng có kiểm chứng và phân quyền rõ ràng.",
+    "ED4U tích hợp AI với Hybrid Neuro-Symbolic Intelligence để ghép nối cố vấn, tối ưu phòng học và hỗ trợ quyết định có thể kiểm chứng.",
 };
 
 const OPERATIONS = [
@@ -57,6 +58,45 @@ const BENEFITS = [
   },
 ];
 
+const TECHNOLOGY_FEATURES = [
+  {
+    icon: "search" as IconType,
+    title: "AI hiểu nhu cầu tự nhiên",
+    description:
+      "Diễn giải mục tiêu học tập hoặc yêu cầu phòng từ ngôn ngữ đời thường thành dữ liệu có cấu trúc để người dùng xác nhận.",
+  },
+  {
+    icon: "adminSettings" as IconType,
+    title: "Symbolic Constraint Engine",
+    description:
+      "Mã hóa sức chứa, thiết bị, thời gian, chuyên môn, ngân sách và điều kiện bắt buộc thành ràng buộc có thể kiểm chứng.",
+  },
+  {
+    icon: "matchSpace" as IconType,
+    title: "Xếp hạng đa tiêu chí",
+    description:
+      "So sánh các phương án hợp lệ trên nhiều tín hiệu, trong khi ràng buộc cứng không bao giờ bị điểm số cao bù trừ.",
+  },
+  {
+    icon: "info" as IconType,
+    title: "Explainable by design",
+    description:
+      "Mỗi kết quả trình bày lý do phù hợp, đánh đổi, dữ liệu còn thiếu và nguyên nhân một phương án bị loại.",
+  },
+  {
+    icon: "calendar" as IconType,
+    title: "Live-state validation",
+    description:
+      "Trước khi đặt lịch hoặc duyệt phòng, hệ thống truy vấn lại lịch rảnh, thời khóa biểu, giữ chỗ và trạng thái mới nhất.",
+  },
+  {
+    icon: "security" as IconType,
+    title: "Human-governed execution",
+    description:
+      "AI tạo đề xuất; phần mềm kiểm tra; người có thẩm quyền phê duyệt; giao dịch mới được phép thay đổi trạng thái.",
+  },
+] as const;
+
 const ROLES = [
   ["Học sinh", "Lịch học, cố vấn, đơn từ, phòng, câu lạc bộ và thảo luận."],
   ["Giáo viên", "Đơn được phân công, lịch hẹn, thời khóa biểu và hỗ trợ học sinh."],
@@ -71,7 +111,8 @@ export default async function LandingPage() {
   const appLabel = actor ? "Mở không gian ED4U" : "Đăng nhập";
 
   return (
-    <div className="min-h-dvh overflow-hidden bg-white text-[var(--ink)]">
+    <div data-landing className="min-h-dvh overflow-hidden bg-white text-[var(--ink)]">
+      <LandingMotion />
       <header className="fixed inset-x-0 top-0 z-50 px-4 pt-4 sm:px-6">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between rounded-2xl border border-white/70 bg-white/90 px-4 shadow-[0_16px_48px_-28px_rgba(15,23,42,.38)] backdrop-blur-xl sm:px-5">
           <BrandLogo href="/" className="w-[7.5rem] sm:w-[8.5rem]" priority />
@@ -80,7 +121,7 @@ export default async function LandingPage() {
             className="hidden items-center gap-1 md:flex"
           >
             <LandingNavLink href="#tinh-nang">Nền tảng</LandingNavLink>
-            <LandingNavLink href="#tri-tue">Trí tuệ vận hành</LandingNavLink>
+            <LandingNavLink href="#tri-tue">Công nghệ lõi</LandingNavLink>
             <LandingNavLink href="#loi-ich">Lợi ích</LandingNavLink>
             <LandingNavLink href="#vai-tro">Vai trò</LandingNavLink>
           </nav>
@@ -103,15 +144,18 @@ export default async function LandingPage() {
             <div className="max-w-3xl">
               <div className="inline-flex items-center gap-2 rounded-xl border border-[var(--brand-100)] bg-white/85 px-3 py-2 text-xs font-bold text-[var(--primary)] shadow-[var(--shadow-sm)]">
                 <span className="h-2 w-2 rounded-full bg-[var(--brand-600)] shadow-[0_0_0_5px_var(--brand-50)]" />
-                Một nền tảng cho toàn bộ hoạt động trường học
+                Hybrid Neuro-Symbolic Intelligence for Education
               </div>
               <h1 className="mt-7 text-balance text-4xl font-extrabold leading-[1.08] tracking-[-0.055em] text-[var(--ink)] sm:text-6xl lg:text-[4.25rem]">
-                Vận hành rõ ràng hơn. Hỗ trợ học sinh đúng lúc hơn.
+                AI hiểu nhu cầu. Logic kiểm chứng quyết định.
               </h1>
               <p className="mt-7 max-w-2xl text-pretty text-base leading-8 text-[var(--body)] sm:text-lg">
-                ED4U đưa lịch, phòng, hồ sơ học sinh, cố vấn và cộng đồng trường học vào những quy
-                trình có trách nhiệm rõ ràng—để mỗi quyết định đều có dữ liệu, kiểm chứng và người
-                phê duyệt.
+                ED4U tích hợp AI với{" "}
+                <strong className="font-extrabold text-[var(--ink)]">
+                  Hybrid Neuro-Symbolic Intelligence
+                </strong>{" "}
+                để ghép nối đúng cố vấn và tối ưu đúng phòng học—vừa hiểu ngôn ngữ tự nhiên, vừa
+                tuân thủ ràng buộc cứng, vừa giải thích được vì sao một phương án được đề xuất.
               </p>
               <div className="mt-9 flex flex-col gap-3 sm:flex-row">
                 <Link
@@ -129,9 +173,9 @@ export default async function LandingPage() {
                 </a>
               </div>
               <div className="mt-9 flex flex-wrap gap-x-6 gap-y-3 text-xs font-semibold text-[var(--muted)] sm:text-sm">
-                <TrustPoint>Phân quyền theo vai trò</TrustPoint>
-                <TrustPoint>Thời gian theo múi giờ trường</TrustPoint>
-                <TrustPoint>Phê duyệt bởi con người</TrustPoint>
+                <TrustPoint>AI + logic biểu tượng</TrustPoint>
+                <TrustPoint>Kết quả có thể giải thích</TrustPoint>
+                <TrustPoint>Con người giữ quyền quyết định</TrustPoint>
               </div>
             </div>
 
@@ -151,7 +195,10 @@ export default async function LandingPage() {
             />
 
             <div className="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-[1.15fr_.85fr]">
-              <article className="rounded-[32px] bg-[var(--surface-dark)] p-7 text-white shadow-[var(--shadow-lg)] sm:p-10 md:row-span-2">
+              <article
+                data-reveal="left"
+                className="rounded-[32px] bg-[var(--surface-dark)] p-7 text-white shadow-[var(--shadow-lg)] sm:p-10 md:row-span-2"
+              >
                 <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-500/20 text-blue-200 ring-1 ring-inset ring-blue-300/20">
                   <Icons.dashboard className="h-6 w-6" />
                 </div>
@@ -185,7 +232,8 @@ export default async function LandingPage() {
                 return (
                   <article
                     key={item.title}
-                    className="rounded-[28px] border border-[var(--hairline)] bg-white p-6 shadow-[var(--shadow-sm)] transition-[transform,border-color,box-shadow] duration-200 hover:-translate-y-1 hover:border-[var(--brand-100)] hover:shadow-[var(--shadow-md)] motion-reduce:transform-none sm:p-7"
+                    data-reveal
+                    className="rounded-[28px] border border-[var(--hairline)] bg-white p-6 shadow-[var(--shadow-sm)] transition-[border-color,box-shadow] duration-200 hover:border-[var(--brand-100)] hover:shadow-[var(--shadow-md)] sm:p-7"
                   >
                     <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--brand-50)] text-[var(--primary)] ring-1 ring-inset ring-[var(--brand-100)]">
                       <Icon className="h-5 w-5" />
@@ -204,17 +252,40 @@ export default async function LandingPage() {
         <section id="tri-tue" className="scroll-mt-28 px-4 py-20 sm:px-6 sm:py-28">
           <div className="mx-auto max-w-7xl">
             <SectionLead
-              eyebrow="Trí tuệ vận hành có kiểm chứng"
-              title="Hệ thống đề xuất. Quy tắc xác thực. Con người quyết định."
-              description="Hai năng lực nổi bật của ED4U hỗ trợ quyết định thực tế mà không làm mờ ranh giới giữa đề xuất và hành động được phép."
+              eyebrow="Công nghệ lõi của ED4U"
+              title="Hybrid Neuro-Symbolic Intelligence"
+              description="ED4U kết hợp khả năng diễn giải ý định của AI với sức mạnh kiểm chứng của logic biểu tượng. Cùng một kiến trúc lõi giúp Mentor Matching và Room Optimization tạo ra kết quả phù hợp, minh bạch và an toàn để đưa vào vận hành thực tế."
             />
+
+            <div
+              data-reveal
+              className="mt-12 overflow-hidden rounded-[32px] bg-[var(--surface-dark)] p-6 text-white shadow-[var(--shadow-lg)] sm:p-8 lg:p-10"
+            >
+              <div className="grid gap-8 lg:grid-cols-[.9fr_1.1fr] lg:items-center">
+                <div>
+                  <TechnologyConstellation />
+                  <span className="inline-flex rounded-xl bg-blue-500/15 px-3 py-2 text-[11px] font-extrabold uppercase tracking-[0.14em] text-blue-200 ring-1 ring-inset ring-blue-300/20">
+                    Neural understanding × Symbolic reasoning
+                  </span>
+                  <h3 className="mt-6 text-balance text-2xl font-extrabold tracking-[-0.04em] text-white sm:text-4xl">
+                    Hiểu điều người dùng muốn. Bảo đảm điều hệ thống làm là hợp lệ.
+                  </h3>
+                  <p className="mt-5 max-w-xl text-sm leading-7 text-slate-300 sm:text-base">
+                    Lớp AI chuyển lời mô tả thành ý định và tiêu chí. Lớp symbolic reasoning áp dụng
+                    quy tắc miền, loại mọi phương án vi phạm và tạo lời giải thích có thể kiểm tra.
+                    Con người xác nhận trước khi bất kỳ giao dịch nào diễn ra.
+                  </p>
+                </div>
+                <TechnologyPipeline />
+              </div>
+            </div>
 
             <div className="mt-12 grid gap-6 lg:grid-cols-2">
               <IntelligenceCard
                 number="01"
                 icon="mentor"
-                title="Mentor Intelligence"
-                description="Chuyển mục tiêu học tập thành ràng buộc có thể xác nhận, xếp hạng cố vấn bằng dữ liệu thật và giải thích lý do phù hợp, đánh đổi cùng độ phủ dữ liệu."
+                title="AI Mentor Matching"
+                description="Hiểu mục tiêu học tập, chuyển thành ràng buộc có thể xác nhận, xếp hạng cố vấn bằng dữ liệu thật và giải thích lý do phù hợp, đánh đổi cùng độ phủ dữ liệu."
                 items={[
                   "Yêu cầu bằng ngôn ngữ tự nhiên",
                   "Ràng buộc cứng không bị điểm số bù trừ",
@@ -225,8 +296,8 @@ export default async function LandingPage() {
               <IntelligenceCard
                 number="02"
                 icon="rooms"
-                title="Facility Planning Intelligence"
-                description="Đề xuất phòng theo thời gian, sức chứa, thiết bị và lịch sử dụng thực. Yêu cầu chờ chỉ là giữ chỗ mềm; phê duyệt luôn kiểm tra lại trạng thái trực tiếp."
+                title="AI Room Optimization"
+                description="Tối ưu phòng theo thời gian, sức chứa, thiết bị và lịch sử dụng thực. Yêu cầu chờ chỉ là giữ chỗ mềm; phê duyệt luôn kiểm tra lại trạng thái trực tiếp."
                 items={[
                   "Lịch học và đặt phòng trong cùng ngữ cảnh",
                   "Giải thích phòng bị loại hoặc xếp hạng",
@@ -234,6 +305,40 @@ export default async function LandingPage() {
                   "Giao dịch phê duyệt ngăn xung đột",
                 ]}
               />
+            </div>
+
+            <div className="mt-16">
+              <div className="max-w-2xl">
+                <p className="text-sm font-bold uppercase tracking-[0.14em] text-[var(--primary)]">
+                  Năng lực công nghệ đột phá
+                </p>
+                <h3 className="mt-4 text-balance text-2xl font-extrabold tracking-[-0.04em] text-[var(--ink)] sm:text-4xl">
+                  Không chỉ tạo câu trả lời—tạo quyết định có căn cứ.
+                </h3>
+              </div>
+              <div className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                {TECHNOLOGY_FEATURES.map((feature, index) => {
+                  const Icon = Icons[feature.icon];
+                  return (
+                    <article
+                      key={feature.title}
+                      data-reveal
+                      style={{ "--reveal-delay": `${(index % 3) * 70}ms` } as React.CSSProperties}
+                      className="rounded-[24px] border border-[var(--hairline)] bg-white p-6 shadow-[var(--shadow-sm)] transition-[border-color,box-shadow] duration-200 hover:border-[var(--brand-100)] hover:shadow-[var(--shadow-md)]"
+                    >
+                      <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--brand-50)] text-[var(--primary)] ring-1 ring-inset ring-[var(--brand-100)]">
+                        <Icon className="h-5 w-5" aria-hidden="true" />
+                      </span>
+                      <h4 className="mt-5 text-base font-extrabold tracking-[-0.025em] text-[var(--ink)]">
+                        {feature.title}
+                      </h4>
+                      <p className="mt-2 text-sm leading-6 text-[var(--muted)]">
+                        {feature.description}
+                      </p>
+                    </article>
+                  );
+                })}
+              </div>
             </div>
 
             <div className="mt-8 rounded-[28px] border border-[var(--hairline)] bg-[var(--canvas)] p-5 sm:p-7">
@@ -287,7 +392,9 @@ export default async function LandingPage() {
                 {BENEFITS.map((benefit, index) => (
                   <article
                     key={benefit.title}
-                    className={`rounded-[28px] border border-white/10 bg-white/[0.055] p-6 backdrop-blur-sm sm:p-7 ${index === 1 || index === 2 ? "sm:translate-y-6" : ""}`}
+                    data-reveal
+                    style={{ "--reveal-delay": `${(index % 2) * 70}ms` } as React.CSSProperties}
+                    className="rounded-[28px] border border-white/10 bg-white/[0.055] p-6 backdrop-blur-sm sm:p-7"
                   >
                     <span className="text-xs font-extrabold tabular-nums text-blue-300">
                       0{index + 1}
@@ -314,6 +421,8 @@ export default async function LandingPage() {
               {ROLES.map(([name, description], index) => (
                 <div
                   key={name}
+                  data-reveal
+                  style={{ "--reveal-delay": `${(index % 3) * 60}ms` } as React.CSSProperties}
                   className="grid gap-3 border-b border-[var(--hairline-soft)] p-5 last:border-b-0 sm:grid-cols-[12rem_1fr] sm:items-center sm:p-6"
                 >
                   <div className="flex items-center gap-3">
@@ -330,7 +439,10 @@ export default async function LandingPage() {
         </section>
 
         <section className="px-4 pb-20 sm:px-6 sm:pb-28">
-          <div className="relative mx-auto max-w-7xl overflow-hidden rounded-[36px] bg-[var(--primary)] px-6 py-12 text-white shadow-[0_30px_90px_-40px_rgba(23,73,200,.8)] sm:px-10 sm:py-16 lg:px-16">
+          <div
+            data-reveal
+            className="relative mx-auto max-w-7xl overflow-hidden rounded-[36px] bg-[var(--primary)] px-6 py-12 text-white shadow-[0_30px_90px_-40px_rgba(23,73,200,.8)] sm:px-10 sm:py-16 lg:px-16"
+          >
             <div className="absolute -right-24 -top-24 h-80 w-80 rounded-full bg-blue-400/25 blur-3xl" />
             <div className="relative grid items-center gap-8 lg:grid-cols-[1fr_auto]">
               <div>
@@ -368,7 +480,7 @@ export default async function LandingPage() {
               Nền tảng
             </a>
             <a href="#tri-tue" className="hover:text-[var(--ink)]">
-              Trí tuệ vận hành
+              Công nghệ lõi
             </a>
             <a href="#loi-ich" className="hover:text-[var(--ink)]">
               Lợi ích
@@ -414,7 +526,7 @@ function SectionLead({
   description: string;
 }) {
   return (
-    <div className="max-w-3xl">
+    <div data-reveal className="max-w-3xl">
       <p className="text-sm font-bold uppercase tracking-[0.14em] text-[var(--primary)]">
         {eyebrow}
       </p>
@@ -430,7 +542,7 @@ function SectionLead({
 
 function ProductPreview() {
   return (
-    <div className="relative mx-auto w-full max-w-xl lg:mx-0">
+    <div data-reveal="right" className="relative mx-auto w-full max-w-xl lg:mx-0">
       <div className="absolute -inset-8 -z-10 rounded-full bg-blue-400/20 blur-3xl" />
       <div className="rounded-[32px] border border-white/90 bg-white/90 p-3 shadow-[0_38px_90px_-34px_rgba(30,64,175,.38)] backdrop-blur-xl">
         <div className="rounded-[24px] border border-[var(--hairline)] bg-[var(--canvas)] p-4 sm:p-5">
@@ -454,20 +566,17 @@ function ProductPreview() {
           <div className="mt-3 rounded-2xl border border-[var(--brand-100)] bg-white p-4 shadow-[var(--shadow-sm)]">
             <div className="flex items-start gap-3">
               <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-[var(--primary)] text-white shadow-[var(--shadow-brand)]">
-                <Icons.mentor className="h-5 w-5" />
+                <Icons.aiBrain className="h-5 w-5" />
               </span>
               <div className="min-w-0">
                 <div className="flex flex-wrap items-center gap-2">
-                  <p className="text-sm font-extrabold text-[var(--ink)]">
-                    Đề xuất có thể giải thích
-                  </p>
+                  <p className="text-sm font-extrabold text-[var(--ink)]">Hybrid Intelligence</p>
                   <span className="rounded-lg bg-[var(--brand-50)] px-2 py-1 text-[10px] font-bold text-[var(--primary)]">
-                    Có kiểm chứng
+                    AI + Rules
                   </span>
                 </div>
                 <p className="mt-2 text-xs leading-5 text-[var(--muted)]">
-                  Ràng buộc, lý do phù hợp và bước phê duyệt luôn xuất hiện trước khi thay đổi trạng
-                  thái.
+                  AI hiểu ý định; logic biểu tượng kiểm chứng ràng buộc và giải thích từng đề xuất.
                 </p>
               </div>
             </div>
@@ -515,6 +624,105 @@ function PreviewTask({ icon, title, detail }: { icon: IconType; title: string; d
   );
 }
 
+function TechnologyPipeline() {
+  const steps = [
+    {
+      label: "Hiểu ý định",
+      detail: "Ngôn ngữ tự nhiên → mục tiêu có cấu trúc",
+      icon: "search" as IconType,
+    },
+    {
+      label: "Suy luận biểu tượng",
+      detail: "Ràng buộc cứng → tập phương án hợp lệ",
+      icon: "adminSettings" as IconType,
+    },
+    {
+      label: "Tối ưu & giải thích",
+      detail: "Xếp hạng → lý do, đánh đổi, độ phủ",
+      icon: "matchSpace" as IconType,
+    },
+  ];
+
+  return (
+    <div className="rounded-[24px] border border-white/10 bg-white/[0.055] p-4 sm:p-5">
+      <div className="space-y-3">
+        {steps.map((step, index) => {
+          const Icon = Icons[step.icon];
+          return (
+            <div
+              key={step.label}
+              className="relative flex gap-4 rounded-2xl border border-white/10 bg-white/[0.055] p-4"
+            >
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-blue-500/15 text-blue-200 ring-1 ring-inset ring-blue-300/20">
+                <Icon className="h-5 w-5" aria-hidden="true" />
+              </span>
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] font-extrabold tabular-nums text-blue-300">
+                    0{index + 1}
+                  </span>
+                  <p className="text-sm font-extrabold text-white">{step.label}</p>
+                </div>
+                <p className="mt-1 text-xs leading-5 text-slate-400">{step.detail}</p>
+              </div>
+              {index < steps.length - 1 && (
+                <span className="absolute -bottom-3 left-[2.1rem] z-10 h-3 w-px bg-blue-300/30" />
+              )}
+            </div>
+          );
+        })}
+      </div>
+      <div className="mt-3 flex items-center gap-3 rounded-2xl bg-blue-500/15 p-4 ring-1 ring-inset ring-blue-300/20">
+        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-blue-400/20 text-blue-100">
+          <Icons.security className="h-4 w-4" aria-hidden="true" />
+        </span>
+        <div>
+          <p className="text-xs font-extrabold text-white">Human authorization layer</p>
+          <p className="mt-1 text-[11px] leading-4 text-blue-100/70">
+            Người có thẩm quyền xác nhận trước khi giao dịch thay đổi trạng thái.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function TechnologyConstellation() {
+  return (
+    <div data-parallax="0.22" aria-hidden="true" className="relative mb-7 h-24 max-w-sm sm:h-28">
+      <svg
+        viewBox="0 0 360 112"
+        className="absolute inset-0 h-full w-full text-blue-300/30"
+        fill="none"
+      >
+        <path d="M70 27 L178 57 L295 22 M178 57 L302 91 M178 57 L52 94" stroke="currentColor" />
+        <circle cx="70" cy="27" r="3" fill="currentColor" />
+        <circle cx="295" cy="22" r="3" fill="currentColor" />
+        <circle cx="302" cy="91" r="3" fill="currentColor" />
+        <circle cx="52" cy="94" r="3" fill="currentColor" />
+      </svg>
+      <span className="absolute left-[42%] top-[20%] flex h-16 w-16 items-center justify-center rounded-[22px] bg-blue-500 text-white shadow-[0_18px_40px_-15px_rgba(59,130,246,.9)] ring-1 ring-inset ring-white/20">
+        <Icons.aiBrain className="h-8 w-8" />
+      </span>
+      <TechOrbitIcon className="left-[9%] top-1" icon="cpu" />
+      <TechOrbitIcon className="right-[9%] top-0" icon="network" />
+      <TechOrbitIcon className="bottom-0 left-[4%]" icon="workflow" />
+      <TechOrbitIcon className="bottom-0 right-[5%]" icon="sparkles" />
+    </div>
+  );
+}
+
+function TechOrbitIcon({ icon, className }: { icon: IconType; className: string }) {
+  const Icon = Icons[icon];
+  return (
+    <span
+      className={`absolute flex h-10 w-10 items-center justify-center rounded-2xl bg-white/[0.07] text-blue-200 ring-1 ring-inset ring-white/10 ${className}`}
+    >
+      <Icon className="h-5 w-5" />
+    </span>
+  );
+}
+
 function IntelligenceCard({
   number,
   icon,
@@ -530,7 +738,10 @@ function IntelligenceCard({
 }) {
   const Icon = Icons[icon];
   return (
-    <article className="group rounded-[32px] border border-[var(--hairline)] bg-white p-6 shadow-[var(--shadow-sm)] transition-[transform,border-color,box-shadow] duration-300 hover:-translate-y-1 hover:border-[var(--brand-100)] hover:shadow-[var(--shadow-md)] motion-reduce:transform-none sm:p-8">
+    <article
+      data-reveal
+      className="group rounded-[32px] border border-[var(--hairline)] bg-white p-6 shadow-[var(--shadow-sm)] transition-[border-color,box-shadow] duration-300 hover:border-[var(--brand-100)] hover:shadow-[var(--shadow-md)] sm:p-8"
+    >
       <div className="flex items-start justify-between gap-5">
         <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--brand-50)] text-[var(--primary)] ring-1 ring-inset ring-[var(--brand-100)]">
           <Icon className="h-6 w-6" />

@@ -68,6 +68,10 @@
   --shadow-lg: 0 24px 64px -28px rgba(15, 23, 42, 0.28);
   --shadow-brand: 0 10px 24px -12px rgba(23, 73, 200, 0.7);
 
+  /* Motion */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+
   /* Transitional aliases for stability */
   --paper: var(--canvas);
   --card: var(--canvas);
@@ -161,6 +165,35 @@ a {
   }
 }
 
+/* Marketing-only motion: reveal once to explain hierarchy as the reader scrolls. */
+[data-landing][data-motion-ready] [data-reveal] {
+  opacity: 0;
+  transform: translate3d(0, 1.75rem, 0);
+  transition:
+    opacity 600ms var(--ease-out),
+    transform 600ms var(--ease-out);
+  transition-delay: var(--reveal-delay, 0ms);
+  will-change: opacity, transform;
+}
+
+[data-landing][data-motion-ready] [data-reveal="left"] {
+  transform: translate3d(-2rem, 0, 0);
+}
+
+[data-landing][data-motion-ready] [data-reveal="right"] {
+  transform: translate3d(2rem, 0, 0);
+}
+
+[data-landing][data-motion-ready] [data-reveal][data-visible] {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  will-change: auto;
+}
+
+[data-landing] [data-parallax] {
+  will-change: transform;
+}
+
 /* Heading Tracking & Weights */
 h1,
 h2,
@@ -206,6 +239,15 @@ h4,
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+
+  [data-landing][data-motion-ready] [data-reveal] {
+    opacity: 1;
+    transform: none;
+  }
+
+  [data-landing] [data-parallax] {
+    transform: none !important;
   }
 }
 
