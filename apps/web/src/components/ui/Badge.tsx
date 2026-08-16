@@ -91,10 +91,11 @@ export function StatusBadge({ status, className }: { status: string; className?:
     DRAFT: { tone: "neutral", label: "Bản nháp" },
     VOIDED: { tone: "neutral", label: "Đã vô hiệu" },
     ARCHIVED: { tone: "neutral", label: "Lưu trữ" },
-    STUDENT: { tone: "neutral", label: status },
-    TEACHER: { tone: "neutral", label: status },
-    SCHOOL_ADMIN: { tone: "brand", label: status },
-    ADMIN_IT: { tone: "dark", label: status },
+    STUDENT: { tone: "neutral", label: "Học sinh" },
+    TEACHER: { tone: "neutral", label: "Giáo viên" },
+    MENTOR: { tone: "brand", label: "Cố vấn" },
+    SCHOOL_ADMIN: { tone: "brand", label: "Quản trị trường" },
+    ADMIN_IT: { tone: "dark", label: "Quản trị hệ thống" },
   };
   const item = map[s] ?? { tone: "neutral" as BadgeTone, label: status };
   return (

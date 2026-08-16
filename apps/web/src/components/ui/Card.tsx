@@ -39,7 +39,7 @@ export function CardHeader({ className, children, ...props }: HTMLAttributes<HTM
 export function CardTitle({ className, children, ...props }: HTMLAttributes<HTMLHeadingElement>) {
   return (
     <h3
-      className={cn("text-base font-semibold tracking-tight text-[var(--ink)]", className)}
+      className={cn("text-base font-extrabold tracking-[-0.02em] text-[var(--ink)]", className)}
       {...props}
     >
       {children}

@@ -11,12 +11,20 @@ export interface UserSummary {
   membershipStatus: string;
 }
 
+const ROLE_LABELS: Record<string, string> = {
+  STUDENT: "Học sinh",
+  TEACHER: "Giáo viên",
+  MENTOR: "Cố vấn",
+  SCHOOL_ADMIN: "Quản trị trường",
+  ADMIN_IT: "Quản trị hệ thống",
+};
+
 export function UserProfileCard({ user }: { user: UserSummary }) {
   const displayName = user.fullName || user.schoolMemberCode;
   const primaryRole = user.roles[0] || "MEMBER";
 
   return (
-    <div className="flex flex-col gap-3 rounded-xl border border-[var(--hairline)] bg-[var(--surface-soft)] p-3">
+    <div className="flex flex-col gap-3 rounded-2xl border border-[var(--hairline)] bg-[var(--surface-card)] p-3 shadow-[var(--shadow-sm)]">
       <div className="flex items-center gap-3 min-w-0">
         <Avatar name={displayName} size="sm" />
         <div className="flex-1 min-w-0">
@@ -28,7 +36,7 @@ export function UserProfileCard({ user }: { user: UserSummary }) {
       <div className="flex items-center justify-between gap-2 border-t border-[var(--hairline-soft)] pt-2">
         <div className="flex flex-wrap gap-1">
           <Badge tone={primaryRole.includes("ADMIN") ? "dark" : "neutral"} size="sm">
-            {primaryRole}
+            {ROLE_LABELS[primaryRole] ?? primaryRole}
           </Badge>
           {user.membershipStatus !== "ACTIVE" && (
             <Badge tone="warning" size="sm">

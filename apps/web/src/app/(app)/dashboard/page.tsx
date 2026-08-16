@@ -21,6 +21,14 @@ const WEEKDAY_LABELS: Record<string, string> = {
   FRI: "Thứ Sáu",
 };
 
+const ROLE_LABELS: Record<string, string> = {
+  STUDENT: "Học sinh",
+  TEACHER: "Giáo viên",
+  MENTOR: "Cố vấn",
+  SCHOOL_ADMIN: "Quản trị trường",
+  ADMIN_IT: "Quản trị hệ thống",
+};
+
 /**
  * Which applications count as "waiting on me": the ones assigned to a teacher,
  * or the ones a student submitted.
@@ -132,6 +140,13 @@ export default async function DashboardPage() {
   ]);
 
   const todayEntries = entries.filter((entry) => entry.weekday === today);
+  const schoolDateLabel = new Intl.DateTimeFormat("vi-VN", {
+    timeZone: tenant.timezone,
+    weekday: "long",
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  }).format(now);
   const overdueRequests = pendingRoomRequests.filter(
     (request) => now.getTime() - request.holdCreatedAt.getTime() >= 24 * 3_600_000,
   ).length;
@@ -141,8 +156,89 @@ export default async function DashboardPage() {
       <PageHeader
         title="Tổng quan"
         description={`Bảng điều khiển hoạt động theo vai trò · ${tenant.name}`}
-        badge={<Badge tone="dark">{actor.roles.join(" · ")}</Badge>}
+        badge={
+          <Badge tone="brand">
+            {actor.roles.map((role) => ROLE_LABELS[role] ?? role).join(" · ")}
+          </Badge>
+        }
       />
+
+      {isTeacher && (
+        <section className="grid overflow-hidden rounded-[28px] bg-[var(--surface-dark)] text-white shadow-[var(--shadow-lg)] lg:grid-cols-[1.2fr_.8fr]">
+          <div className="p-6 sm:p-8">
+            <p className="text-xs font-extrabold uppercase tracking-[0.14em] text-blue-300">
+              Không gian giáo viên · {schoolDateLabel}
+            </p>
+            <h2 className="mt-4 max-w-2xl text-balance text-2xl font-extrabold tracking-[-0.04em] text-white sm:text-3xl">
+              Ưu tiên giảng dạy và hỗ trợ học sinh trong một nhịp làm việc.
+            </h2>
+            <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-300">
+              Hôm nay có {todayEntries.length} tiết dạy, {pendingApplications} đơn cần xử lý và{" "}
+              {appointments.length} lịch hẹn sắp tới. Các số liệu được lấy trực tiếp theo phạm vi
+              phụ trách của bạn.
+            </p>
+            <div className="mt-6 flex flex-wrap gap-2.5">
+              <LinkButton href="/calendar" variant="secondary" size="sm">
+                <Icons.calendar className="h-3.5 w-3.5" />
+                Mở lịch dạy
+              </LinkButton>
+              <LinkButton href="/applications" variant="secondary" size="sm">
+                <Icons.applications className="h-3.5 w-3.5" />
+                Xử lý đơn
+              </LinkButton>
+              <LinkButton href="/appointments" variant="secondary" size="sm">
+                <Icons.appointments className="h-3.5 w-3.5" />
+                Quản lý lịch hẹn
+              </LinkButton>
+            </div>
+          </div>
+
+          <div className="m-3 rounded-[22px] border border-white/10 bg-white/[0.06] p-5 sm:m-4 sm:p-6">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <p className="text-xs font-extrabold text-white">Lịch dạy hôm nay</p>
+                <p className="mt-1 text-[11px] text-slate-400">
+                  {WEEKDAY_LABELS[today] ?? "Cuối tuần"}
+                </p>
+              </div>
+              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-500/20 text-blue-200 ring-1 ring-inset ring-blue-300/20">
+                <Icons.calendar className="h-4 w-4" />
+              </span>
+            </div>
+            {todayEntries.length === 0 ? (
+              <p className="mt-5 rounded-2xl bg-white/[0.05] p-4 text-xs leading-5 text-slate-300 ring-1 ring-inset ring-white/10">
+                Không có tiết dạy nào được xếp cho hôm nay.
+              </p>
+            ) : (
+              <ol className="mt-4 space-y-2">
+                {todayEntries.slice(0, 3).map((entry) => (
+                  <li
+                    key={entry.id}
+                    className="grid grid-cols-[3.25rem_1fr] gap-3 rounded-2xl bg-white/[0.06] p-3 ring-1 ring-inset ring-white/10"
+                  >
+                    <span className="text-xs font-extrabold tabular-nums text-blue-300">
+                      {entry.period.startTime}
+                    </span>
+                    <span className="min-w-0">
+                      <span className="block truncate text-xs font-bold text-white">
+                        {entry.subject.name} · {entry.class.code}
+                      </span>
+                      <span className="mt-1 block text-[10px] text-slate-400">
+                        Phòng {entry.room.code}
+                      </span>
+                    </span>
+                  </li>
+                ))}
+              </ol>
+            )}
+            {todayEntries.length > 3 && (
+              <p className="mt-3 text-[10px] font-semibold text-blue-200">
+                +{todayEntries.length - 3} tiết khác trong lịch đầy đủ
+              </p>
+            )}
+          </div>
+        </section>
+      )}
 
       {/* Summary strip: what needs attention, before any detail. */}
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
@@ -420,18 +516,20 @@ function Stat({
   return (
     <Link
       href={href}
-      className={`group rounded-xl border p-4 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ink)] ${
+      className={`group rounded-2xl border p-4 shadow-[var(--shadow-sm)] transition-[border-color,background-color,box-shadow] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand-600)] ${
         tone === "warning"
-          ? "border-amber-200 bg-amber-50/60 hover:bg-amber-50"
-          : "border-[var(--hairline)] bg-[var(--canvas)] hover:bg-[var(--surface-soft)]"
+          ? "border-amber-200 bg-amber-50/70 hover:bg-amber-50 hover:shadow-[var(--shadow-md)]"
+          : "border-[var(--hairline)] bg-[var(--surface-card)] hover:border-[var(--brand-100)] hover:bg-[var(--brand-50)]/45 hover:shadow-[var(--shadow-md)]"
       }`}
     >
-      <p className="flex items-center gap-2 text-xs font-medium text-[var(--muted)]">
-        <IconComponent className="h-3.5 w-3.5" aria-hidden="true" />
+      <p className="flex items-center gap-2 text-xs font-bold text-[var(--muted)]">
+        <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[var(--brand-50)] text-[var(--primary)] ring-1 ring-inset ring-[var(--brand-100)]">
+          <IconComponent className="h-3.5 w-3.5" aria-hidden="true" />
+        </span>
         <span className="truncate">{label}</span>
       </p>
       <p
-        className={`mt-1.5 text-2xl font-semibold tabular-nums ${
+        className={`mt-2 text-2xl font-extrabold tabular-nums tracking-[-0.04em] ${
           tone === "warning" ? "text-amber-800" : "text-[var(--ink)]"
         }`}
       >
@@ -461,10 +559,12 @@ function Widget({
 }) {
   const IconComponent = Icons[icon];
   return (
-    <Card data-widget={testId} className="flex flex-col">
+    <Card data-widget={testId} className="flex flex-col rounded-[24px]">
       <CardHeader className="flex flex-row items-center justify-between pb-3">
-        <div className="flex items-center gap-2">
-          <IconComponent className="h-4 w-4 text-[var(--muted)]" aria-hidden="true" />
+        <div className="flex items-center gap-2.5">
+          <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[var(--brand-50)] text-[var(--primary)] ring-1 ring-inset ring-[var(--brand-100)]">
+            <IconComponent className="h-4 w-4" aria-hidden="true" />
+          </span>
           <CardTitle>{title}</CardTitle>
         </div>
         {badge}
@@ -473,7 +573,7 @@ function Widget({
       {href && linkLabel && (
         <Link
           href={href}
-          className="mt-4 inline-flex items-center gap-1.5 self-start border-t border-transparent pt-1 text-xs font-semibold text-[var(--ink)] transition-colors hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ink)]"
+          className="mt-5 inline-flex items-center gap-1.5 self-start rounded-xl bg-[var(--brand-50)] px-3 py-2 text-xs font-bold text-[var(--primary)] transition-colors hover:bg-[var(--brand-100)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand-600)]"
         >
           {linkLabel}
           <Icons.arrowRight className="h-3 w-3" aria-hidden="true" />

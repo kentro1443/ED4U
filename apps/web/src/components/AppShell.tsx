@@ -47,16 +47,8 @@ export async function AppShell({ actor, children }: { actor: Actor; children: Re
             `min-h-0` rather than a hand-computed max-height, so admin routes can
             never fall below the fold on a short viewport. */}
         <aside className="sticky top-3 ml-3 hidden h-[calc(100dvh-1.5rem)] w-64 shrink-0 flex-col overflow-hidden rounded-[28px] border border-[var(--hairline)] bg-[var(--surface-card)] shadow-[var(--shadow-md)] md:flex">
-          <div className="flex items-center gap-3 px-5 pb-4 pt-5">
-            <BrandLogo href="/dashboard" className="w-[6.75rem]" priority />
-            <div className="min-w-0">
-              <p className="truncate text-[10px] font-semibold uppercase tracking-[0.08em] text-[var(--muted)]">
-                Không gian trường học
-              </p>
-              <p className="mt-0.5 truncate text-[11px] font-medium text-[var(--body)]">
-                {schoolName}
-              </p>
-            </div>
+          <div className="flex items-center px-5 pb-5 pt-5">
+            <BrandLogo href="/dashboard" className="w-[8.5rem]" priority />
           </div>
 
           {/* The nav is taller than a 13" viewport once the admin group is
