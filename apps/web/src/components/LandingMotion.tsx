@@ -43,7 +43,7 @@ export function LandingMotion() {
         if (rect.bottom < 0 || rect.top > viewportHeight) return;
         const progress = (viewportHeight - rect.top) / (viewportHeight + rect.height) - 0.5;
         const speed = Number(element.dataset.parallax ?? "0.18");
-        const offset = Math.max(-28, Math.min(28, progress * speed * 100));
+        const offset = Math.max(-48, Math.min(48, progress * speed * 140));
         element.style.transform = `translate3d(0, ${offset.toFixed(2)}px, 0)`;
       });
       frameId = null;

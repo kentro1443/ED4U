@@ -141,7 +141,7 @@ export default async function LandingPage() {
           <div className="absolute inset-x-0 top-0 -z-10 h-[38rem] opacity-[0.35] [background-image:linear-gradient(rgba(148,163,184,.14)_1px,transparent_1px),linear-gradient(90deg,rgba(148,163,184,.14)_1px,transparent_1px)] [background-size:48px_48px] [mask-image:linear-gradient(to_bottom,black,transparent)]" />
 
           <div className="mx-auto grid max-w-7xl items-center gap-14 lg:grid-cols-[minmax(0,1fr)_minmax(32rem,.9fr)] lg:gap-16">
-            <div className="max-w-3xl">
+            <div data-reveal="left" className="max-w-3xl">
               <div className="inline-flex items-center gap-2 rounded-xl border border-[var(--brand-100)] bg-white/85 px-3 py-2 text-xs font-bold text-[var(--primary)] shadow-[var(--shadow-sm)]">
                 <span className="h-2 w-2 rounded-full bg-[var(--brand-600)] shadow-[0_0_0_5px_var(--brand-50)]" />
                 Hybrid Neuro-Symbolic Intelligence for Education
@@ -543,63 +543,97 @@ function SectionLead({
 function ProductPreview() {
   return (
     <div data-reveal="right" className="relative mx-auto w-full max-w-xl lg:mx-0">
-      <div className="absolute -inset-8 -z-10 rounded-full bg-blue-400/20 blur-3xl" />
-      <div className="rounded-[32px] border border-white/90 bg-white/90 p-3 shadow-[0_38px_90px_-34px_rgba(30,64,175,.38)] backdrop-blur-xl">
-        <div className="rounded-[24px] border border-[var(--hairline)] bg-[var(--canvas)] p-4 sm:p-5">
-          <div className="flex items-center justify-between border-b border-[var(--hairline-soft)] pb-4">
+      <div
+        data-parallax="0.34"
+        className="absolute -inset-8 -z-10 rounded-full bg-blue-400/25 blur-3xl"
+      />
+      <div className="rounded-[32px] border border-white/90 bg-white/90 p-2.5 shadow-[0_38px_90px_-34px_rgba(30,64,175,.42)] backdrop-blur-xl sm:p-3">
+        <div className="rounded-[24px] border border-[var(--hairline)] bg-[var(--canvas)] p-3.5 sm:p-5">
+          <div className="flex items-center justify-between gap-3 border-b border-[var(--hairline-soft)] pb-4">
             <div>
               <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[var(--muted)]">
-                Không gian điều hành
+                Bản xem trước minh họa
               </p>
-              <p className="mt-1 text-sm font-extrabold text-[var(--ink)]">Công việc cần chú ý</p>
+              <p className="mt-1 text-sm font-extrabold text-[var(--ink)]">
+                Không gian làm việc giáo viên
+              </p>
             </div>
-            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[var(--brand-50)] text-[var(--primary)] ring-1 ring-inset ring-[var(--brand-100)]">
-              <Icons.dashboard className="h-4 w-4" />
-            </span>
-          </div>
-
-          <div className="mt-4 grid gap-3 sm:grid-cols-2">
-            <PreviewTask icon="calendar" title="Lịch hôm nay" detail="Thời khóa biểu và lịch hẹn" />
-            <PreviewTask icon="notifications" title="Cần xử lý" detail="Thông báo theo vai trò" />
-          </div>
-
-          <div className="mt-3 rounded-2xl border border-[var(--brand-100)] bg-white p-4 shadow-[var(--shadow-sm)]">
-            <div className="flex items-start gap-3">
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-[var(--primary)] text-white shadow-[var(--shadow-brand)]">
-                <Icons.aiBrain className="h-5 w-5" />
+            <div className="flex items-center gap-2">
+              <span className="hidden rounded-lg bg-[var(--brand-50)] px-2 py-1 text-[9px] font-bold text-[var(--primary)] sm:inline-flex">
+                Thứ Hai · 08:00
               </span>
-              <div className="min-w-0">
-                <div className="flex flex-wrap items-center gap-2">
-                  <p className="text-sm font-extrabold text-[var(--ink)]">Hybrid Intelligence</p>
-                  <span className="rounded-lg bg-[var(--brand-50)] px-2 py-1 text-[10px] font-bold text-[var(--primary)]">
-                    AI + Rules
+              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[var(--primary)] text-white shadow-[var(--shadow-brand)]">
+                <Icons.dashboard className="h-4 w-4" />
+              </span>
+            </div>
+          </div>
+
+          <div className="mt-3 grid grid-cols-3 gap-2">
+            <PreviewMetric icon="clubs" value="04" label="Lớp phụ trách" />
+            <PreviewMetric icon="notifications" value="07" label="Việc cần xử lý" accent />
+            <PreviewMetric icon="appointments" value="05" label="Lịch hẹn tuần" />
+          </div>
+
+          <div className="mt-3 grid gap-3 sm:grid-cols-[1.1fr_.9fr]">
+            <div className="rounded-2xl border border-[var(--hairline)] bg-white p-3.5 shadow-[var(--shadow-sm)]">
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2">
+                  <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[var(--brand-50)] text-[var(--primary)]">
+                    <Icons.calendar className="h-4 w-4" />
                   </span>
+                  <div>
+                    <p className="text-[11px] font-extrabold text-[var(--ink)]">Lịch hôm nay</p>
+                    <p className="text-[9px] text-[var(--muted)]">Lịch dạy và hẹn hỗ trợ</p>
+                  </div>
                 </div>
-                <p className="mt-2 text-xs leading-5 text-[var(--muted)]">
-                  AI hiểu ý định; logic biểu tượng kiểm chứng ràng buộc và giải thích từng đề xuất.
-                </p>
+                <span className="text-[9px] font-bold text-[var(--primary)]">Xem lịch</span>
+              </div>
+              <div className="mt-3 grid grid-cols-5 gap-1">
+                {["T2", "T3", "T4", "T5", "T6"].map((day, index) => (
+                  <div
+                    key={day}
+                    className={`rounded-lg px-1 py-1.5 text-center ${index === 0 ? "bg-[var(--primary)] text-white" : "bg-[var(--surface-soft)] text-[var(--muted)]"}`}
+                  >
+                    <p className="text-[8px] font-bold">{day}</p>
+                    <p className="mt-0.5 text-[9px] font-extrabold">{18 + index}</p>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-3 space-y-2">
+                <PreviewSchedule time="08:00" title="Toán 11A1" detail="Phòng B.204" />
+                <PreviewSchedule time="10:30" title="Hẹn hỗ trợ học sinh" detail="Trực tuyến" />
+                <PreviewSchedule time="14:00" title="Duyệt đơn được giao" detail="03 hồ sơ" />
               </div>
             </div>
-            <div className="mt-4 grid grid-cols-4 gap-1.5">
-              {["Đề xuất", "Xác thực", "Phê duyệt", "Thực hiện"].map((item, index) => (
-                <div
-                  key={item}
-                  className={`rounded-xl px-1.5 py-2 text-center text-[9px] font-bold ${index === 0 ? "bg-[var(--primary)] text-white" : "bg-[var(--surface-soft)] text-[var(--muted)]"}`}
-                >
-                  {item}
+
+            <div className="rounded-2xl bg-[var(--surface-dark)] p-3.5 text-white shadow-[var(--shadow-md)]">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-[11px] font-extrabold text-white">Thông báo ưu tiên</p>
+                  <p className="mt-0.5 text-[9px] text-slate-400">Theo vai trò và thời hạn</p>
                 </div>
-              ))}
+                <span className="flex h-7 w-7 items-center justify-center rounded-xl bg-blue-500/20 text-blue-200">
+                  <Icons.notifications className="h-3.5 w-3.5" />
+                </span>
+              </div>
+              <div className="mt-3 space-y-2">
+                <PreviewNotice title="Đơn mới cần xem" detail="2 phút trước" tone="blue" />
+                <PreviewNotice title="Lịch hẹn đã xác nhận" detail="10:30 hôm nay" tone="green" />
+                <PreviewNotice title="Thay đổi phòng học" detail="Lớp 11A1 · B.204" tone="amber" />
+              </div>
             </div>
           </div>
 
-          <div className="mt-3 grid grid-cols-[1fr_auto] items-center gap-3 rounded-2xl bg-[var(--surface-dark)] p-4 text-white">
-            <div>
-              <p className="text-xs font-bold text-white">Trạng thái rõ ràng</p>
-              <p className="mt-1 text-[10px] leading-4 text-slate-400">
-                Mỗi thao tác đều có phản hồi, người phụ trách và bước tiếp theo.
+          <div className="mt-3 flex items-center gap-2.5 rounded-2xl border border-[var(--brand-100)] bg-[var(--brand-50)] p-3 text-[var(--primary)]">
+            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-white shadow-[var(--shadow-sm)]">
+              <Icons.aiBrain className="h-4 w-4" />
+            </span>
+            <div className="min-w-0">
+              <p className="text-[10px] font-extrabold">Hybrid Intelligence đang hỗ trợ</p>
+              <p className="mt-0.5 truncate text-[9px] text-blue-700/70">
+                Ưu tiên công việc và giải thích đề xuất theo dữ liệu trực tiếp.
               </p>
             </div>
-            <Icons.arrowRight className="h-4 w-4 text-blue-300" />
           </div>
         </div>
       </div>
@@ -607,18 +641,70 @@ function ProductPreview() {
   );
 }
 
-function PreviewTask({ icon, title, detail }: { icon: IconType; title: string; detail: string }) {
+function PreviewMetric({
+  icon,
+  value,
+  label,
+  accent = false,
+}: {
+  icon: IconType;
+  value: string;
+  label: string;
+  accent?: boolean;
+}) {
   const Icon = Icons[icon];
   return (
-    <div className="rounded-2xl border border-[var(--hairline)] bg-white p-3 shadow-[var(--shadow-sm)]">
-      <div className="flex items-center gap-2.5">
-        <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[var(--surface-soft)] text-[var(--body)]">
-          <Icon className="h-4 w-4" />
-        </span>
-        <div>
-          <p className="text-xs font-bold text-[var(--ink)]">{title}</p>
-          <p className="mt-0.5 text-[9px] text-[var(--muted)]">{detail}</p>
-        </div>
+    <div
+      className={`rounded-2xl border p-2.5 shadow-[var(--shadow-sm)] ${accent ? "border-[var(--brand-100)] bg-[var(--brand-50)]" : "border-[var(--hairline)] bg-white"}`}
+    >
+      <div className="flex items-center justify-between gap-1">
+        <p className="text-lg font-extrabold tabular-nums tracking-[-0.04em] text-[var(--ink)]">
+          {value}
+        </p>
+        <Icon
+          className={`h-3.5 w-3.5 ${accent ? "text-[var(--primary)]" : "text-[var(--muted)]"}`}
+        />
+      </div>
+      <p className="mt-1 text-[8px] font-semibold leading-3 text-[var(--muted)]">{label}</p>
+    </div>
+  );
+}
+
+function PreviewSchedule({ time, title, detail }: { time: string; title: string; detail: string }) {
+  return (
+    <div className="grid grid-cols-[2.4rem_1fr] items-start gap-2">
+      <span className="pt-0.5 text-[8px] font-extrabold tabular-nums text-[var(--primary)]">
+        {time}
+      </span>
+      <div className="border-l-2 border-[var(--brand-100)] pl-2">
+        <p className="text-[9px] font-extrabold leading-3 text-[var(--ink)]">{title}</p>
+        <p className="mt-0.5 text-[8px] text-[var(--muted)]">{detail}</p>
+      </div>
+    </div>
+  );
+}
+
+function PreviewNotice({
+  title,
+  detail,
+  tone,
+}: {
+  title: string;
+  detail: string;
+  tone: "blue" | "green" | "amber";
+}) {
+  const dotClass = {
+    blue: "bg-blue-400",
+    green: "bg-emerald-400",
+    amber: "bg-amber-400",
+  }[tone];
+
+  return (
+    <div className="flex items-start gap-2.5 rounded-xl bg-white/[0.06] p-2.5 ring-1 ring-inset ring-white/10">
+      <span className={`mt-1 h-1.5 w-1.5 shrink-0 rounded-full ${dotClass}`} />
+      <div className="min-w-0">
+        <p className="truncate text-[9px] font-bold text-slate-100">{title}</p>
+        <p className="mt-0.5 text-[8px] text-slate-400">{detail}</p>
       </div>
     </div>
   );
@@ -689,7 +775,7 @@ function TechnologyPipeline() {
 
 function TechnologyConstellation() {
   return (
-    <div data-parallax="0.22" aria-hidden="true" className="relative mb-7 h-24 max-w-sm sm:h-28">
+    <div data-parallax="0.45" aria-hidden="true" className="relative mb-7 h-24 max-w-sm sm:h-28">
       <svg
         viewBox="0 0 360 112"
         className="absolute inset-0 h-full w-full text-blue-300/30"
