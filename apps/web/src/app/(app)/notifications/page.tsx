@@ -35,6 +35,9 @@ function destinationFor(entityType: string | null, entityId: string | null): str
       return "/appointments";
     case "MentorBooking":
       return "/mentor";
+    // Waitlist interest points at the mentor profile the student wanted.
+    case "MentorProfile":
+      return entityId ? `/mentor/${entityId}` : "/mentor";
     case "SchoolEvent":
       return "/events";
     case "Club":

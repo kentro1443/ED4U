@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/Button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Alert } from "@/components/ui/Feedback";
+import { Dialog } from "@/components/ui/Overlays";
 import { Icons } from "@/components/ui/icons";
 import { bookMentorSlotAction } from "./bookingActions";
 import { nextSlotOccurrence, parseSlotPattern } from "@ed4u/domain";
@@ -28,8 +29,10 @@ export function MentorBookingCard({
 }) {
   const [selectedSlot, setSelectedSlot] = useState<string>(availability[0] ?? "");
   const [isBooking, setIsBooking] = useState(false);
+  const [waitlistOpen, setWaitlistOpen] = useState(false);
   const [result, setResult] = useState<
     | { type: "success"; message: string; startAt: string; endAt: string }
+    | { type: "waitlisted"; mentorName: string; slotLabel: string | null }
     | { type: "error"; message: string }
     | null
   >(null);
@@ -47,15 +50,19 @@ export function MentorBookingCard({
 
     setIsBooking(false);
 
-    if (!res.ok) {
-      setResult({ type: "error", message: res.error });
-    } else {
+    if (res.ok) {
       setResult({
         type: "success",
         message: res.message,
         startAt: res.startAt,
         endAt: res.endAt,
       });
+    } else if (res.waitlisted) {
+      // DEMO-ONLY branch: nothing was booked, but the mentor was really notified.
+      setResult({ type: "waitlisted", mentorName: res.mentorName, slotLabel: res.slotLabel });
+      setWaitlistOpen(true);
+    } else {
+      setResult({ type: "error", message: res.error });
     }
   };
 
@@ -101,6 +108,20 @@ export function MentorBookingCard({
               </p>
               <p className="text-[var(--muted)]">
                 Lịch hẹn đã được lưu vào hệ thống và gửi thông báo tới Mentor.
+              </p>
+            </div>
+          </Alert>
+        )}
+
+        {result?.type === "waitlisted" && (
+          <Alert tone="info" title="Bạn đang ở danh sách chờ">
+            <div className="space-y-1 text-xs">
+              <p>
+                Khung giờ {result.slotLabel ?? "đã chọn"} chưa mở đặt lịch được. Bạn đã được thêm
+                vào danh sách chờ của {result.mentorName}.
+              </p>
+              <p className="text-[var(--muted)]">
+                Mentor đã nhận được thông báo và sẽ liên hệ nếu sắp xếp được.
               </p>
             </div>
           </Alert>
@@ -175,7 +196,11 @@ export function MentorBookingCard({
           className="w-full mt-2 shadow-sm"
         >
           <Icons.appointments className="h-4 w-4 mr-1.5" />
-          {result?.type === "success" ? "Đã đặt lịch" : "Xác nhận đặt lịch hẹn"}
+          {result?.type === "success"
+            ? "Đã đặt lịch"
+            : result?.type === "waitlisted"
+              ? "Thử khung giờ khác"
+              : "Xác nhận đặt lịch hẹn"}
         </Button>
 
         <p className="text-[11px] text-center text-[var(--muted)] leading-relaxed">
@@ -183,6 +208,60 @@ export function MentorBookingCard({
           tiền.
         </p>
       </CardContent>
+
+      {/* DEMO-ONLY: shown instead of a failure when DEMO_MENTOR_WAITLIST is on. */}
+      <Dialog
+        open={waitlistOpen && result?.type === "waitlisted"}
+        onOpenChange={setWaitlistOpen}
+        title="Đã thêm bạn vào danh sách chờ"
+        description={
+          result?.type === "waitlisted"
+            ? `${result.mentorName} đã nhận được thông báo về yêu cầu của bạn.`
+            : undefined
+        }
+      >
+        {result?.type === "waitlisted" && (
+          <div className="space-y-4">
+            <div className="flex items-start gap-3 rounded-2xl border border-[var(--hairline)] bg-[var(--surface-soft)] p-4">
+              <Icons.info className="mt-0.5 h-5 w-5 shrink-0 text-[var(--brand-accent)]" />
+              <div className="space-y-1 text-sm text-[var(--body)]">
+                <p>
+                  Khung giờ <span className="font-semibold">{result.slotLabel ?? "bạn chọn"}</span>{" "}
+                  hiện chưa mở đặt lịch được, nên yêu cầu của bạn được chuyển thành đăng ký chờ.
+                </p>
+                <p className="text-[var(--muted)]">
+                  Đây chưa phải lịch hẹn đã xác nhận — chưa có buổi học nào được giữ chỗ.
+                </p>
+              </div>
+            </div>
+
+            <ul className="space-y-2 text-sm text-[var(--body)]">
+              <li className="flex items-start gap-2">
+                <Icons.check className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
+                <span>{result.mentorName} đã được gửi thông báo trong hộp thư ED4U.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <Icons.check className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
+                <span>Mentor sẽ liên hệ lại nếu sắp xếp hoặc mở thêm được khung giờ này.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <Icons.check className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
+                <span>Bạn vẫn có thể chọn một khung giờ khác để đặt lịch ngay bây giờ.</span>
+              </li>
+            </ul>
+
+            <Button
+              type="button"
+              variant="primary"
+              size="md"
+              className="w-full"
+              onClick={() => setWaitlistOpen(false)}
+            >
+              Đã hiểu
+            </Button>
+          </div>
+        )}
+      </Dialog>
     </Card>
   );
 }

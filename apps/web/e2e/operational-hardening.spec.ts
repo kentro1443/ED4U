@@ -66,7 +66,10 @@ test("school admin creates a scoped event and students see it in the unified cal
   await page.context().clearCookies();
   await login(page, "HS000002");
   await page.goto("/calendar?view=day&date=2026-08-19");
-  await expect(page.getByText(EVENT_TITLE)).toBeVisible();
+  // The day view keeps both the desktop grid and the mobile agenda in the DOM
+  // and hides one with CSS, so an unscoped text match is ambiguous. Assert
+  // against the grid, the way the week-view assertions already do.
+  await expect(page.getByTestId("day-calendar-grid").getByText(EVENT_TITLE)).toBeVisible();
 
   await page.context().clearCookies();
   await login(page, "AD000001");

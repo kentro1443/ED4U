@@ -17,6 +17,19 @@ async function login(page: Page, code: string) {
   await page.waitForURL(/\/dashboard/);
 }
 
+/** The seeded display name behind a school member code. */
+async function memberFullName(code: string): Promise<string> {
+  const result = await db.query<{ fullName: string }>(
+    `SELECT u."fullName" FROM "User" u
+       JOIN "SchoolMembership" m ON m."userId" = u.id
+      WHERE m."schoolMemberCode" = $1 LIMIT 1`,
+    [code],
+  );
+  const name = result.rows[0]?.fullName;
+  if (!name) throw new Error(`No seeded member for code ${code}`);
+  return name;
+}
+
 async function cleanup() {
   const eventRows = await db.query<{ id: string }>(`SELECT id FROM "ClubEvent" WHERE title=$1`, [
     EVENT_TITLE,
@@ -97,6 +110,10 @@ test.describe("Club operating workflows", () => {
   test("club president approves a member, records finance and proposes a room-backed event", async ({
     page,
   }) => {
+    // Resolved from the database rather than hardcoded: the applicant is
+    // identified by member code, and their display name is seed data that has
+    // changed before and will change again.
+    const applicantName = await memberFullName("HS000002");
     await login(page, "HS000002");
     await page.goto("/clubs");
     await page.getByRole("link", { name: "CLB Robotics" }).click();
@@ -107,11 +124,13 @@ test.describe("Club operating workflows", () => {
     await login(page, "HS000010");
     await page.goto("/clubs");
     await page.getByRole("link", { name: "CLB Robotics" }).click();
-    const pendingMember = page.getByTestId("pending-club-member").filter({ hasText: "Học sinh 2" });
+    const pendingMember = page
+      .getByTestId("pending-club-member")
+      .filter({ hasText: applicantName });
     await pendingMember.getByRole("button", { name: "Duyệt", exact: true }).click();
     await expect(pendingMember).toHaveCount(0);
     await expect(
-      page.getByTestId("active-club-member").filter({ hasText: "Học sinh 2" }),
+      page.getByTestId("active-club-member").filter({ hasText: applicantName }),
     ).toContainText("MEMBER");
 
     await page.getByLabel("Loại bút toán").selectOption("EXPENSE");

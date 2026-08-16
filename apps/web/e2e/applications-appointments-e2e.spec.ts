@@ -4,7 +4,7 @@ import { rm } from "node:fs/promises";
 import path from "node:path";
 
 const PASSWORD = "TempPass1!";
-const APPLICATION_TEXT = "E2E_APPLICATION: Cần hỗ trợ học tập môn Toán và kế hoạch cải thiện điểm.";
+const APPLICATION_TEXT = "E2E_APPLICATION: Em muốn nhờ cô Lan hỗ trợ kế hoạch cải thiện điểm.";
 const APPOINTMENT_TITLE = "E2E_APPOINTMENT: Trao đổi kế hoạch học Toán";
 const db = new Pool({
   connectionString: process.env.DATABASE_URL ?? "postgresql://ed4u:ed4u_local@127.0.0.1:5434/ed4u",
@@ -125,7 +125,7 @@ test.describe("Applications and teacher appointments", () => {
   test("student requests a teacher meeting, teacher accepts, then chat opens", async ({ page }) => {
     await login(page, "HS000002");
     await page.goto("/appointments");
-    await page.locator("#appointment-need").fill("Cần hỗ trợ học tập môn Toán");
+    await page.locator("#appointment-need").fill("Em muốn gặp cô Lan để trao đổi kế hoạch học tập");
     await page.getByRole("button", { name: "Gợi ý giáo viên" }).click();
     await page.getByRole("button", { name: /Cô Lan/ }).click();
     await page.locator("#appointment-title").fill(APPOINTMENT_TITLE);

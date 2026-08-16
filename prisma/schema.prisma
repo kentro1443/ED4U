@@ -530,6 +530,11 @@ model TeacherProfile {
   user             User     @relation(fields: [userId], references: [id])
   responsibilities String[] @default([])
   officeHours      String[] @default([])
+  /// `Subject.code` values this teacher actually teaches. Empty means "not
+  /// recorded", never "teaches everything" — routing treats it as no match.
+  /// Kept here rather than inferred from the timetable so a teacher who is
+  /// between assignments is still discoverable by subject.
+  subjects         String[] @default([])
   bio              String?
   blocks           TeacherBlock[]
 

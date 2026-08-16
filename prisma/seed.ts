@@ -313,7 +313,7 @@ async function main() {
 
   await upsertPerson({
     code: "IT000001",
-    name: "Admin IT Demo",
+    name: "Nguyễn Hữu Tín",
     memberType: "STAFF",
     status: "ACTIVE",
     roles: ["ADMIN_IT"],
@@ -322,7 +322,7 @@ async function main() {
   });
   await upsertPerson({
     code: "AD000001",
-    name: "Hiệu phó Minh",
+    name: "Lê Thanh Minh",
     memberType: "STAFF",
     status: "ACTIVE",
     roles: ["SCHOOL_ADMIN"],
@@ -350,7 +350,7 @@ async function main() {
   });
   await upsertPerson({
     code: "HS990001",
-    name: "Trần Tốt Nghiệp",
+    name: "Trần Tuấn Kiệt",
     memberType: "STUDENT",
     status: "GRADUATED",
     roles: ["STUDENT"],
@@ -359,7 +359,7 @@ async function main() {
   });
   const president = await upsertPerson({
     code: "HS000010",
-    name: "Phạm Chủ Nhiệm",
+    name: "Phạm Ngọc Quỳnh Anh",
     memberType: "STUDENT",
     status: "ACTIVE",
     roles: ["STUDENT"],
@@ -379,16 +379,227 @@ async function main() {
     return BULK_GENDERS[roll === 18 ? 2 : 3]!;
   }
 
-  for (let i = 2; i <= 24; i++) {
-    const code = `GV${String(i).padStart(6, "0")}`;
+  /* ---- Bulk demo identities ------------------------------------------ */
+
+  // "Học sinh 47" is fine for a fixture and useless on a projector: every
+  // roster, timetable and search result in the demo showed a number where a
+  // person should be. These pools compose real Vietnamese names instead.
+  const SURNAMES = [
+    "Nguyễn",
+    "Trần",
+    "Lê",
+    "Phạm",
+    "Hoàng",
+    "Huỳnh",
+    "Phan",
+    "Vũ",
+    "Võ",
+    "Đặng",
+    "Bùi",
+    "Đỗ",
+    "Hồ",
+    "Ngô",
+    "Dương",
+    "Lý",
+    "Đinh",
+    "Tô",
+    "Trịnh",
+    "Lâm",
+  ] as const;
+  /** Middle names are gendered in Vietnamese, so each pool matches its gender. */
+  const MIDDLES: Record<"MALE" | "FEMALE" | "NEUTRAL", readonly string[]> = {
+    MALE: ["Văn", "Hữu", "Đức", "Quang", "Minh", "Bá", "Xuân", "Trọng"],
+    FEMALE: ["Thị", "Thu", "Ngọc", "Khánh", "Diệu", "Bích", "Hoài", "Mai"],
+    NEUTRAL: ["An", "Bảo", "Gia", "Hà", "Khánh", "Minh", "Nhật", "Quốc"],
+  };
+  const GIVEN: Record<"MALE" | "FEMALE" | "NEUTRAL", readonly string[]> = {
+    MALE: [
+      "Anh",
+      "Bình",
+      "Cường",
+      "Dũng",
+      "Đạt",
+      "Hải",
+      "Hiếu",
+      "Hoàng",
+      "Hùng",
+      "Khoa",
+      "Kiên",
+      "Long",
+      "Nam",
+      "Phong",
+      "Quân",
+      "Sơn",
+      "Thắng",
+      "Tuấn",
+      "Việt",
+      "Vinh",
+      "Bách",
+      "Duy",
+      "Lâm",
+      "Trung",
+      "Nghĩa",
+    ],
+    FEMALE: [
+      "Anh",
+      "Chi",
+      "Dung",
+      "Giang",
+      "Hà",
+      "Hạnh",
+      "Hương",
+      "Lan",
+      "Linh",
+      "Mai",
+      "My",
+      "Ngân",
+      "Ngọc",
+      "Nhi",
+      "Phương",
+      "Quỳnh",
+      "Thảo",
+      "Trang",
+      "Uyên",
+      "Vân",
+      "Yến",
+      "Diệp",
+      "Hằng",
+      "Khuê",
+      "Trâm",
+    ],
+    NEUTRAL: [
+      "An",
+      "Bảo",
+      "Duy",
+      "Hà",
+      "Hân",
+      "Khang",
+      "Khôi",
+      "Kỳ",
+      "Lam",
+      "Minh",
+      "Nhật",
+      "Phúc",
+      "Quân",
+      "Tâm",
+      "Thanh",
+      "Thiên",
+      "Trúc",
+      "Tuệ",
+      "Vy",
+      "Xuân",
+      "Ân",
+      "Bình",
+      "Hòa",
+      "Nguyên",
+      "Tú",
+    ],
+  };
+
+  /**
+   * A stable full name for bulk demo identity number `n`.
+   *
+   * The three strides are coprime to their pool sizes, so the composed triple
+   * only repeats every lcm(20, 8, 25) = 200 identities — more than the ~130
+   * bulk people seeded here, which keeps names distinct without a uniqueness
+   * check. Same `n` always yields the same name.
+   */
+  function bulkName(n: number, gender: DemoGender): string {
+    const pool = gender === "MALE" || gender === "FEMALE" ? gender : "NEUTRAL";
+    const surname = SURNAMES[(n * 7) % SURNAMES.length]!;
+    const middle = MIDDLES[pool][(n * 3) % MIDDLES[pool].length]!;
+    const given = GIVEN[pool][(n * 11) % GIVEN[pool].length]!;
+    return `${surname} ${middle} ${given}`;
+  }
+
+  /**
+   * The teaching staff.
+   *
+   * The prototype seeded "Giáo viên 2" … "Giáo viên 24" with no subject at all,
+   * which forced the timetable to choose a teacher arithmetically — so a demo
+   * would happily show the same person teaching literature in one period and
+   * chemistry in the next. Every teacher below owns exactly one subject, and
+   * the timetable is built from that ownership rather than from an index.
+   *
+   * Exactly four teachers per subject is not decoration: it is the minimum that
+   * lets twelve classes run a conflict-free full week (see the timetable
+   * section, which relies on this shape).
+   *
+   * `GV000001` keeps its established name and code — appointments, applications
+   * and the teacher-block fixture all reference it.
+   */
+  interface TeacherSpec {
+    code: string;
+    name: string;
+    gender: DemoGender;
+    /** Subject code, must exist in `subjects` above. */
+    subject: string;
+  }
+
+  const TEACHERS: TeacherSpec[] = [
+    // ---- Toán --------------------------------------------------------
+    { code: "GV000002", name: "Thầy Nguyễn Văn Bình", gender: "MALE", subject: "TOAN" },
+    { code: "GV000003", name: "Cô Trần Thị Hạnh", gender: "FEMALE", subject: "TOAN" },
+    { code: "GV000004", name: "Thầy Lê Quang Huy", gender: "MALE", subject: "TOAN" },
+    { code: "GV000005", name: "Cô Phạm Thu Trang", gender: "FEMALE", subject: "TOAN" },
+    // ---- Ngữ văn -----------------------------------------------------
+    { code: "GV000006", name: "Cô Đỗ Thị Mai Hương", gender: "FEMALE", subject: "VAN" },
+    { code: "GV000007", name: "Thầy Vũ Đình Khoa", gender: "MALE", subject: "VAN" },
+    { code: "GV000008", name: "Cô Bùi Thanh Vân", gender: "FEMALE", subject: "VAN" },
+    { code: "GV000009", name: "Cô Ngô Thị Kim Chi", gender: "FEMALE", subject: "VAN" },
+    // ---- Tiếng Anh ---------------------------------------------------
+    { code: "GV000001", name: "Cô Lan", gender: "FEMALE", subject: "ANH" },
+    { code: "GV000010", name: "Thầy Đặng Hoàng Long", gender: "MALE", subject: "ANH" },
+    { code: "GV000011", name: "Cô Hoàng Minh Thư", gender: "FEMALE", subject: "ANH" },
+    { code: "GV000012", name: "Cô Nguyễn Khánh Linh", gender: "FEMALE", subject: "ANH" },
+    // ---- Vật lý ------------------------------------------------------
+    { code: "GV000013", name: "Thầy Trịnh Văn Cường", gender: "MALE", subject: "LY" },
+    { code: "GV000014", name: "Cô Lý Thị Bích Ngọc", gender: "FEMALE", subject: "LY" },
+    { code: "GV000015", name: "Thầy Phan Anh Tuấn", gender: "MALE", subject: "LY" },
+    { code: "GV000016", name: "Thầy Hà Minh Đức", gender: "MALE", subject: "LY" },
+    // ---- Hóa học -----------------------------------------------------
+    { code: "GV000017", name: "Cô Dương Thị Hồng Nhung", gender: "FEMALE", subject: "HOA" },
+    { code: "GV000018", name: "Thầy Tạ Quốc Việt", gender: "MALE", subject: "HOA" },
+    { code: "GV000019", name: "Cô Mai Thị Thu Hà", gender: "FEMALE", subject: "HOA" },
+    { code: "GV000020", name: "Thầy Chu Bá Thắng", gender: "MALE", subject: "HOA" },
+    // ---- Tin học -----------------------------------------------------
+    { code: "GV000021", name: "Thầy Nguyễn Đức Trung", gender: "MALE", subject: "TIN" },
+    { code: "GV000022", name: "Cô Lâm Thị Diễm Quỳnh", gender: "FEMALE", subject: "TIN" },
+    { code: "GV000023", name: "Thầy Võ Thành Đạt", gender: "MALE", subject: "TIN" },
+    { code: "GV000024", name: "Cô Đinh Phương Anh", gender: "FEMALE", subject: "TIN" },
+  ];
+
+  /** Teacher codes per subject, in roster order. Four each — see above. */
+  const TEACHERS_BY_SUBJECT = new Map<string, string[]>();
+  for (const spec of TEACHERS) {
+    TEACHERS_BY_SUBJECT.set(spec.subject, [
+      ...(TEACHERS_BY_SUBJECT.get(spec.subject) ?? []),
+      spec.code,
+    ]);
+  }
+  for (const [code] of subjects) {
+    const staffed = TEACHERS_BY_SUBJECT.get(code)?.length ?? 0;
+    // A miscount here silently produces a timetable with double-booked
+    // teachers, so it fails the seed instead of shipping a broken schedule.
+    if (staffed !== 4) {
+      throw new Error(`Subject ${code} needs exactly 4 teachers, roster has ${staffed}.`);
+    }
+  }
+
+  const SUBJECT_NAMES = new Map<string, string>(subjects.map(([code, name]) => [code, name]));
+
+  for (const spec of TEACHERS) {
+    // GV000001 is created above with its own identity; re-running it here would
+    // be harmless but is skipped so the roster stays the single source of names.
+    if (spec.code === "GV000001") continue;
     await upsertPerson({
-      code,
-      name: `Giáo viên ${i}`,
+      code: spec.code,
+      name: spec.name,
       memberType: "TEACHER",
       status: "ACTIVE",
       roles: ["TEACHER"],
-      dateOfBirth: demoDateOfBirth(code, 1975, 1995),
-      gender: bulkGender(code),
+      dateOfBirth: demoDateOfBirth(spec.code, 1975, 1995),
+      gender: spec.gender,
     });
   }
 
@@ -409,24 +620,34 @@ async function main() {
     ["MON_16_30", "FRI_15_30"],
     ["WED_16_00", "FRI_16_00"],
   ] as const;
-  for (let i = 1; i <= 24; i++) {
-    const code = `GV${String(i).padStart(6, "0")}`;
-    const userId = uuid(`user:${code}`);
-    const profileId = uuid(`teacher-profile:${code}`);
+  for (const spec of TEACHERS) {
+    // Rotation is keyed on the code's ordinal, not on roster position, so
+    // regrouping the roster by subject does not reshuffle who is responsible
+    // for what.
+    const i = Number(spec.code.slice(2));
+    const userId = uuid(`user:${spec.code}`);
+    const profileId = uuid(`teacher-profile:${spec.code}`);
     const responsibilities = [
       ...TEACHER_RESPONSIBILITY_ROTATION[(i - 1) % TEACHER_RESPONSIBILITY_ROTATION.length]!,
     ];
     const officeHours = [...TEACHER_OFFICE_HOURS[(i - 1) % TEACHER_OFFICE_HOURS.length]!];
+    // The subject is the first thing anyone needs to know about a teacher, and
+    // TeacherProfile has no column for it, so it leads the bio rather than
+    // being invisible until you open the timetable.
+    const bio =
+      `Giáo viên ${SUBJECT_NAMES.get(spec.subject) ?? spec.subject}. ` +
+      `Phụ trách ${responsibilities.join(", ").toLowerCase()} cho học sinh ED4U.`;
     await prisma.teacherProfile.upsert({
       where: { userId },
-      update: { responsibilities, officeHours },
+      update: { responsibilities, officeHours, subjects: [spec.subject], bio },
       create: {
         id: profileId,
         tenantId,
         userId,
         responsibilities,
         officeHours,
-        bio: `Phụ trách ${responsibilities.join(", ").toLowerCase()} cho học sinh ED4U.`,
+        subjects: [spec.subject],
+        bio,
       },
     });
   }
@@ -444,15 +665,16 @@ async function main() {
   for (let i = 2; i <= 120; i++) {
     if (i === 10) continue;
     const code = `HS${String(i).padStart(6, "0")}`;
+    const gender = bulkGender(code);
     await upsertPerson({
       code,
-      name: `Học sinh ${i}`,
+      name: bulkName(i, gender),
       memberType: "STUDENT",
       status: "ACTIVE",
       roles: ["STUDENT"],
       classId: classIds[i % classIds.length],
       dateOfBirth: demoDateOfBirth(code, 2008, 2011),
-      gender: bulkGender(code),
+      gender,
     });
   }
 
@@ -1074,42 +1296,125 @@ async function main() {
   // visibly distinct in the demo.
   for (let i = 26; i <= 36; i++) {
     const code = `HS99${String(i).padStart(4, "0")}`;
+    const gender = bulkGender(code);
     await upsertPerson({
       code,
-      name: `Cựu học sinh ${i}`,
+      // Offset past the active-student range (2–120) but inside the 200-wide
+      // non-repeating window, so alumni never share a name with a student.
+      name: bulkName(130 + i, gender),
       memberType: "STUDENT",
       status: "GRADUATED",
       roles: ["STUDENT"],
       dateOfBirth: demoDateOfBirth(code, 2003, 2006),
-      gender: bulkGender(code),
+      gender,
     });
   }
 
+  /* ------------------------------------------------------------------ */
+  /* Weekly timetable                                                    */
+  /* ------------------------------------------------------------------ */
+
+  /**
+   * The academic week.
+   *
+   * The prototype derived everything from one running counter
+   * (`teacherId = GV(entryN % 24)`, `roomId = room(entryN % 24)`), which gave a
+   * schedule where the same four subjects repeated every single day, teachers
+   * taught whatever subject the modulus landed on, and nothing guaranteed that
+   * a teacher or a room was in only one place at a time. On a projector that
+   * reads as obviously fake, and it also fed the Facility Engine occupancy
+   * that no real school would produce.
+   *
+   * This construction guarantees, by shape rather than by hope:
+   *   - a teacher only ever teaches their own subject;
+   *   - no teacher is in two classes in the same weekday+period;
+   *   - no room hosts two classes in the same weekday+period;
+   *   - every class meets all six subjects each week, never twice in a day.
+   *
+   * How the conflict-freedom falls out. With `s = (classIndex + slot) % 6`,
+   * exactly two of the twelve classes take subject `s` in any given slot, and
+   * those two are always `c0` and `c0 + 6` — one from each half of the roster.
+   * Giving the first half and the second half different teachers from that
+   * subject's four therefore cannot collide. Alternating which pair of the four
+   * is on duty by slot parity spreads the load to ~12–13 periods a week each
+   * instead of leaving two of every four teachers permanently idle.
+   *
+   * Lessons are morning-only (P1–P5). Vietnamese upper-secondary classes stay
+   * in a homeroom while teachers move between them, so a fixed room per class
+   * is the realistic model *and* it is what makes room conflicts impossible.
+   * Leaving P6–P8 clear is deliberate: the Facility Engine needs genuine
+   * contiguous afternoon capacity to plan into, and a school that is nominally
+   * booked solid all day makes every room recommendation a rejection.
+   */
   const weekdays = ["MON", "TUE", "WED", "THU", "FRI"] as const;
+  const PERIODS_PER_DAY = 5;
+  const SLOTS_PER_WEEK = weekdays.length * PERIODS_PER_DAY;
+
+  // Twelve homerooms, one per class. R04 and R09 are skipped: they carry the
+  // facility fixtures (a confirmed booking and a maintenance block) and must
+  // stay free of standing academic occupancy for those demos to read cleanly.
+  const HOMEROOM_NUMBERS = [1, 2, 3, 5, 6, 7, 8, 10, 11, 12, 13, 14];
+  if (HOMEROOM_NUMBERS.length !== classIds.length) {
+    throw new Error(
+      `Need one homeroom per class: ${classIds.length} classes, ${HOMEROOM_NUMBERS.length} rooms.`,
+    );
+  }
+
   let entryN = 0;
-  for (const classId of classIds) {
-    for (const day of weekdays) {
-      for (let p = 0; p < 4; p++) {
-        entryN += 1;
-        const periodCode = periodTimes[p]![0];
-        const subject = subjects[p % subjects.length]![0];
-        await prisma.timetableEntry.upsert({
-          where: { id: uuid(`tt:${entryN}`) },
-          update: {},
-          create: {
-            id: uuid(`tt:${entryN}`),
-            tenantId,
-            academicYearId: yearId,
-            semesterId: semId,
-            classId,
-            subjectId: uuid(`subject:${subject}`),
-            teacherId: uuid(`user:GV${String((entryN % 24) + 1).padStart(6, "0")}`),
-            roomId: uuid(`room:${(entryN % 24) + 1}`),
-            weekday: day,
-            periodId: uuid(`period:${periodCode}`),
-          },
-        });
-      }
+  for (let c = 0; c < classIds.length; c++) {
+    const classId = classIds[c]!;
+    const roomId = uuid(`room:${HOMEROOM_NUMBERS[c]}`);
+    // Which half of the roster this class belongs to. The two classes sharing a
+    // subject in any slot always differ here, which is what keeps teachers apart.
+    const half = c < classIds.length / 2 ? 0 : 1;
+
+    for (let slot = 0; slot < SLOTS_PER_WEEK; slot++) {
+      entryN += 1;
+      const day = weekdays[Math.floor(slot / PERIODS_PER_DAY)]!;
+      const periodCode = periodTimes[slot % PERIODS_PER_DAY]![0];
+      const subject = subjects[(c + slot) % subjects.length]![0];
+      // Teachers 0/1 of the subject work even slots, 2/3 work odd slots.
+      const teacherCode = TEACHERS_BY_SUBJECT.get(subject)![half + (slot % 2) * 2]!;
+
+      const entry = {
+        tenantId,
+        academicYearId: yearId,
+        semesterId: semId,
+        classId,
+        subjectId: uuid(`subject:${subject}`),
+        teacherId: uuid(`user:${teacherCode}`),
+        roomId,
+        weekday: day,
+        periodId: uuid(`period:${periodCode}`),
+      };
+      await prisma.timetableEntry.upsert({
+        where: { id: uuid(`tt:${entryN}`) },
+        // Re-applied on update so re-seeding an existing database actually
+        // replaces the old prototype schedule instead of silently keeping it.
+        update: entry,
+        create: { id: uuid(`tt:${entryN}`), ...entry },
+      });
+    }
+  }
+
+  // The invariants above are cheap to assert and expensive to debug from a
+  // screenshot, so the seed proves them rather than trusting the arithmetic.
+  const seededEntries = await prisma.timetableEntry.findMany({
+    where: { tenantId, semesterId: semId },
+    select: { teacherId: true, roomId: true, classId: true, weekday: true, periodId: true },
+  });
+  const teacherSlots = new Set<string>();
+  const roomSlots = new Set<string>();
+  const classSlots = new Set<string>();
+  for (const e of seededEntries) {
+    const slot = `${e.weekday}:${e.periodId}`;
+    for (const [set, key, what] of [
+      [teacherSlots, `${e.teacherId}@${slot}`, "teacher"],
+      [roomSlots, `${e.roomId}@${slot}`, "room"],
+      [classSlots, `${e.classId}@${slot}`, "class"],
+    ] as const) {
+      if (set.has(key)) throw new Error(`Timetable double-books a ${what} at ${slot}.`);
+      set.add(key);
     }
   }
 
@@ -1319,14 +1624,25 @@ async function main() {
   });
 
   console.log("Seeded ED4U Demo High School");
-  console.log("Demo credentials (temporary password TempPass1!, must change on first login):");
-  console.log("  ADMIN_IT       IT000001");
-  console.log("  SCHOOL_ADMIN   AD000001");
-  console.log("  TEACHER        GV000001");
-  console.log("  STUDENT        HS000001");
-  console.log("  GRADUATED      HS990001");
-  console.log("  MENTOR         HS990002");
-  console.log("  CLUB PRESIDENT HS000010");
+  console.log(`Demo credentials (temporary password ${DEMO_PASSWORD}):`);
+  console.log("  ADMIN_IT       IT000001  Nguyễn Hữu Tín");
+  console.log("  SCHOOL_ADMIN   AD000001  Lê Thanh Minh");
+  console.log("  TEACHER        GV000001  Cô Lan (Tiếng Anh)");
+  console.log("  STUDENT        HS000001  Nguyễn An");
+  console.log("  GRADUATED      HS990001  Trần Tuấn Kiệt");
+  console.log("  CLUB PRESIDENT HS000010  Phạm Ngọc Quỳnh Anh");
+  console.log("");
+  // Every mentor is a real login. A booking notifies the mentor, so a demo
+  // needs to be able to sign in as the specific mentor a student just booked
+  // (or waitlisted) rather than only as one nominated example account.
+  console.log("  MENTOR accounts (all can log in and read /notifications):");
+  for (const spec of MENTORS) {
+    console.log(`    ${spec.code}  ${spec.name}`);
+  }
+  console.log("");
+  console.log("  Teachers GV000001–GV000024 are all real logins too.");
+  console.log("  Run with DEMO_SKIP_PASSWORD_CHANGE=true to skip the first-login");
+  console.log("  password change while demoing.");
 }
 
 main()
