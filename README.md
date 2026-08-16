@@ -415,4 +415,4 @@ và kiểm thử tải.
 
 ## Thương hiệu
 
-Tên sản phẩm là **ED4U**. Không được đưa thương hiệu EduSync trở lại.
+Tên sản phẩm là **ED4U**. 
