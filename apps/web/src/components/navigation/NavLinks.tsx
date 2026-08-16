@@ -17,6 +17,8 @@ export function NavLinks({
 }) {
   const pathname = usePathname();
 
+  // The persistent shell renders many routes in desktop and mobile navigation.
+  // Load them on click so production HTTP/1.1 connections remain free for mutations.
   return (
     <nav className={cn("space-y-6 select-none", className)} aria-label="Chính">
       {groups.map((group) => (
@@ -37,6 +39,7 @@ export function NavLinks({
                 <li key={item.href}>
                   <Link
                     href={item.href}
+                    prefetch={false}
                     onClick={onNavigate}
                     className={cn(
                       "flex items-center gap-3 rounded-lg px-3 py-2 text-xs md:text-sm font-medium transition-colors duration-150",

@@ -19,6 +19,7 @@ apps/web/next-env.d.ts
 packages/mentor-engine/playground.ts.save
 .playwright-mcp
 *.png
+.codex/skills/ui-ux-pro-max
 
 # Claude Code ephemeral session state
 .claude/worktrees/

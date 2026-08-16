@@ -5,23 +5,48 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { Alert } from "@/components/ui/Feedback";
 import { Field, Input, Select, Textarea } from "@/components/ui/Field";
-import {
-  addClubAdvisorAction,
-  addClubDocumentVersionAction,
-  approveFinanceEntryAction,
-  createClubDocumentAction,
-  createClubEventAction,
-  createFinanceEntryAction,
-  joinClubAction,
-  proposeClubAction,
-  resolveClubEventAction,
-  resolveClubMembershipAction,
-  resolveClubProposalAction,
-  transferClubPresidencyAction,
-  voidFinanceEntryAction,
-} from "./actions";
+import { addClubDocumentVersionAction, createClubDocumentAction } from "./actions";
+
+type ClubMutation = {
+  operation: string;
+  payload: Record<string, unknown>;
+};
+
+async function sendClubMutation(mutation: ClubMutation) {
+  const response = await fetch("/api/clubs/mutations", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(mutation),
+  });
+  const result = (await response.json()) as { ok: boolean; error?: string };
+  if (!response.ok && result.ok) return { ok: false, error: "Không thể xử lý yêu cầu." };
+  return result;
+}
 
 function useMutationFeedback() {
+  const [isPending, setIsPending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const run = async (mutation: ClubMutation) => {
+    if (isPending) return;
+    setError(null);
+    setIsPending(true);
+    try {
+      const result = await sendClubMutation(mutation);
+      if (!result.ok) {
+        setError(result.error ?? "Không thể xử lý yêu cầu.");
+        setIsPending(false);
+        return;
+      }
+      window.location.reload();
+    } catch {
+      setError("Không thể kết nối tới máy chủ.");
+      setIsPending(false);
+    }
+  };
+  return { isPending, error, run };
+}
+
+function useServerMutationFeedback() {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
@@ -64,7 +89,7 @@ export function ProposeClubForm() {
           type="button"
           variant="primary"
           disabled={isPending}
-          onClick={() => run(() => proposeClubAction({ name, description }))}
+          onClick={() => run({ operation: "propose-club", payload: { name, description } })}
         >
           Gửi đề xuất
         </Button>
@@ -96,7 +121,7 @@ export function ClubProposalDecision({ clubId }: { clubId: string }) {
           size="sm"
           variant="primary"
           disabled={isPending}
-          onClick={() => run(() => resolveClubProposalAction({ clubId, approve: true }))}
+          onClick={() => run({ operation: "resolve-proposal", payload: { clubId, approve: true } })}
         >
           Duyệt CLB
         </Button>
@@ -105,7 +130,9 @@ export function ClubProposalDecision({ clubId }: { clubId: string }) {
           size="sm"
           variant="danger"
           disabled={isPending}
-          onClick={() => run(() => resolveClubProposalAction({ clubId, approve: false, reason }))}
+          onClick={() =>
+            run({ operation: "resolve-proposal", payload: { clubId, approve: false, reason } })
+          }
         >
           Từ chối
         </Button>
@@ -124,7 +151,7 @@ export function JoinClubButton({ clubId }: { clubId: string }) {
         size="sm"
         variant="primary"
         disabled={isPending}
-        onClick={() => run(() => joinClubAction(clubId))}
+        onClick={() => run({ operation: "join-club", payload: { clubId } })}
       >
         Xin tham gia CLB
       </Button>
@@ -142,7 +169,9 @@ export function MembershipDecision({ membershipId }: { membershipId: string }) {
         size="sm"
         variant="primary"
         disabled={isPending}
-        onClick={() => run(() => resolveClubMembershipAction({ membershipId, approve: true }))}
+        onClick={() =>
+          run({ operation: "resolve-membership", payload: { membershipId, approve: true } })
+        }
       >
         Duyệt
       </Button>
@@ -151,7 +180,9 @@ export function MembershipDecision({ membershipId }: { membershipId: string }) {
         size="sm"
         variant="secondary"
         disabled={isPending}
-        onClick={() => run(() => resolveClubMembershipAction({ membershipId, approve: false }))}
+        onClick={() =>
+          run({ operation: "resolve-membership", payload: { membershipId, approve: false } })
+        }
       >
         Từ chối
       </Button>
@@ -187,7 +218,10 @@ export function PresidencyTransfer({
         size="sm"
         disabled={isPending || !target}
         onClick={() =>
-          run(() => transferClubPresidencyAction({ clubId, targetMembershipId: target }))
+          run({
+            operation: "transfer-presidency",
+            payload: { clubId, targetMembershipId: target },
+          })
         }
       >
         Chuyển quyền
@@ -227,7 +261,7 @@ export function AdvisorAdd({
         variant="secondary"
         size="sm"
         disabled={isPending}
-        onClick={() => run(() => addClubAdvisorAction({ clubId, teacherId }))}
+        onClick={() => run({ operation: "add-advisor", payload: { clubId, teacherId } })}
       >
         Thêm advisor
       </Button>
@@ -279,15 +313,16 @@ export function FinanceCreate({ clubId }: { clubId: string }) {
           variant="primary"
           disabled={isPending}
           onClick={() =>
-            run(() =>
-              createFinanceEntryAction({
+            run({
+              operation: "create-finance-entry",
+              payload: {
                 clubId,
                 kind,
                 amount: Number(amount),
                 category,
                 description,
-              }),
-            )
+              },
+            })
           }
         >
           Ghi sổ (chờ duyệt)
@@ -319,7 +354,7 @@ export function FinanceDecision({
           size="sm"
           variant="primary"
           disabled={isPending}
-          onClick={() => run(() => approveFinanceEntryAction(entryId))}
+          onClick={() => run({ operation: "approve-finance-entry", payload: { entryId } })}
         >
           Duyệt bút toán
         </Button>
@@ -337,7 +372,7 @@ export function FinanceDecision({
             size="sm"
             variant="danger"
             disabled={isPending}
-            onClick={() => run(() => voidFinanceEntryAction(entryId, reason))}
+            onClick={() => run({ operation: "void-finance-entry", payload: { entryId, reason } })}
           >
             VOID
           </Button>
@@ -351,8 +386,9 @@ export function FinanceDecision({
 export function ClubEventCreate({ clubId }: { clubId: string }) {
   const { isPending, error, run } = useMutationFeedback();
   const submit = (formData: FormData) =>
-    run(() =>
-      createClubEventAction({
+    run({
+      operation: "create-club-event",
+      payload: {
         clubId,
         title: String(formData.get("title") ?? ""),
         startAt: String(formData.get("startAt") ?? ""),
@@ -360,8 +396,8 @@ export function ClubEventCreate({ clubId }: { clubId: string }) {
         visibility: String(formData.get("visibility") ?? "CLUB") as
           "SCHOOL" | "GRADE" | "CLASS" | "CLUB" | "PRIVATE",
         roomRequired: formData.get("roomRequired") === "on",
-      }),
-    );
+      },
+    });
   return (
     <form
       action={submit}
@@ -397,7 +433,9 @@ export function ClubEventDecision({ eventId }: { eventId: string }) {
         size="sm"
         variant="primary"
         disabled={isPending}
-        onClick={() => run(() => resolveClubEventAction({ eventId, approve: true }))}
+        onClick={() =>
+          run({ operation: "resolve-club-event", payload: { eventId, approve: true } })
+        }
       >
         Duyệt sự kiện
       </Button>
@@ -407,9 +445,10 @@ export function ClubEventDecision({ eventId }: { eventId: string }) {
         variant="secondary"
         disabled={isPending}
         onClick={() =>
-          run(() =>
-            resolveClubEventAction({ eventId, approve: false, reason: "Không được phê duyệt" }),
-          )
+          run({
+            operation: "resolve-club-event",
+            payload: { eventId, approve: false, reason: "Không được phê duyệt" },
+          })
         }
       >
         Từ chối
@@ -420,7 +459,7 @@ export function ClubEventDecision({ eventId }: { eventId: string }) {
 }
 
 export function ClubDocumentCreate({ clubId }: { clubId: string }) {
-  const { isPending, error, run } = useMutationFeedback();
+  const { isPending, error, run } = useServerMutationFeedback();
   const submit = (formData: FormData) => run(() => createClubDocumentAction(clubId, formData));
   return (
     <form
@@ -445,7 +484,7 @@ export function ClubDocumentCreate({ clubId }: { clubId: string }) {
 }
 
 export function ClubDocumentVersionAdd({ documentId }: { documentId: string }) {
-  const { isPending, error, run } = useMutationFeedback();
+  const { isPending, error, run } = useServerMutationFeedback();
   const submit = (formData: FormData) =>
     run(() => addClubDocumentVersionAction(documentId, formData));
   return (

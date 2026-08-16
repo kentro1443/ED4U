@@ -75,15 +75,34 @@ function EventCard({
   );
 }
 
+/** Swatch colours mirror SOURCE_CLASS so the legend maps onto the grid. */
+const SOURCE_SWATCH: Record<CalendarSource, string> = {
+  TIMETABLE: "bg-slate-400",
+  APPOINTMENT: "bg-amber-400",
+  MENTOR_BOOKING: "bg-blue-400",
+  CLUB_EVENT: "bg-violet-400",
+  SCHOOL_EVENT: "bg-emerald-400",
+  ROOM_BOOKING: "bg-orange-400",
+};
+
 export function CalendarLegend() {
+  // Six identical grey chips beside a colour-coded grid told the reader nothing.
+  // Each chip now carries the colour its events are drawn in.
   return (
-    <div className="flex flex-wrap gap-2" aria-label="Chú giải nguồn lịch">
+    <ul className="flex flex-wrap gap-x-3 gap-y-1.5" aria-label="Chú giải nguồn lịch">
       {(Object.keys(SOURCE_LABEL) as CalendarSource[]).map((source) => (
-        <Badge key={source} tone="neutral" size="sm">
+        <li
+          key={source}
+          className="flex items-center gap-1.5 text-[11px] font-medium text-[var(--body)]"
+        >
+          <span
+            className={`h-2.5 w-2.5 shrink-0 rounded-sm ${SOURCE_SWATCH[source]}`}
+            aria-hidden="true"
+          />
           {SOURCE_LABEL[source]}
-        </Badge>
+        </li>
       ))}
-    </div>
+    </ul>
   );
 }
 

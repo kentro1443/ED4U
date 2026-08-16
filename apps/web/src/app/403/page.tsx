@@ -3,7 +3,8 @@ import { LinkButton } from "@/components/ui/Button";
 import { ForbiddenState } from "@/components/ui/Feedback";
 
 export const metadata = {
-  title: "Không đủ quyền · ED4U",
+  // The root layout template already appends "· ED4U".
+  title: "Không đủ quyền",
   robots: { index: false, follow: false },
 };
 

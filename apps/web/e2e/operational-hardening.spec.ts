@@ -72,8 +72,13 @@ test("school admin creates a scoped event and students see it in the unified cal
   await login(page, "AD000001");
   await page.goto("/events");
   const card = page.locator("div.rounded-xl").filter({ hasText: EVENT_TITLE }).first();
-  page.once("dialog", (dialog) => dialog.accept());
+  // Deletion confirms in-app and names the event being removed, rather than
+  // relying on a native confirm() that cannot show what is about to change.
   await card.getByRole("button", { name: "Xóa" }).click();
+  const deleteDialog = page.getByRole("dialog");
+  await expect(deleteDialog).toBeVisible();
+  await expect(deleteDialog.getByText(EVENT_TITLE)).toBeVisible();
+  await deleteDialog.getByRole("button", { name: "Xóa sự kiện" }).click();
   await expect(page.getByText(EVENT_TITLE)).toHaveCount(0);
 });
 

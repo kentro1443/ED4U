@@ -35,7 +35,7 @@ describe("roster CSV parsing", () => {
   });
 
   it("tolerates the BOM Excel writes", () => {
-    const result = parseRosterCsv(`﻿${HEADER}\nNguyen Van A,10A1,HS000101,STUDENT`);
+    const result = parseRosterCsv(`\uFEFF${HEADER}\nNguyen Van A,10A1,HS000101,STUDENT`);
     expect(result.ok).toBe(true);
   });
 

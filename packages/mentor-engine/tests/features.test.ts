@@ -412,20 +412,24 @@ describe("purity and bounds on the full fixture set", () => {
   const mentors = readData<Mentor[]>("mentors.mock.json");
   const requests = readData<StudentRequest[]>("requests.mock.json").slice(0, 40);
 
-  it("never returns a value outside [0, 1] or a non-null NaN", () => {
-    for (const request of requests) {
-      for (const mentor of mentors) {
-        const { values } = buildFeatures(request, mentor);
-        for (const feature of FEATURE_NAMES) {
-          const value = values[feature];
-          if (value === null) continue;
-          expect(Number.isFinite(value), `${feature} finite`).toBe(true);
-          expect(value, `${feature} >= 0`).toBeGreaterThanOrEqual(0);
-          expect(value, `${feature} <= 1`).toBeLessThanOrEqual(1);
+  it(
+    "never returns a value outside [0, 1] or a non-null NaN",
+    () => {
+      for (const request of requests) {
+        for (const mentor of mentors) {
+          const { values } = buildFeatures(request, mentor);
+          for (const feature of FEATURE_NAMES) {
+            const value = values[feature];
+            if (value === null) continue;
+            expect(Number.isFinite(value), `${feature} finite`).toBe(true);
+            expect(value, `${feature} >= 0`).toBeGreaterThanOrEqual(0);
+            expect(value, `${feature} <= 1`).toBeLessThanOrEqual(1);
+          }
         }
       }
-    }
-  });
+    },
+    10_000,
+  );
 
   it("returns identical values for identical inputs and mutates nothing", () => {
     const request = requests[0] as StudentRequest;

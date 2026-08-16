@@ -87,7 +87,7 @@ export function parseRosterCsv(text: string): RosterParseResult {
 
   // Strip a UTF-8 BOM: Excel writes one, and it would otherwise become part of
   // the first header name and make every column look missing.
-  const content = text.replace(/^﻿/, "");
+  const content = text.replace(/^\uFEFF/, "");
   const lines = content
     .split(/\r?\n/)
     .map((line) => line.trimEnd())

@@ -178,3 +178,22 @@ h4,
     scroll-behavior: auto !important;
   }
 }
+
+/*
+ * Sidebar scroll affordance.
+ *
+ * The navigation is taller than a 13" viewport once the admin group is present.
+ * Fading the final rows signals that the list continues, so routes below the
+ * fold read as scrollable rather than absent. The mask is dropped when the user
+ * prefers reduced transparency effects or when the list is scrolled to its end
+ * is not detectable in CSS — a permanent, very short fade is the honest
+ * compromise and never hides a full row.
+ */
+.ed4u-nav-scroll {
+  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 1.5rem), transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 calc(100% - 1.5rem), transparent 100%);
+}
+
+.ed4u-nav-scroll::-webkit-scrollbar {
+  width: 6px;
+}

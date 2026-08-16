@@ -24,7 +24,7 @@ export function MobileHeader({
     <>
       <header className="sticky top-0 z-40 flex h-14 w-full items-center justify-between border-b border-[var(--hairline)] bg-[var(--canvas)]/95 px-4 backdrop-blur-md md:hidden">
         <div className="flex items-center gap-2.5">
-          <Link href="/dashboard" className="flex items-center gap-2">
+          <Link href="/dashboard" prefetch={false} className="flex items-center gap-2">
             <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-[var(--primary)] text-xs font-bold text-[var(--on-primary)] shadow-xs">
               E
             </span>
@@ -35,6 +35,7 @@ export function MobileHeader({
         <div className="flex items-center gap-1">
           <Link
             href="/notifications"
+            prefetch={false}
             aria-label={
               unreadCount > 0 ? `Thông báo, ${unreadCount} chưa đọc` : "Thông báo, không có mục mới"
             }

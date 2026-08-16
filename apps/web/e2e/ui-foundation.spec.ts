@@ -29,8 +29,12 @@ test.describe("Slice 2 UI Foundation E2E", () => {
     // Sidebar branding
     const sidebar = page.locator("aside");
     await expect(sidebar).toBeVisible();
-    await expect(sidebar.getByText("ED4U")).toBeVisible();
-    await expect(sidebar.getByText("Demo High School")).toBeVisible();
+    // The wordmark is the home link; the line beneath it is the tenant's real
+    // name, which now comes from the database rather than a hardcoded string —
+    // so both assertions target their element exactly instead of matching any
+    // text containing "ED4U".
+    await expect(sidebar.getByRole("link", { name: "ED4U", exact: true })).toBeVisible();
+    await expect(sidebar.getByText("ED4U Demo High School")).toBeVisible();
 
     // User profile section in sidebar
     await expect(sidebar.getByText("HS000001")).toBeVisible();
@@ -97,7 +101,12 @@ test.describe("Slice 2 UI Foundation E2E", () => {
     await page.goto("/admin/members");
 
     await expect(page.getByRole("heading", { name: "Quản lý thành viên" })).toBeVisible();
-    await expect(page.locator("table")).toBeVisible();
+    // Role-based, not `locator("table")`: React's out-of-order streaming leaves
+    // hidden <table> wrappers in the production DOM to hold streamed <tbody>
+    // fragments. They are not exposed to the accessibility tree, so asking for
+    // the table *role* selects the real one and also asserts it is exposed
+    // correctly to assistive technology.
+    await expect(page.getByRole("table")).toBeVisible();
 
     const results = await new AxeBuilder({ page }).analyze();
     const critical = results.violations.filter((v) => v.impact === "critical");

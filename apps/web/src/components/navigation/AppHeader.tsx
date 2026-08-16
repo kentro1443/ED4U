@@ -51,6 +51,7 @@ export function AppHeader({
                     {crumb.href && !isLast ? (
                       <Link
                         href={crumb.href}
+                        prefetch={false}
                         className="truncate rounded text-[var(--muted)] transition-colors hover:text-[var(--ink)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ink)]"
                       >
                         {crumb.label}
@@ -79,6 +80,7 @@ export function AppHeader({
 
       <Link
         href="/notifications"
+        prefetch={false}
         aria-label={
           unreadCount > 0 ? `Thông báo, ${unreadCount} chưa đọc` : "Thông báo, không có mục mới"
         }
@@ -192,6 +194,7 @@ function HeaderUserMenu({ user }: { user: UserSummary }) {
           <div className="p-1">
             <Link
               href="/profile"
+              prefetch={false}
               role="menuitem"
               className="flex items-center gap-2.5 rounded-md px-3 py-2 text-sm text-[var(--body)] transition-colors hover:bg-[var(--surface-soft)] hover:text-[var(--ink)]"
             >
@@ -200,6 +203,7 @@ function HeaderUserMenu({ user }: { user: UserSummary }) {
             </Link>
             <Link
               href="/security"
+              prefetch={false}
               role="menuitem"
               className="flex items-center gap-2.5 rounded-md px-3 py-2 text-sm text-[var(--body)] transition-colors hover:bg-[var(--surface-soft)] hover:text-[var(--ink)]"
             >

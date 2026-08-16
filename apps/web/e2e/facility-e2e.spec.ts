@@ -77,7 +77,13 @@ test.describe("Facility Engine live E2E", () => {
     await page.goto("/admin/approvals");
     const approval = page.getByTestId("room-approval-card").filter({ hasText: PURPOSE }).first();
     await expect(approval).toBeVisible();
+    // Locking a room is irreversible from this screen, so it now confirms and
+    // restates the exact booking before committing.
     await approval.getByRole("button", { name: "Duyệt & khóa phòng" }).click();
+    const confirmDialog = page.getByRole("dialog");
+    await expect(confirmDialog).toBeVisible();
+    await expect(confirmDialog.getByText(PURPOSE)).toBeVisible();
+    await confirmDialog.getByRole("button", { name: "Duyệt & khóa phòng" }).click();
     await expect(approval).toHaveCount(0);
 
     await page.context().clearCookies();
@@ -120,8 +126,16 @@ test.describe("Facility Engine live E2E", () => {
     const requestCard = page.locator("div.rounded-xl").filter({ hasText: CHANGES_PURPOSE }).first();
     await expect(requestCard.getByText("Cần chỉnh sửa")).toBeVisible();
     await expect(requestCard.getByText(/Hãy chọn khung giờ khác/)).toBeVisible();
-    page.once("dialog", (dialog) => dialog.accept());
     await requestCard.getByRole("button", { name: "Hủy yêu cầu" }).click();
-    await expect(requestCard.getByText("Đã hủy")).toBeVisible();
+    const cancelDialog = page.getByRole("dialog");
+    await expect(cancelDialog).toBeVisible();
+    await cancelDialog.getByRole("button", { name: "Hủy yêu cầu" }).click();
+    await expect(
+      page
+        .locator("div.rounded-xl")
+        .filter({ hasText: CHANGES_PURPOSE })
+        .first()
+        .getByText("Đã hủy"),
+    ).toBeVisible();
   });
 });

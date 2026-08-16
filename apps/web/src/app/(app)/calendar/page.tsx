@@ -12,7 +12,6 @@ import {
 import { db } from "@/lib/db";
 import { requireActor } from "@/lib/authz";
 import { PageHeader } from "@/components/ui/PageHeader";
-import { EmptyState } from "@/components/ui/Feedback";
 import {
   CalendarLegend,
   DayCalendar,
@@ -381,18 +380,27 @@ export default async function CalendarPage({
         <CalendarLegend />
       </div>
 
-      {items.length === 0 ? (
-        <EmptyState
-          title="Không có lịch trong khoảng này"
-          description="Thử chuyển sang ngày/tuần khác hoặc kiểm tra các nguồn lịch của tài khoản."
-        />
-      ) : view === "day" ? (
+      {/* The grid renders even when the range is empty. A calendar whose empty
+          state replaces the whole grid stops being a calendar: the reader loses
+          the days, the time gutter and their place in the week, and cannot tell
+          an empty Tuesday from a failed load. */}
+      {view === "day" ? (
         <DayCalendar items={items} anchor={anchor} timeZone={timeZone} />
       ) : view === "month" ? (
         <MonthCalendar items={items} anchor={anchor} timeZone={timeZone} />
       ) : (
         <WeekCalendar items={items} anchor={anchor} timeZone={timeZone} />
       )}
+
+      {items.length === 0 ? (
+        <p
+          role="status"
+          className="rounded-lg border border-dashed border-[var(--hairline)] bg-[var(--surface-soft)]/60 px-4 py-3 text-center text-xs text-[var(--muted)]"
+        >
+          Không có lịch nào trong khoảng này. Thử chuyển sang ngày/tuần khác, hoặc kiểm tra các
+          nguồn lịch ở chú giải phía trên.
+        </p>
+      ) : null}
 
       <p className="text-[11px] text-[var(--muted)]">
         Thời khóa biểu được chiếu động từ lịch học định kỳ; không tạo bản sao CalendarEvent. Lịch

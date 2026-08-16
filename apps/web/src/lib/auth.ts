@@ -81,6 +81,22 @@ export async function currentActor(): Promise<Actor | null> {
   };
 }
 
+/**
+ * Id of the session backing this request, so the Security page can mark it and
+ * refuse to let a user revoke the session they are currently using — signing
+ * yourself out while auditing your own sessions is never the intent.
+ */
+export async function currentSessionId(): Promise<string | null> {
+  const jar = await cookies();
+  const token = jar.get(COOKIE)?.value;
+  if (!token) return null;
+  const session = await db.session.findFirst({
+    where: { tokenHash: hashToken(token), revokedAt: null, expiresAt: { gt: new Date() } },
+    select: { id: true },
+  });
+  return session?.id ?? null;
+}
+
 export async function changePassword(userId: string, current: string, next: string) {
   const user = await db.user.findUnique({ where: { id: userId } });
   if (!user) return { ok: false as const, error: "Không tìm thấy tài khoản." };

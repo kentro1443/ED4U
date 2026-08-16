@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { Field, Input, Select } from "@/components/ui/Field";
 import { Alert } from "@/components/ui/Feedback";
+import { ConfirmButton } from "@/components/ui/ConfirmDialog";
+import { useToast } from "@/components/ui/Toast";
 import { createSchoolEventAction, deleteSchoolEventAction } from "./actions";
 
 export function SchoolEventCreate({
@@ -96,29 +98,40 @@ export function SchoolEventCreate({
   );
 }
 
-export function SchoolEventDelete({ eventId }: { eventId: string }) {
+export function SchoolEventDelete({ eventId, title }: { eventId: string; title?: string }) {
   const router = useRouter();
+  const toast = useToast();
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+
   return (
     <div>
-      <Button
-        type="button"
+      <ConfirmButton
         variant="secondary"
+        confirmVariant="danger"
         size="sm"
         disabled={isPending}
-        onClick={() => {
-          if (!window.confirm("Xóa sự kiện khỏi lịch trường?")) return;
+        loading={isPending}
+        title="Xóa sự kiện khỏi lịch trường?"
+        consequence="Sự kiện sẽ biến mất khỏi lịch của mọi người trong phạm vi hiển thị. Thao tác không thể hoàn tác."
+        details={title ? [{ label: "Sự kiện", value: title }] : undefined}
+        confirmLabel="Xóa sự kiện"
+        onConfirm={() =>
           startTransition(async () => {
             const result = await deleteSchoolEventAction(eventId);
-            if (!result.ok) setError(result.error);
-            else router.refresh();
-          });
-        }}
+            if (!result.ok) {
+              setError(result.error);
+              toast.error(result.error);
+              return;
+            }
+            toast.success("Đã xóa sự kiện khỏi lịch trường.");
+            router.refresh();
+          })
+        }
       >
         Xóa
-      </Button>
-      {error ? <p className="mt-1 text-xs text-[var(--danger)]">{error}</p> : null}
+      </ConfirmButton>
+      {error ? <p className="mt-1 text-xs text-[var(--error)]">{error}</p> : null}
     </div>
   );
 }

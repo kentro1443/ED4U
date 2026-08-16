@@ -96,7 +96,7 @@ export default async function EventsPage() {
                 ) : null}
                 {canManage ? (
                   <div className="mt-4">
-                    <SchoolEventDelete eventId={event.id} />
+                    <SchoolEventDelete eventId={event.id} title={event.title} />
                   </div>
                 ) : null}
               </Card>

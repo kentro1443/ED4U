@@ -54,6 +54,7 @@ export async function AppShell({ actor, children }: { actor: Actor; children: Re
             <div className="min-w-0">
               <Link
                 href="/dashboard"
+                prefetch={false}
                 className="block rounded text-base font-bold tracking-tight text-[var(--ink)] transition-opacity hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ink)]"
               >
                 ED4U
@@ -62,7 +63,15 @@ export async function AppShell({ actor, children }: { actor: Actor; children: Re
             </div>
           </div>
 
-          <div className="min-h-0 flex-1 overflow-y-auto px-4 pb-4">
+          {/* The nav is taller than a 13" viewport once the admin group is
+              visible, so the scroll needs an affordance: without one, four
+              admin routes simply appear not to exist. The mask fades the last
+              row into the footer, and `scrollbar-gutter` keeps the track from
+              shifting the labels when it appears. */}
+          <div
+            className="ed4u-nav-scroll min-h-0 flex-1 overflow-y-auto px-4 pb-6"
+            style={{ scrollbarGutter: "stable" }}
+          >
             <NavLinks groups={groups} />
           </div>
 

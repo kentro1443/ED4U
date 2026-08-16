@@ -61,6 +61,7 @@ export default async function ClubsPage() {
                     <div>
                       <Link
                         href={`/clubs/${club.id}`}
+                        prefetch={false}
                         className="text-base font-bold text-[var(--ink)] hover:underline"
                       >
                         {club.name}
@@ -99,6 +100,7 @@ export default async function ClubsPage() {
                   </p>
                   <Link
                     href={`/clubs/${club.id}`}
+                    prefetch={false}
                     className="mt-4 text-xs font-semibold text-[var(--ink)] underline underline-offset-4"
                   >
                     Mở không gian CLB →

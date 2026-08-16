@@ -208,7 +208,11 @@ export default async function ClubDetailPage({ params }: { params: Promise<{ id:
             <h3 className="text-sm font-semibold text-[var(--ink)]">Danh sách thành viên</h3>
             <div className="mt-3 divide-y divide-[var(--hairline-soft)]">
               {activeMembers.map((member) => (
-                <div key={member.id} className="flex items-center justify-between py-2 text-xs">
+                <div
+                  key={member.id}
+                  data-testid="active-club-member"
+                  className="flex items-center justify-between py-2 text-xs"
+                >
                   <span>{userName.get(member.userId) ?? member.userId}</span>
                   <Badge tone={member.role === "PRESIDENT" ? "brand" : "neutral"}>
                     {member.role}
@@ -222,6 +226,7 @@ export default async function ClubDetailPage({ params }: { params: Promise<{ id:
                 {pendingMembers.map((member) => (
                   <div
                     key={member.id}
+                    data-testid="pending-club-member"
                     className="flex items-center justify-between gap-2 rounded-lg bg-[var(--surface-soft)] p-2 text-xs"
                   >
                     <span>{userName.get(member.userId) ?? member.userId}</span>
@@ -280,7 +285,7 @@ export default async function ClubDetailPage({ params }: { params: Promise<{ id:
         {canCreateFinance ? <FinanceCreate clubId={club.id} /> : null}
         <div className="space-y-2">
           {club.finance.map((entry) => (
-            <Card key={entry.id} className="p-4">
+            <Card key={entry.id} className="p-4" data-testid="finance-entry">
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                   <div className="flex items-center gap-2">
@@ -362,7 +367,7 @@ export default async function ClubDetailPage({ params }: { params: Promise<{ id:
         <div className="space-y-3">
           {club.events.length ? (
             club.events.map((event) => (
-              <Card key={event.id} className="p-4">
+              <Card key={event.id} className="p-4" data-testid="club-event">
                 <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
                   <div>
                     <div className="flex flex-wrap items-center gap-2">
@@ -391,6 +396,7 @@ export default async function ClubDetailPage({ params }: { params: Promise<{ id:
                     {event.roomRequired && !event.roomResolved && canCreateEvent ? (
                       <Link
                         href={`/rooms?clubEvent=${event.id}&prompt=${encodeURIComponent(`Tìm phòng cho sự kiện ${event.title}, ${Math.max(1, activeMembers.length)} người`)}`}
+                        prefetch={false}
                         className="rounded-md border border-[var(--hairline)] px-3 py-2 text-xs font-semibold hover:bg-[var(--surface-soft)]"
                       >
                         Tìm phòng bằng Facility Engine

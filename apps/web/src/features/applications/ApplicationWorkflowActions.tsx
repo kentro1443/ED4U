@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { Alert } from "@/components/ui/Feedback";
 import { Field, Select, Textarea } from "@/components/ui/Field";
@@ -13,7 +12,6 @@ import {
 } from "./actions";
 
 export function ApplicationVersionUpload({ applicationId }: { applicationId: string }) {
-  const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [message, setMessage] = useState<string | null>(null);
   const submit = (formData: FormData) => {
@@ -24,7 +22,7 @@ export function ApplicationVersionUpload({ applicationId }: { applicationId: str
         setMessage(response.error);
         return;
       }
-      router.refresh();
+      window.location.reload();
     });
   };
   return (
@@ -57,7 +55,6 @@ export function ApplicationReviewActions({
   status: string;
   teachers: Array<{ id: string; name: string }>;
 }) {
-  const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [note, setNote] = useState("");
   const [targetTeacher, setTargetTeacher] = useState(teachers[0]?.id ?? "");
@@ -72,8 +69,7 @@ export function ApplicationReviewActions({
         setError(response.error);
         return;
       }
-      setNote("");
-      router.refresh();
+      window.location.reload();
     });
   };
 
@@ -92,8 +88,7 @@ export function ApplicationReviewActions({
         setError(response.error);
         return;
       }
-      setTransferReason("");
-      router.refresh();
+      window.location.reload();
     });
   };
 
@@ -212,7 +207,6 @@ export function ApplicationTransferResponse({
   applicationId: string;
   reason?: string | null;
 }) {
-  const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const respond = (accept: boolean) => {
@@ -223,7 +217,7 @@ export function ApplicationTransferResponse({
         setError(response.error);
         return;
       }
-      router.refresh();
+      window.location.reload();
     });
   };
   return (

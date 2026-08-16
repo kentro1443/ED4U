@@ -122,7 +122,12 @@ export default async function RoomsPage({
                       : "Chưa có booking đang hoạt động."}
                 </p>
                 {canRequest ? (
-                  <RoomRequestActions requestId={request.id} status={request.status} />
+                  <RoomRequestActions
+                    requestId={request.id}
+                    status={request.status}
+                    roomLabel={`${request.room.code} · ${request.room.name}`}
+                    slotLabel={`${formatSchoolTime(request.eventStart, tenant.timezone)} → ${formatSchoolTime(request.eventEnd, tenant.timezone)}`}
+                  />
                 ) : null}
               </Card>
             ))}

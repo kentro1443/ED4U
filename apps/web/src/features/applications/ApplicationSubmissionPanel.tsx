@@ -1,7 +1,6 @@
 "use client";
 
-import { useRef, useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState, useTransition } from "react";
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
@@ -18,9 +17,9 @@ type TeacherSuggestion =
       : never
     : never;
 
+const SUBMISSION_FLASH_KEY = "ed4u:application-submission-success";
+
 export function ApplicationSubmissionPanel() {
-  const router = useRouter();
-  const formRef = useRef<HTMLFormElement>(null);
   const [isPending, startTransition] = useTransition();
   const [rawText, setRawText] = useState("");
   const [teachers, setTeachers] = useState<TeacherSuggestion>([] as unknown as TeacherSuggestion);
@@ -30,6 +29,13 @@ export function ApplicationSubmissionPanel() {
     confidence: string;
   } | null>(null);
   const [message, setMessage] = useState<{ type: "error" | "success"; text: string } | null>(null);
+
+  useEffect(() => {
+    const teacherName = sessionStorage.getItem(SUBMISSION_FLASH_KEY);
+    if (!teacherName) return;
+    sessionStorage.removeItem(SUBMISSION_FLASH_KEY);
+    setMessage({ type: "success", text: `Đã nộp đơn và chuyển tới ${teacherName}.` });
+  }, []);
 
   const suggest = () => {
     setMessage(null);
@@ -55,12 +61,8 @@ export function ApplicationSubmissionPanel() {
         setMessage({ type: "error", text: response.error });
         return;
       }
-      setMessage({ type: "success", text: `Đã nộp đơn và chuyển tới ${response.teacherName}.` });
-      setRawText("");
-      setTeachers([] as unknown as TeacherSuggestion);
-      setSelectedTeacher("");
-      formRef.current?.reset();
-      router.refresh();
+      sessionStorage.setItem(SUBMISSION_FLASH_KEY, response.teacherName);
+      window.location.reload();
     });
   };
 
@@ -146,7 +148,6 @@ export function ApplicationSubmissionPanel() {
 
         {selectedTeacher ? (
           <form
-            ref={formRef}
             action={submit}
             className="space-y-4 rounded-xl border border-[var(--hairline)] bg-[var(--canvas)] p-4"
           >

@@ -13,3 +13,4 @@ export * from "./SearchField";
 export * from "./ConfirmDialog";
 export * from "./Toast";
 export * from "./icons";
+export * from "./LoadingShapes";

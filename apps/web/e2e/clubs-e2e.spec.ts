@@ -107,21 +107,22 @@ test.describe("Club operating workflows", () => {
     await login(page, "HS000010");
     await page.goto("/clubs");
     await page.getByRole("link", { name: "CLB Robotics" }).click();
-    await page.getByRole("button", { name: "Duyệt", exact: true }).first().click();
-    await expect(page.getByText("Học sinh 2")).toBeVisible();
+    const pendingMember = page.getByTestId("pending-club-member").filter({ hasText: "Học sinh 2" });
+    await pendingMember.getByRole("button", { name: "Duyệt", exact: true }).click();
+    await expect(pendingMember).toHaveCount(0);
+    await expect(
+      page.getByTestId("active-club-member").filter({ hasText: "Học sinh 2" }),
+    ).toContainText("MEMBER");
 
     await page.getByLabel("Loại bút toán").selectOption("EXPENSE");
     await page.getByLabel("Số tiền").fill("150000");
     await page.getByLabel("Danh mục").fill("Vật tư");
     await page.getByLabel("Mô tả").fill(FINANCE_DESCRIPTION);
     await page.getByRole("button", { name: "Ghi sổ (chờ duyệt)" }).click();
-    const financeCard = page
-      .locator('[class*="rounded"]')
-      .filter({ hasText: FINANCE_DESCRIPTION })
-      .last();
-    await page.getByRole("button", { name: "Duyệt bút toán" }).last().click();
-    await expect(page.getByText("Đã duyệt").last()).toBeVisible();
-    void financeCard;
+    const financeCard = page.getByTestId("finance-entry").filter({ hasText: FINANCE_DESCRIPTION });
+    await expect(financeCard).toContainText("Đang chờ");
+    await financeCard.getByRole("button", { name: "Duyệt bút toán" }).click();
+    await expect(financeCard).toContainText("Đã duyệt");
 
     const eventForm = page
       .locator("form")
@@ -132,7 +133,10 @@ test.describe("Club operating workflows", () => {
     await eventForm.locator('input[name="endAt"]').fill("2026-08-20T19:30");
     await eventForm.locator('input[name="roomRequired"]').check();
     await eventForm.getByRole("button", { name: "Tạo đề xuất sự kiện" }).click();
-    await expect(page.getByText(EVENT_TITLE)).toBeVisible();
-    await expect(page.getByRole("link", { name: "Tìm phòng bằng Facility Engine" })).toBeVisible();
+    const eventCard = page.getByTestId("club-event").filter({ hasText: EVENT_TITLE });
+    await expect(eventCard).toBeVisible();
+    await expect(
+      eventCard.getByRole("link", { name: "Tìm phòng bằng Facility Engine" }),
+    ).toBeVisible();
   });
 });

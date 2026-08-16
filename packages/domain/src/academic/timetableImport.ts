@@ -64,7 +64,7 @@ const MAX_ROWS = 5000;
 
 export function parseTimetableCsv(text: string): TimetableParseResult {
   const issues: TimetableIssue[] = [];
-  const content = text.replace(/^﻿/, "");
+  const content = text.replace(/^\uFEFF/, "");
   const lines = content
     .split(/\r?\n/)
     .map((line) => line.trimEnd())
