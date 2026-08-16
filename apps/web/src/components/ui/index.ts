@@ -8,4 +8,8 @@ export * from "./DataTable";
 export * from "./Feedback";
 export * from "./DataDisplay";
 export * from "./PageHeader";
+export * from "./ListToolbar";
+export * from "./SearchField";
+export * from "./ConfirmDialog";
+export * from "./Toast";
 export * from "./icons";

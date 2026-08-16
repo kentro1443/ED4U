@@ -1,112 +1,207 @@
+import type { Metadata } from "next";
+import type { Prisma } from "@/generated/prisma/client";
 import { db } from "@/lib/db";
 import { requireRoute } from "@/lib/authz";
+import { parseListParams, listSkip, type RawSearchParams } from "@/lib/listParams";
 import { PageHeader } from "@/components/ui/PageHeader";
-import { DataTable, type ColumnDef } from "@/components/ui/DataTable";
 import { Badge, StatusBadge } from "@/components/ui/Badge";
 import { Card } from "@/components/ui/Card";
-import { Icons } from "@/components/ui/icons";
+import { EmptyState } from "@/components/ui/Feedback";
+import { ListToolbar, Pagination, type Facet } from "@/components/ui/ListToolbar";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/DataTable";
+import { CreateMemberButton, MemberRowActions, RosterImportCard } from "./MemberControls";
 
-interface MemberRow {
-  id: string;
-  schoolMemberCode: string;
-  fullName: string;
-  status: string;
-  roles: string[];
-}
+export const metadata: Metadata = { title: "Quản lý thành viên" };
 
-export default async function MembersPage() {
+const PER_PAGE = 25;
+
+export default async function MembersPage({
+  searchParams,
+}: {
+  searchParams: Promise<RawSearchParams>;
+}) {
   const actor = await requireRoute("/admin/members");
-  const members = await db.schoolMembership.findMany({
-    where: { tenantId: actor.tenantId },
-    include: { user: { include: { roles: true } } },
-    orderBy: { schoolMemberCode: "asc" },
-    take: 50,
+  const rawParams = await searchParams;
+  const params = parseListParams(rawParams, {
+    facets: ["status", "type"],
+    perPage: PER_PAGE,
   });
 
-  const data: MemberRow[] = members.map((m) => ({
-    id: m.id,
-    schoolMemberCode: m.schoolMemberCode,
-    fullName: m.user.fullName,
-    status: m.membershipStatus,
-    roles: m.user.roles.map((r) => r.role),
-  }));
+  const where: Prisma.SchoolMembershipWhereInput = {
+    tenantId: actor.tenantId,
+    ...(params.filters.status
+      ? {
+          membershipStatus: params.filters.status as
+            "ACTIVE" | "GRADUATED" | "LEFT_SCHOOL" | "SUSPENDED",
+        }
+      : {}),
+    ...(params.filters.type
+      ? { memberType: params.filters.type as "STUDENT" | "TEACHER" | "STAFF" }
+      : {}),
+    ...(params.q
+      ? {
+          OR: [
+            { schoolMemberCode: { contains: params.q, mode: "insensitive" } },
+            { user: { fullName: { contains: params.q, mode: "insensitive" } } },
+          ],
+        }
+      : {}),
+  };
 
-  const columns: ColumnDef<MemberRow>[] = [
+  const [total, members, classes, statusCounts] = await Promise.all([
+    db.schoolMembership.count({ where }),
+    db.schoolMembership.findMany({
+      where,
+      include: {
+        user: { include: { roles: true } },
+        class: { select: { code: true, name: true } },
+      },
+      orderBy: { schoolMemberCode: "asc" },
+      skip: listSkip(params),
+      take: params.perPage,
+    }),
+    db.class.findMany({
+      where: { tenantId: actor.tenantId },
+      select: { id: true, code: true, name: true },
+      orderBy: { code: "asc" },
+    }),
+    db.schoolMembership.groupBy({
+      by: ["membershipStatus"],
+      where: { tenantId: actor.tenantId },
+      _count: { membershipStatus: true },
+    }),
+  ]);
+
+  const facets: Facet[] = [
     {
-      key: "code",
-      header: "Mã thành viên",
-      render: (row) => (
-        <span className="font-mono text-xs font-semibold">{row.schoolMemberCode}</span>
-      ),
+      name: "status",
+      label: "Trạng thái",
+      options: [
+        { value: "ACTIVE", label: "Đang hoạt động" },
+        { value: "GRADUATED", label: "Đã tốt nghiệp" },
+        { value: "SUSPENDED", label: "Tạm ngưng" },
+        { value: "LEFT_SCHOOL", label: "Đã rời trường" },
+      ].map((option) => {
+        const count =
+          statusCounts.find((row) => row.membershipStatus === option.value)?._count
+            .membershipStatus ?? 0;
+        return { value: option.value, label: `${option.label} (${count})` };
+      }),
     },
     {
-      key: "name",
-      header: "Họ và tên",
-      render: (row) => <span className="font-medium text-[var(--ink)]">{row.fullName}</span>,
-    },
-    {
-      key: "status",
-      header: "Trạng thái",
-      render: (row) => <StatusBadge status={row.status} />,
-    },
-    {
-      key: "roles",
-      header: "Vai trò",
-      render: (row) => (
-        <div className="flex flex-wrap gap-1">
-          {row.roles.map((r) => (
-            <Badge key={r} tone={r.includes("ADMIN") ? "dark" : "neutral"} size="sm">
-              {r}
-            </Badge>
-          ))}
-        </div>
-      ),
+      name: "type",
+      label: "Loại",
+      options: [
+        { value: "STUDENT", label: "Học sinh" },
+        { value: "TEACHER", label: "Giáo viên" },
+        { value: "STAFF", label: "Nhân viên" },
+      ],
     },
   ];
+
+  const classOptions = classes.map((klass) => ({
+    id: klass.id,
+    label: `${klass.code} · ${klass.name}`,
+  }));
 
   return (
     <div className="space-y-6">
       <PageHeader
         title="Quản lý thành viên"
-        description="Mã thành viên (school_member_code) là tên đăng nhập duy nhất trong trường. ID nội bộ là UUID ngẫu nhiên."
+        description="Mã thành viên (school_member_code) là tên đăng nhập duy nhất trong trường và không thể thay đổi. ID nội bộ là UUID ngẫu nhiên và không bao giờ hiển thị cho người dùng."
         badge={<Badge tone="dark">ADMIN_IT</Badge>}
+        actions={<CreateMemberButton classes={classOptions} />}
       />
 
-      <Card variant="soft" className="border-dashed p-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="space-y-1">
-            <p className="text-sm font-semibold text-[var(--ink)] flex items-center gap-2">
-              <Icons.applications className="h-4 w-4" />
-              Nhập danh sách từ Excel (.xlsx)
-            </p>
-            <p className="text-xs text-[var(--muted)]">
-              Cột yêu cầu: full_name, class, school_member_code, member_type
-            </p>
-          </div>
-          <div>
-            <label htmlFor="excel-file-input" className="sr-only">
-              Chọn tệp Excel danh sách thành viên
-            </label>
-            <input
-              id="excel-file-input"
-              type="file"
-              name="file"
-              accept=".xlsx"
-              aria-label="Chọn tệp Excel danh sách thành viên"
-              className="text-xs text-[var(--muted)] file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border file:border-[var(--hairline)] file:text-xs file:font-semibold file:bg-[var(--canvas)] hover:file:bg-[var(--surface-soft)] cursor-pointer"
-            />
-          </div>
-        </div>
-      </Card>
+      <RosterImportCard classCount={classes.length} />
 
-      <div className="space-y-3">
-        <div className="flex items-center justify-between">
-          <h2 className="text-sm font-semibold uppercase tracking-wider text-[var(--muted)]">
-            Danh sách tài khoản ({members.length})
-          </h2>
-        </div>
-        <DataTable data={data} columns={columns} emptyMessage="Chưa có thành viên nào." />
-      </div>
+      <Card className="space-y-4 p-4 md:p-5">
+        <ListToolbar
+          basePath="/admin/members"
+          searchParams={rawParams}
+          params={params}
+          facets={facets}
+          searchPlaceholder="Tìm theo tên hoặc mã thành viên…"
+          total={total}
+          shown={members.length}
+        />
+
+        {members.length === 0 ? (
+          <EmptyState
+            title="Không có thành viên nào khớp"
+            description={
+              total === 0
+                ? "Tạo tài khoản đầu tiên hoặc nhập danh sách từ tệp CSV."
+                : "Thử bỏ bớt bộ lọc hoặc tìm bằng từ khóa khác."
+            }
+          />
+        ) : (
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Mã thành viên</TableHead>
+                <TableHead>Họ và tên</TableHead>
+                <TableHead className="hidden md:table-cell">Lớp</TableHead>
+                <TableHead>Trạng thái</TableHead>
+                <TableHead className="hidden lg:table-cell">Vai trò</TableHead>
+                <TableHead className="text-right">Thao tác</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {members.map((member) => (
+                <TableRow key={member.id}>
+                  <TableCell className="font-mono text-xs font-semibold">
+                    {member.schoolMemberCode}
+                  </TableCell>
+                  <TableCell className="font-medium">{member.user.fullName}</TableCell>
+                  <TableCell className="hidden text-xs text-[var(--muted)] md:table-cell">
+                    {member.class ? `${member.class.code}` : "—"}
+                  </TableCell>
+                  <TableCell>
+                    <StatusBadge status={member.membershipStatus} />
+                  </TableCell>
+                  <TableCell className="hidden lg:table-cell">
+                    <div className="flex flex-wrap gap-1">
+                      {member.user.roles.map((role) => (
+                        <Badge
+                          key={role.role}
+                          tone={role.role.includes("ADMIN") ? "dark" : "neutral"}
+                          size="sm"
+                        >
+                          {role.role}
+                        </Badge>
+                      ))}
+                    </div>
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <MemberRowActions
+                      membershipId={member.id}
+                      fullName={member.user.fullName}
+                      schoolMemberCode={member.schoolMemberCode}
+                      status={member.membershipStatus}
+                      isSelf={member.userId === actor.userId}
+                    />
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        )}
+
+        <Pagination
+          basePath="/admin/members"
+          searchParams={rawParams}
+          params={params}
+          total={total}
+        />
+      </Card>
     </div>
   );
 }

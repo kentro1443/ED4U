@@ -143,6 +143,12 @@ export const NAV_GROUPS: NavGroup[] = [
         permission: ROUTE_PERMISSIONS["/admin/timetable"],
       },
       {
+        href: "/admin/timetable/import",
+        label: "Import TKB",
+        icon: "adminTimetable",
+        permission: ROUTE_PERMISSIONS["/admin/timetable/import"],
+      },
+      {
         href: "/admin/rooms",
         label: "Rooms & Features",
         icon: "adminRooms",

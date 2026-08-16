@@ -1,5 +1,5 @@
 import { ConflictError, ForbiddenError, ValidationError, err, ok, type Result } from "../errors";
-import { civilInZone } from "../academic/timezone";
+import { addCivilDays, civilDateTimeToInstant, civilInZone } from "../academic/timezone";
 
 export interface LiveMentorState {
   mentorId: string;
@@ -91,29 +91,14 @@ export function nextSlotOccurrence(
     daysAhead = 7;
   }
 
-  // Calculate target civil date in timezone
-  const approx = new Date(fromDate.getTime() + daysAhead * 24 * 60 * 60 * 1000);
-  const approxCivil = civilInZone(approx, timeZone);
-
-  const targetUtcEstimate = new Date(
-    Date.UTC(
-      approxCivil.year,
-      approxCivil.month - 1,
-      approxCivil.day,
-      targetHour,
-      targetMinute,
-      0,
-      0,
-    ),
+  // Resolve the target *civil date* first, then convert through the shared IANA
+  // timezone boundary. Adding 24-hour millisecond chunks is incorrect across DST
+  // transitions and can also drift around month/year boundaries.
+  const targetDate = addCivilDays(civilNow, daysAhead);
+  const startAt = civilDateTimeToInstant(
+    { ...targetDate, hour: targetHour, minute: targetMinute },
+    timeZone,
   );
-
-  const testCivil = civilInZone(targetUtcEstimate, timeZone);
-  const offsetDiffMinutes =
-    (testCivil.hour - targetHour) * 60 +
-    (testCivil.minute - targetMinute) +
-    (testCivil.day - approxCivil.day) * 1440;
-
-  const startAt = new Date(targetUtcEstimate.getTime() - offsetDiffMinutes * 60 * 1000);
   const endAt = new Date(startAt.getTime() + 60 * 60 * 1000);
 
   return { startAt, endAt };

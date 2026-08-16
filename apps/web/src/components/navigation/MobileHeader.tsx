@@ -9,7 +9,15 @@ import { NavLinks } from "./NavLinks";
 import { UserProfileCard, type UserSummary } from "./UserMenu";
 import type { PermittedNavGroup } from "@/lib/nav";
 
-export function MobileHeader({ groups, user }: { groups: PermittedNavGroup[]; user: UserSummary }) {
+export function MobileHeader({
+  groups,
+  user,
+  unreadCount,
+}: {
+  groups: PermittedNavGroup[];
+  user: UserSummary;
+  unreadCount: number;
+}) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -24,11 +32,26 @@ export function MobileHeader({ groups, user }: { groups: PermittedNavGroup[]; us
           </Link>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1">
+          <Link
+            href="/notifications"
+            aria-label={
+              unreadCount > 0 ? `Thông báo, ${unreadCount} chưa đọc` : "Thông báo, không có mục mới"
+            }
+            className="relative flex h-11 w-11 items-center justify-center rounded-md text-[var(--body)] transition-colors hover:bg-[var(--surface-soft)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ink)]"
+          >
+            <Icons.notifications className="h-5 w-5" aria-hidden="true" />
+            {unreadCount > 0 && (
+              <span className="absolute right-1.5 top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-[var(--error)] px-1 text-[10px] font-semibold tabular-nums text-white">
+                {unreadCount > 9 ? "9+" : unreadCount}
+              </span>
+            )}
+          </Link>
           <IconButton
             label="Mở menu điều hướng"
             variant="ghost"
-            size="sm"
+            size="md"
+            className="h-11 w-11"
             onClick={() => setOpen(true)}
             aria-expanded={open}
           >

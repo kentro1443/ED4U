@@ -140,4 +140,12 @@ describe("mentor adapter and live booking re-check", () => {
     expect(startAt.getTime()).toBeLessThan(endAt.getTime());
     expect(endAt.getTime() - startAt.getTime()).toBe(60 * 60 * 1000);
   });
+
+  it("resolves mentor sessions across an IANA DST transition without adding fake 24h days", () => {
+    // 2026-03-07 12:00 in New York, one day before the DST spring-forward.
+    const fromDate = new Date("2026-03-07T17:00:00.000Z");
+    const { startAt, endAt } = nextSlotOccurrence("SUN_09_00", "America/New_York", fromDate);
+    expect(startAt.toISOString()).toBe("2026-03-08T13:00:00.000Z");
+    expect(endAt.toISOString()).toBe("2026-03-08T14:00:00.000Z");
+  });
 });

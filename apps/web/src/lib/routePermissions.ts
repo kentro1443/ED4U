@@ -15,6 +15,13 @@ import type { Permission } from "@ed4u/domain";
 export const ROUTE_PERMISSIONS = {
   "/admin/members": "members.manage",
   "/admin/timetable": "timetable.edit",
+  /**
+   * Import is a separate route from editing on purpose. SCHOOL_ADMIN maintains
+   * the timetable day to day; replacing a whole semester from a file is an
+   * ADMIN_IT operation, and giving the two the same permission would quietly
+   * hand every school admin the ability to wipe a semester.
+   */
+  "/admin/timetable/import": "timetable.import",
   "/admin/rooms": "rooms.manage",
   "/admin/approvals": "approvals.resolve",
   "/admin/moderation": "forum.moderate",
