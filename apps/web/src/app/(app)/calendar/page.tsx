@@ -12,6 +12,8 @@ import {
 import { db } from "@/lib/db";
 import { requireActor } from "@/lib/authz";
 import { PageHeader } from "@/components/ui/PageHeader";
+import { Badge } from "@/components/ui/Badge";
+import { Icons } from "@/components/ui/icons";
 import {
   CalendarLegend,
   DayCalendar,
@@ -332,53 +334,63 @@ export default async function CalendarPage({
         description={`Lịch thống nhất theo múi giờ trường (${timeZone}), chiếu trực tiếp từ TKB, lịch hẹn, mentoring, sự kiện và đặt phòng.`}
       />
 
-      <div className="flex flex-col gap-3 rounded-xl border border-[var(--hairline)] bg-[var(--canvas)] p-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex flex-wrap items-center gap-2">
-          {(Object.keys(VIEW_LABEL) as View[]).map((candidate) => (
-            <Link
-              key={candidate}
-              href={`/calendar?view=${candidate}&date=${anchorKey}`}
-              className={`rounded-md px-3 py-1.5 text-xs font-semibold transition-colors ${view === candidate ? "bg-[var(--primary)] text-[var(--on-primary)]" : "border border-[var(--hairline)] text-[var(--body)] hover:bg-[var(--surface-soft)]"}`}
-            >
-              {VIEW_LABEL[candidate]}
-            </Link>
-          ))}
-        </div>
-        <div className="flex items-center gap-2">
-          <Link
-            href={`/calendar?view=${view}&date=${prev}`}
-            className="rounded-md border border-[var(--hairline)] px-2.5 py-1.5 text-xs"
-            aria-label={`${VIEW_LABEL[view]} trước`}
-          >
-            ←
-          </Link>
-          <Link
-            href={`/calendar?view=${view}&date=${todayKey}`}
-            className="rounded-md border border-[var(--hairline)] px-3 py-1.5 text-xs font-medium"
-          >
-            Hôm nay
-          </Link>
-          <Link
-            href={`/calendar?view=${view}&date=${next}`}
-            className="rounded-md border border-[var(--hairline)] px-2.5 py-1.5 text-xs"
-            aria-label={`${VIEW_LABEL[view]} sau`}
-          >
-            →
-          </Link>
-        </div>
-      </div>
+      <section className="overflow-hidden rounded-[24px] border border-[var(--hairline)] bg-[var(--surface-card)] shadow-[var(--shadow-sm)]">
+        <div className="flex flex-col gap-4 p-4 sm:p-5 lg:flex-row lg:items-center lg:justify-between">
+          <div className="flex min-w-0 items-center gap-3">
+            <div className="flex shrink-0 items-center gap-1">
+              <Link
+                href={`/calendar?view=${view}&date=${prev}`}
+                className="flex h-9 w-9 items-center justify-center rounded-xl border border-[var(--hairline)] text-[var(--body)] transition-colors hover:border-[var(--brand-100)] hover:bg-[var(--brand-50)] hover:text-[var(--primary)]"
+                aria-label={`${VIEW_LABEL[view]} trước`}
+              >
+                <Icons.chevronLeft className="h-4 w-4" aria-hidden="true" />
+              </Link>
+              <Link
+                href={`/calendar?view=${view}&date=${next}`}
+                className="flex h-9 w-9 items-center justify-center rounded-xl border border-[var(--hairline)] text-[var(--body)] transition-colors hover:border-[var(--brand-100)] hover:bg-[var(--brand-50)] hover:text-[var(--primary)]"
+                aria-label={`${VIEW_LABEL[view]} sau`}
+              >
+                <Icons.chevronRight className="h-4 w-4" aria-hidden="true" />
+              </Link>
+            </div>
+            <div className="min-w-0">
+              <div className="flex flex-wrap items-center gap-2">
+                <h2 className="text-lg font-extrabold tracking-[-0.025em] text-[var(--ink)] sm:text-xl">
+                  {titleForAnchor(view, anchor, timeZone)}
+                </h2>
+                <Badge tone="neutral" size="sm">
+                  {items.length} lịch
+                </Badge>
+              </div>
+              <Link
+                href={`/calendar?view=${view}&date=${todayKey}`}
+                className="mt-1 inline-flex text-xs font-bold text-[var(--primary)] hover:underline"
+              >
+                Về hôm nay
+              </Link>
+            </div>
+          </div>
 
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-wider text-[var(--muted)]">
-            {VIEW_LABEL[view]}
-          </p>
-          <h2 className="text-lg font-bold text-[var(--ink)]">
-            {titleForAnchor(view, anchor, timeZone)}
-          </h2>
+          <nav
+            className="inline-flex w-fit rounded-xl bg-[var(--surface-soft)] p-1"
+            aria-label="Chế độ xem lịch"
+          >
+            {(Object.keys(VIEW_LABEL) as View[]).map((candidate) => (
+              <Link
+                key={candidate}
+                href={`/calendar?view=${candidate}&date=${anchorKey}`}
+                aria-current={view === candidate ? "page" : undefined}
+                className={`rounded-lg px-4 py-2 text-xs font-bold transition-colors ${view === candidate ? "bg-[var(--surface-card)] text-[var(--primary)] shadow-[var(--shadow-sm)]" : "text-[var(--body)] hover:text-[var(--ink)]"}`}
+              >
+                {VIEW_LABEL[candidate]}
+              </Link>
+            ))}
+          </nav>
         </div>
-        <CalendarLegend />
-      </div>
+        <div className="border-t border-[var(--hairline-soft)] px-4 py-3 sm:px-5">
+          <CalendarLegend />
+        </div>
+      </section>
 
       {/* The grid renders even when the range is empty. A calendar whose empty
           state replaces the whole grid stops being a calendar: the reader loses
